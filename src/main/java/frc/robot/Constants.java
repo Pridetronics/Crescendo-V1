@@ -25,7 +25,10 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class CameraConstants {
-    public static final Transform3d kCameraToRobot = new Transform3d(new Translation3d(), new Rotation3d());
+    public static final Transform3d kCameraToRobot = new Transform3d(
+      new Translation3d(-14.5, 0, -5.5), 
+      new Rotation3d(20, 0, 0)
+    );
 
   }
 

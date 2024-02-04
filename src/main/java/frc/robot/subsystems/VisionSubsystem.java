@@ -16,6 +16,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
@@ -23,8 +24,6 @@ import frc.robot.Constants.CameraConstants;
 public class VisionSubsystem extends SubsystemBase {
   private PhotonCamera camera = new PhotonCamera("photonvision");
   private AprilTagFieldLayout fieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-
-  private Pose3d lastFieldLayoutPosition = new Pose3d();
 
   /** Creates a new PhotonVision. */
   public VisionSubsystem() {
@@ -37,29 +36,40 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-
   }
 
   public Pose3d getFieldPosition() {
+    Pose3d currentFieldLayoutPosition = null;
     PhotonPipelineResult result = camera.getLatestResult();
 
     if (result.hasTargets()) {
       PhotonTrackedTarget target = result.getBestTarget();
       Optional<Pose3d> targetFieldPosition = fieldLayout.getTagPose(target.getFiducialId());
-      if (!targetFieldPosition.isPresent()) return lastFieldLayoutPosition;
+      if (!targetFieldPosition.isPresent()) return null;
         Pose3d fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
         target.getBestCameraToTarget(),
         targetFieldPosition.get(), 
         CameraConstants.kCameraToRobot
         );
-        lastFieldLayoutPosition = fieldPosition;
+        currentFieldLayoutPosition = fieldPosition;
     }
 
-    return lastFieldLayoutPosition;
+    return currentFieldLayoutPosition;
   }
 
   public Pose3d getRobotToAprilTag() {
-    //TODO
-    return new Pose3d();
+    Pose3d currentFieldLayoutPosition = null;
+    PhotonPipelineResult result = camera.getLatestResult();
+
+    if (result.hasTargets()) {
+      PhotonTrackedTarget target = result.getBestTarget();
+      Optional<Pose3d> targetFieldPosition = fieldLayout.getTagPose(target.getFiducialId());
+      if (!targetFieldPosition.isPresent()) return null;
+        double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
+        Translation2d cameraToTarget = PhotonUtils.estimateCameraToTargetTranslation(0, null)
+        currentFieldLayoutPosition = fieldPosition;
+    }
+//TODO get above to actually work
+    return currentFieldLayoutPosition;
   }
 }
