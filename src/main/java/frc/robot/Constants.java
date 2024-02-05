@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 
 
 
@@ -25,9 +26,9 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class CameraConstants {
-    public static final Transform3d kCameraToRobot = new Transform3d(
-      new Translation3d(-14.5, 0, -5.5), 
-      new Rotation3d(20, 0, 0)
+    public static final Transform3d kRobotToCamera = new Transform3d(
+      new Translation3d(Units.inchesToMeters(14.5), 0, Units.inchesToMeters(5.5)), 
+      new Rotation3d(0, -20, 0)
     );
 
   }

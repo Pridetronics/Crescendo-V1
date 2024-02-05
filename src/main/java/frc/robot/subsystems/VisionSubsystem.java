@@ -7,8 +7,11 @@ package frc.robot.subsystems;
 import java.util.List;
 import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -22,11 +25,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
 
 public class VisionSubsystem extends SubsystemBase {
+  SwerveSubsystem m_SwerveSybsystem;
   private PhotonCamera camera = new PhotonCamera("photonvision");
   private AprilTagFieldLayout fieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-
+  private PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(
+    fieldLayout, 
+    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, CameraConstants.kRobotToCamera
+  );
+  Pose3d lastRobotPose = new Pose3d();
   /** Creates a new PhotonVision. */
-  public VisionSubsystem() {
+  public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
+    m_SwerveSybsystem = swerveSubsystem;
     //Done so the camera/settings can be viewed at photonvision.local:5800 on google when tethered
     PortForwarder.add(5800, "photonvision.local", 5800);
 
@@ -35,41 +44,15 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
+    if (robotPose.isPresent()) {
+      Pose3d currentPose = robotPose.get().estimatedPose;
+      lastRobotPose = currentPose;
+      m_SwerveSybsystem.resetOdometry(currentPose.toPose2d());
+    } else lastRobotPose = null;
   }
 
-  public Pose3d getFieldPosition() {
-    Pose3d currentFieldLayoutPosition = null;
-    PhotonPipelineResult result = camera.getLatestResult();
-
-    if (result.hasTargets()) {
-      PhotonTrackedTarget target = result.getBestTarget();
-      Optional<Pose3d> targetFieldPosition = fieldLayout.getTagPose(target.getFiducialId());
-      if (!targetFieldPosition.isPresent()) return null;
-        Pose3d fieldPosition = PhotonUtils.estimateFieldToRobotAprilTag(
-        target.getBestCameraToTarget(),
-        targetFieldPosition.get(), 
-        CameraConstants.kCameraToRobot
-        );
-        currentFieldLayoutPosition = fieldPosition;
-    }
-
-    return currentFieldLayoutPosition;
-  }
-
-  public Pose3d getRobotToAprilTag() {
-    Pose3d currentFieldLayoutPosition = null;
-    PhotonPipelineResult result = camera.getLatestResult();
-
-    if (result.hasTargets()) {
-      PhotonTrackedTarget target = result.getBestTarget();
-      Optional<Pose3d> targetFieldPosition = fieldLayout.getTagPose(target.getFiducialId());
-      if (!targetFieldPosition.isPresent()) return null;
-        double distanceToTarget = PhotonUtils.getDistanceToPose(robotPose, targetPose);
-        Translation2d cameraToTarget = PhotonUtils.estimateCameraToTargetTranslation(0, null)
-        currentFieldLayoutPosition = fieldPosition;
-    }
-//TODO get above to actually work
-    return currentFieldLayoutPosition;
+  public Pose3d getCurrentRobotPose() {
+    return lastRobotPose;
   }
 }

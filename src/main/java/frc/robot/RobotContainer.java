@@ -35,7 +35,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -110,7 +110,6 @@ public class RobotContainer {
 
     //A series of commands that will reset the odometer (aka the position predictor) so the forward direction of the trajectory is the forward direction of the robot, run the command, and stop all the wheels; in that order
     return new SequentialCommandGroup(
-      new InstantCommand(() -> swerveSubsystem.resetOdometry(chosenTrajectory.getInitialPose())),
       swerveAutoCommand,
       new InstantCommand(() -> swerveSubsystem.stopModules())
     );
