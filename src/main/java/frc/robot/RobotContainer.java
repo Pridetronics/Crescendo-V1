@@ -119,6 +119,7 @@ public class RobotContainer {
       .withWidget(BuiltInWidgets.kToggleSwitch)
       .getEntry()
     );
+    
 
     //Create your auto paths here (By which the trajectories are made in SwerveAutoPaths)
     autoCommandChooser.setDefaultOption("Do Nothing", null);
