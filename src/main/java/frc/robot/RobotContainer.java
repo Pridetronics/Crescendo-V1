@@ -4,10 +4,19 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.List;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,8 +47,78 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
+  private final HashMap<String, GenericEntry> noteSelectionToggles = new HashMap<String, GenericEntry>();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
+    ShuffleboardLayout noteSelectionList = autoTab.getLayout("Notes to get");
+    ShuffleboardLayout closeNoteSelectionList = noteSelectionList.getLayout("Close Notes");
+    ShuffleboardLayout farNoteSelectionList = noteSelectionList.getLayout("Field Center Notes");
+    ShuffleboardLayout noteDepositList = autoTab.getLayout("Deposit Notes @");
+    noteSelectionToggles.put("Close Amp", 
+      closeNoteSelectionList.addPersistent("Amp", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Close Center", 
+      closeNoteSelectionList.addPersistent("Center", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Close Stage", 
+      closeNoteSelectionList.addPersistent("Stage", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+
+    noteSelectionToggles.put("Far First Amp", 
+      farNoteSelectionList.addPersistent("First Amp", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Far Second Amp", 
+      farNoteSelectionList.addPersistent("Second Amp", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Far Center", 
+      farNoteSelectionList.addPersistent("Center", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Far Second Source", 
+      farNoteSelectionList.addPersistent("Second Source", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Far First Source", 
+      farNoteSelectionList.addPersistent("First Source", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+
+
+    noteSelectionToggles.put("Speaker Amp Deposit", 
+      noteDepositList.addPersistent("Speaker Amp Side", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Speaker Center Deposit", 
+      noteDepositList.addPersistent("Speaker Center Side", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Speaker Source Deposit", 
+      noteDepositList.addPersistent("Speaker Source Side", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
+    noteSelectionToggles.put("Amp Deposit", 
+      noteDepositList.addPersistent("Amp", false)
+      .withWidget(BuiltInWidgets.kToggleSwitch)
+      .getEntry()
+    );
 
     //Create your auto paths here (By which the trajectories are made in SwerveAutoPaths)
     autoCommandChooser.setDefaultOption("Do Nothing", null);
@@ -88,30 +167,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //Get the trajectory selected in the drop down on the shuffleboard
-    Trajectory chosenTrajectory = autoCommandChooser.getSelected();
-    if (chosenTrajectory == null) return null;
-    //Controllers to keep the robot on the main path since it will not follow it too well without it
-    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    
-    //Creates a command that will run the robot along the path
-    SwerveControllerCommand swerveAutoCommand = new SwerveControllerCommand(
-    chosenTrajectory, 
-    swerveSubsystem::getPose, 
-    WheelConstants.kDriveKinematics,
-    xController,
-    yController,
-    thetaController,
-    swerveSubsystem::setModuleStates,
-    swerveSubsystem);
+    //TODO replace with auto selector
+    return new Command() {
 
-    //A series of commands that will reset the odometer (aka the position predictor) so the forward direction of the trajectory is the forward direction of the robot, run the command, and stop all the wheels; in that order
-    return new SequentialCommandGroup(
-      swerveAutoCommand,
-      new InstantCommand(() -> swerveSubsystem.stopModules())
-    );
+    };
+
   }
 }
