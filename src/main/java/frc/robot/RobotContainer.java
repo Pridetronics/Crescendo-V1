@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
@@ -29,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.Constants.AutoConstants.NotePositionConstants;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
@@ -45,89 +48,21 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
-  private final SendableChooser<Trajectory> autoCommandChooser = new SendableChooser<>();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
-  private final HashMap<String, GenericEntry> noteSelectionToggles = new HashMap<String, GenericEntry>();
+  private final ArrayList<SendableChooser<NotePosition>> noteSelectionList = new ArrayList<SendableChooser<NotePosition>>();
+  private final ArrayList<SendableChooser<Pose2d>> noteDepositList = new ArrayList<SendableChooser<Pose2d>>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
-    ShuffleboardLayout noteSelectionList = autoTab.getLayout("Notes to get");
-    ShuffleboardLayout closeNoteSelectionList = noteSelectionList.getLayout("Close Notes");
-    ShuffleboardLayout farNoteSelectionList = noteSelectionList.getLayout("Field Center Notes");
-    ShuffleboardLayout noteDepositList = autoTab.getLayout("Deposit Notes @");
-    noteSelectionToggles.put("Close Amp", 
-      closeNoteSelectionList.addPersistent("Amp", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Close Center", 
-      closeNoteSelectionList.addPersistent("Center", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Close Stage", 
-      closeNoteSelectionList.addPersistent("Stage", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-
-    noteSelectionToggles.put("Far First Amp", 
-      farNoteSelectionList.addPersistent("First Amp", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Far Second Amp", 
-      farNoteSelectionList.addPersistent("Second Amp", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Far Center", 
-      farNoteSelectionList.addPersistent("Center", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Far Second Source", 
-      farNoteSelectionList.addPersistent("Second Source", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Far First Source", 
-      farNoteSelectionList.addPersistent("First Source", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-
-
-    noteSelectionToggles.put("Speaker Amp Deposit", 
-      noteDepositList.addPersistent("Speaker Amp Side", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Speaker Center Deposit", 
-      noteDepositList.addPersistent("Speaker Center Side", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Speaker Source Deposit", 
-      noteDepositList.addPersistent("Speaker Source Side", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    noteSelectionToggles.put("Amp Deposit", 
-      noteDepositList.addPersistent("Amp", false)
-      .withWidget(BuiltInWidgets.kToggleSwitch)
-      .getEntry()
-    );
-    
-
-    //Create your auto paths here (By which the trajectories are made in SwerveAutoPaths)
-    autoCommandChooser.setDefaultOption("Do Nothing", null);
-    // autoCommandChooser.addOption("test auto", SwerveAutoPaths.TestAutoPath());
-    // autoCommandChooser.addOption("weird path", SwerveAutoPaths.WeirdPath());
-    autoCommandChooser.addOption("Forward Right", SwerveAutoPaths.ForwardRight());
-
-    SmartDashboard.putData("Autonomous Mode", autoCommandChooser);
+    ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order");
+    for (int i = 0; i < noteSelectionList.size(); i++) {
+      SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
+      notePositionLayout.addPersistent("Note number: " + (i+1), createdChooser)
+        .withWidget(BuiltInWidgets.kComboBoxChooser);
+      noteSelectionList.add(createdChooser);
+    }
 
     //Command set to run periodicly to register joystick inputs
     //It uses suppliers/mini methods to give up to date info easily
@@ -160,6 +95,20 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
+  }
+
+  private SendableChooser<NotePosition> getNewNotePositionChooser() {
+    SendableChooser<NotePosition> chooser = new SendableChooser<NotePosition>();
+    chooser.setDefaultOption("None", null);
+    chooser.addOption("Stage Close", NotePositionConstants.StageClose);
+    chooser.addOption("Center Close", NotePositionConstants.CenterClose);
+    chooser.addOption("Amp Close", NotePositionConstants.AmpClose);
+    chooser.addOption("Source First Field Center", NotePositionConstants.SourceFirstFieldCenter);
+    chooser.addOption("Source Second Field Center", NotePositionConstants.SourceSecondFieldCenter);
+    chooser.addOption("Center Field Center", NotePositionConstants.CenterFieldCenter);
+    chooser.addOption("Amp Second Field Center", NotePositionConstants.AmpSecondFieldCenter);
+    chooser.addOption("Amp First Field Center", NotePositionConstants.AmpFirstFieldCenter);
+    return chooser;
   }
 
   /**

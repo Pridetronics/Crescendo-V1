@@ -4,6 +4,8 @@
  
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -165,6 +167,34 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
+    public static class NotePositionConstants {
+      public static final NotePosition StageClose = new NotePosition(
+        new Translation2d(), List.of()
+      );
+      public static final NotePosition CenterClose = new NotePosition(
+        new Translation2d(), List.of()
+      );
+      public static final NotePosition AmpClose = new NotePosition(
+        new Translation2d(), List.of()
+      );
+
+      public static final NotePosition SourceFirstFieldCenter = new NotePosition(
+        new Translation2d(), List.of()
+      );
+      public static final NotePosition SourceSecondFieldCenter = new NotePosition(
+        new Translation2d(), List.of()
+      );
+      public static final NotePosition CenterFieldCenter = new NotePosition(
+        new Translation2d(), List.of()
+      );
+      public static final NotePosition AmpSecondFieldCenter = new NotePosition(
+        new Translation2d(), List.of()
+      );
+      public static final NotePosition AmpFirstFieldCenter = new NotePosition(
+        new Translation2d(), List.of()
+      );
+    }
+
     //Max speed during autonomous
     public static final double kMaxSpeedMetersPerSecond = 1.5;
     //Acceleration during autonomous (note its in meters, not units)

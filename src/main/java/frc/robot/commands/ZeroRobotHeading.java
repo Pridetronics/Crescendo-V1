@@ -22,7 +22,7 @@ public class ZeroRobotHeading extends InstantCommand {
   private final SwerveSubsystem swerveSubsystem;
   public ZeroRobotHeading(SwerveSubsystem swerveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    //TODO ^^^^
+    addRequirements(swerveSubsystem);
     
     this.swerveSubsystem = swerveSubsystem;
     //Starts timer for later cooldown activation
