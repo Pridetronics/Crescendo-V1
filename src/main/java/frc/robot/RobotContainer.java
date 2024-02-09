@@ -14,7 +14,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.LayoutType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -56,8 +58,10 @@ public class RobotContainer {
   public RobotContainer() {
 
     ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
-    ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order");
-    for (int i = 0; i < noteSelectionList.size(); i++) {
+    ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
+    .withSize(2, 4);
+
+    for (int i = 0; i <= 6; i++) {
       SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
       notePositionLayout.addPersistent("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
