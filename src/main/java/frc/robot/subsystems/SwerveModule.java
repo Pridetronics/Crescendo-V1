@@ -22,6 +22,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -41,6 +43,13 @@ public class SwerveModule extends SubsystemBase {
 
   private final CANcoder absoluteEncoder;
   private final boolean absoluteEncoderReversed;
+
+  //For simulation
+  private double simulatedWheelSpeedMetersPerSecond = 0;
+  private double simulatedWheelPositionMeters = 0;
+  private double simulatedWheelAngleRadians = 0;
+  private double simulatedWheelAngleVelocityRadiansPerSecond = 0;
+  private Timer simulatedTimeUpdate;
 
   public SwerveModule(SwerveModuleConstants swerveModuleConstants) {
     //Sets motor controllers
@@ -82,6 +91,11 @@ public class SwerveModule extends SubsystemBase {
     turningEncoder.setVelocityConversionFactor((WheelConstants.k360DegreesToRadians*WheelConstants.kTurningMotorGearRatio) / 60);
 
     resetEncoders();
+
+    if (RobotBase.isSimulation()) {
+      simulatedTimeUpdate = new Timer();
+      simulatedTimeUpdate.start();
+    }
   }
 
   //Config for CANCoder because CTRE likes doing this i guess
@@ -102,18 +116,30 @@ public class SwerveModule extends SubsystemBase {
 
   //Returns wheel position in meters
   public double getDrivePosition() {
+    if (RobotBase.isSimulation()) {
+      return simulatedWheelPositionMeters;
+    }
     return driveEncoder.getPosition();
   }
   //returns wheel direction in radians
   public double getTurningPosition() {
+    if (RobotBase.isSimulation()) {
+      return simulatedWheelAngleRadians;
+    }
     return turningEncoder.getPosition();
   }
   //returns wheel velocity in meters per second
   public double getDriveVelocity() {
+    if (RobotBase.isSimulation()) {
+      return simulatedWheelSpeedMetersPerSecond;
+    }
     return driveEncoder.getVelocity();
   }
   //returns wheel direction velocity in radians per second
   public double getTurningVelocity() {
+    if (RobotBase.isSimulation()) {
+      return simulatedWheelAngleVelocityRadiansPerSecond;
+    }
     return turningEncoder.getVelocity();
   }
   //Gets and returns the position on the absolute encoder, used to center the wheel with the robot
@@ -131,6 +157,10 @@ public class SwerveModule extends SubsystemBase {
 
   //Resets the encoders, sets drive to zero and sets the turning to its current position relative to the robot's forward direction
   public void resetEncoders() {
+    if (RobotBase.isSimulation()) {
+      simulatedWheelPositionMeters = 0;
+      return;
+    }
     driveEncoder.setPosition(0);
     turningEncoder.setPosition(getAbsoluteEncoderRad());
   }
@@ -143,6 +173,35 @@ public class SwerveModule extends SubsystemBase {
   //Sets the module to a drive velocity and directional position
   public void setDesiredState(SwerveModuleState state) {    
     SmartDashboard.putString("Module [" + absoluteEncoder.getDeviceID() + "] state", state.toString());
+
+    if(RobotBase.isSimulation()) {
+      simulatedTimeUpdate.start();
+
+      simulatedWheelPositionMeters += simulatedWheelSpeedMetersPerSecond*simulatedTimeUpdate.get();
+
+      if (Math.abs(state.speedMetersPerSecond) < 0.01) {
+        stop();
+        return;
+      }
+
+      state = SwerveModuleState.optimize(state, getState().angle);
+
+      simulatedWheelSpeedMetersPerSecond = state.speedMetersPerSecond;
+
+      simulatedWheelAngleVelocityRadiansPerSecond = 
+        (state.angle.getRadians() - simulatedWheelAngleVelocityRadiansPerSecond) / 
+        simulatedTimeUpdate.get();
+
+      if (Double.isNaN(simulatedWheelAngleVelocityRadiansPerSecond)) {
+        simulatedWheelAngleVelocityRadiansPerSecond = 0;
+      }
+      simulatedWheelAngleRadians = state.angle.getRadians();
+
+      simulatedTimeUpdate.reset();
+
+      return;
+    }
+
     if (Math.abs(state.speedMetersPerSecond) < 0.01) {
       stop();
       return;
@@ -160,6 +219,12 @@ public class SwerveModule extends SubsystemBase {
 
   //Stops the motor from moving and turning
   public void stop() {
+    if (RobotBase.isSimulation()) {
+      simulatedWheelAngleVelocityRadiansPerSecond = 0;
+      simulatedWheelSpeedMetersPerSecond = 0;
+      simulatedTimeUpdate.stop();
+      return;
+    }
     driveMotor.set(0);
     //Sets the turning motor to stop where its currently at
     turningPidController.setReference(getTurningPosition(), ControlType.kPosition);

@@ -108,7 +108,7 @@ public final class Constants {
     //Max speed of the robot itself
     public static final double kTeleMaxDriveSpeedMetersPerSecond = 2.25;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
-    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI/180);
+    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 180 * (Math.PI/180);
 
     //ID of the Can Spark Max the propels the swerve module wheel
     public static final int kFrontLeftDriveMotorCANID = 2;
@@ -167,6 +167,7 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
+    public static final int maxNumberOfNotesToPickInShuffleboard = 6;
     public static class NotePositionConstants {
       public static final NotePosition StageClose = new NotePosition(
         new Translation2d(), List.of()

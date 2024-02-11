@@ -1,0 +1,89 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "CANCoder (v6)[9]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [1]": {
+        "header": {
+          "open": true
+        }
+      }
+    },
+    "RoboRIO": {
+      "3.3V Rail": {
+        "open": true
+      },
+      "5V Rail": {
+        "open": true
+      },
+      "6V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 1": "String Chooser",
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 2": "String Chooser",
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 3": "String Chooser",
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 4": "String Chooser",
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 5": "String Chooser",
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 6": "String Chooser",
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 7": "String Chooser",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "LiveWindow": {
+        ".status": {
+          "open": true
+        }
+      },
+      "Shuffleboard": {
+        "Autonomous": {
+          "Note Selection Order": {
+            "Note number: 1": {
+              "string[]##v_/Shuffleboard/Autonomous/Note Selection Order/Note number: 1/options": {
+                "open": true
+              }
+            },
+            "open": true
+          }
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "open": true
+      },
+      "photonvision": {
+        "photonvision": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}

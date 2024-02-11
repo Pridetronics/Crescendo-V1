@@ -17,10 +17,28 @@ public class NotePosition {
     private final Translation2d kNotePosition;
     private final List<Pose2d> kAttackPositions;
 
-    public NotePosition(Translation2d notePosition, List<Pose2d> attackPositions) {
+    public NotePosition(Translation2d notePosition, List<Translation2d> attackPositions) {
         kNotePosition = notePosition;
-        kAttackPositions = attackPositions;
+        List<Pose2d> attackPoses = List.of();
 
+        for (int i = 0; i < attackPositions.size(); i++) {
+            Translation2d currentAttackPosition = attackPositions.get(i);
+            
+            Translation2d positionChangeFromNotePositionToAttackPosition = currentAttackPosition.minus(
+                kNotePosition
+            );
+
+            Pose2d poseToSet = new Pose2d(
+                currentAttackPosition, 
+                new Rotation2d(
+                    positionChangeFromNotePositionToAttackPosition.getX(),
+                    positionChangeFromNotePositionToAttackPosition.getY()
+                )
+            );
+            attackPoses.set(i, poseToSet);
+        }
+        kAttackPositions = attackPoses;
+        
     }
 
     public List<Translation2d> getListOfAttackPositions() {

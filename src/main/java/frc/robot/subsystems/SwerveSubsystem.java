@@ -12,11 +12,17 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,6 +48,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Gets the NavX gyro to tell what direction the robot is facing
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
+  private double simulatedGyroAngle = 0;
+  private Timer simulatedGyroTimer;
   //Uses the positions of each module to perdict where the robot is on the field (Mainly for autonomous)
   private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(WheelConstants.kDriveKinematics,
   new Rotation2d(0), new SwerveModulePosition[] {
@@ -61,10 +69,18 @@ public class SwerveSubsystem extends SubsystemBase {
         zeroHeading();
       } catch(Exception e) {}
     }).start();
+
+    if (RobotBase.isSimulation()) {
+      simulatedGyroTimer = new Timer();
+      simulatedGyroTimer.start();
+    }
   }
 
   //Resets the forward direction to the current forward direction of the robot
   public void zeroHeading() {
+    if (RobotBase.isSimulation()) {
+      simulatedGyroAngle = 0;
+    }
     gyro.reset();
   }
 
@@ -76,8 +92,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Returns the heading of the robot on the field in degrees
   public double getHeading() {
+    if (RobotBase.isSimulation()) {
+      return simulatedGyroAngle % 360;
+    }
     return gyro.getAngle() % 360;
   }
+
 
   //Gets the rotation of the robot for use by WPILIB systems
   public Rotation2d getRotation2d() {
@@ -110,8 +130,8 @@ public class SwerveSubsystem extends SubsystemBase {
       backLeft.getSwervePosition(),
       backRight.getSwervePosition()
     });
-    SmartDashboard.putString("Robot Location", getPose().toString());
-    SmartDashboard.putNumber("Robot Heading", getHeading());
+    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    SmartDashboard.putNumber("Robot Heading", getPose().getRotation().getDegrees());
   }
 
   //Stops all the modules
@@ -129,5 +149,16 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRight.setDesiredState(desiredStates[1]);
     backLeft.setDesiredState(desiredStates[2]);
     backRight.setDesiredState(desiredStates[3]);
+
+    if (RobotBase.isSimulation()) {
+      ChassisSpeeds originalSpeeds = WheelConstants.kDriveKinematics.toChassisSpeeds(
+        desiredStates[0],
+        desiredStates[1],
+        desiredStates[2],
+        desiredStates[3]
+      );
+      simulatedGyroAngle += Units.radiansToDegrees(originalSpeeds.omegaRadiansPerSecond*DriveConstants.kTeleMaxTurningSpeedRadiansPerSecond*simulatedGyroTimer.get());
+      simulatedGyroTimer.reset();
+    }
   }
 }
