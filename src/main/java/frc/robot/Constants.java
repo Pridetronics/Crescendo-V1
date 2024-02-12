@@ -102,13 +102,13 @@ public final class Constants {
       -A value of 0.5 means the 0 to max time is 2 seconds
     You get the idea
    */
-    public static final double kTeleMaxDriveAccelerationUnitsPerSecond = 3;
-    public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 3;
+    public static final double kTeleMaxDriveAccelerationUnitsPerSecond = 6;
+    public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 6;
 
     //Max speed of the robot itself
-    public static final double kTeleMaxDriveSpeedMetersPerSecond = 2.25;
+    public static final double kTeleMaxDriveSpeedMetersPerSecond = 4;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
-    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 180 * (Math.PI/180);
+    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 135 * (Math.PI/180);
 
     //ID of the Can Spark Max the propels the swerve module wheel
     public static final int kFrontLeftDriveMotorCANID = 2;

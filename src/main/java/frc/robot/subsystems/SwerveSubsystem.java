@@ -6,11 +6,13 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SwerveModuleClasses;
+import frc.robot.Constants.SwerveModuleConstants;
 import frc.robot.Constants.WheelConstants;
 
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -18,6 +20,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
@@ -27,40 +32,49 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveSubsystem extends SubsystemBase {
-  //gets the constants for each module
-  private static final SwerveModuleClasses SwerveModeuleSettings = new SwerveModuleClasses();
   //Creates an object for each module
-  private final SwerveModule frontLeft = new SwerveModule(
-    SwerveModeuleSettings.frontLeft
-  );
+  private final SwerveModuleInterface frontLeft;
 
-  private final SwerveModule frontRight = new SwerveModule(
-    SwerveModeuleSettings.frontRight
-  );
+  private final SwerveModuleInterface frontRight;
 
-  private final SwerveModule backLeft = new SwerveModule(
-    SwerveModeuleSettings.backLeft
-  );
+  private final SwerveModuleInterface backLeft;
 
-  private final SwerveModule backRight = new SwerveModule(
-    SwerveModeuleSettings.backRight
-  );
+  private final SwerveModuleInterface backRight;
 
   //Gets the NavX gyro to tell what direction the robot is facing
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
+
   private double simulatedGyroAngle = 0;
   private Timer simulatedGyroTimer;
+
   //Uses the positions of each module to perdict where the robot is on the field (Mainly for autonomous)
-  private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(WheelConstants.kDriveKinematics,
-  new Rotation2d(0), new SwerveModulePosition[] {
-    frontLeft.getSwervePosition(),
-    frontRight.getSwervePosition(),
-    backLeft.getSwervePosition(),
-    backRight.getSwervePosition()
-  });
+  private final SwerveDriveOdometry odometer;
   
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
+    //gets the constants for each module
+    final SwerveModuleClasses SwerveModuleSettings = new SwerveModuleClasses();
+
+    if (RobotBase.isReal()) {
+      frontLeft = new SwerveModule(SwerveModuleSettings.frontLeft);
+      frontRight = new SwerveModule(SwerveModuleSettings.frontRight);
+      backLeft = new SwerveModule(SwerveModuleSettings.backLeft);
+      backRight = new SwerveModule(SwerveModuleSettings.backRight);
+    } else {
+      frontLeft = new SimulatedSwerveModule(SwerveModuleSettings.frontLeft);
+      frontRight = new SimulatedSwerveModule(SwerveModuleSettings.frontRight);
+      backLeft = new SimulatedSwerveModule(SwerveModuleSettings.backLeft);
+      backRight = new SimulatedSwerveModule(SwerveModuleSettings.backRight);
+    }
+    this.odometer = new SwerveDriveOdometry(WheelConstants.kDriveKinematics,
+      new Rotation2d(0), new SwerveModulePosition[] {
+        frontLeft.getSwervePosition(),
+        frontRight.getSwervePosition(),
+        backLeft.getSwervePosition(),
+        backRight.getSwervePosition()
+      }
+    );
+
     //Waits one second to let the gyro calibrate and then resets the forward direction
     //Non-yielding code
     new Thread(() -> {
@@ -79,7 +93,20 @@ public class SwerveSubsystem extends SubsystemBase {
   //Resets the forward direction to the current forward direction of the robot
   public void zeroHeading() {
     if (RobotBase.isSimulation()) {
-      simulatedGyroAngle = 0;
+      odometer.resetPosition(
+        getRotation2d(), 
+        new SwerveModulePosition[] {
+          frontLeft.getSwervePosition(),
+          frontRight.getSwervePosition(),
+          backLeft.getSwervePosition(),
+          backRight.getSwervePosition()
+        }, 
+        new Pose2d(
+          getPose().getX(), 
+          getPose().getY(), 
+          getRotation2d()
+        )
+      );
     }
     gyro.reset();
   }
@@ -131,7 +158,8 @@ public class SwerveSubsystem extends SubsystemBase {
       backRight.getSwervePosition()
     });
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    SmartDashboard.putNumber("Robot Heading", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Robot Heading", getHeading());
+    SmartDashboard.putNumber("Odometer Heading", getPose().getRotation().getDegrees());
   }
 
   //Stops all the modules
