@@ -11,6 +11,7 @@ import java.util.List;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
@@ -83,7 +84,7 @@ public class RobotContainer {
   }
 
   public Pose2d getSwervePose() {
-    return swerveSubsystem.getPose();
+    return new Pose2d(swerveSubsystem.getPose().getTranslation(), Rotation2d.fromDegrees(swerveSubsystem.simulatedRobotAngle));
   }
 
   /**

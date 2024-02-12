@@ -4,15 +4,9 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.SwerveModuleClasses;
-import frc.robot.Constants.SwerveModuleConstants;
-import frc.robot.Constants.WheelConstants;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -20,16 +14,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.SwerveModuleClasses;
+import frc.robot.Constants.WheelConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
   //Creates an object for each module
@@ -45,6 +37,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   private double simulatedGyroAngle = 0;
+  public double simulatedRobotAngle = 0;
   private Timer simulatedGyroTimer;
 
   //Uses the positions of each module to perdict where the robot is on the field (Mainly for autonomous)
@@ -93,28 +86,17 @@ public class SwerveSubsystem extends SubsystemBase {
   //Resets the forward direction to the current forward direction of the robot
   public void zeroHeading() {
     if (RobotBase.isSimulation()) {
-      odometer.resetPosition(
-        getRotation2d(), 
-        new SwerveModulePosition[] {
-          frontLeft.getSwervePosition(),
-          frontRight.getSwervePosition(),
-          backLeft.getSwervePosition(),
-          backRight.getSwervePosition()
-        }, 
-        new Pose2d(
-          getPose().getX(), 
-          getPose().getY(), 
-          getRotation2d()
-        )
-      );
+      simulatedGyroAngle = 0;
     }
+
     gyro.reset();
+    resetOdometry(new Pose2d(getPose().getTranslation(), getRotation2d()));
   }
 
   //Sets the robot heading to be what it currently is on the field, useful if the robot is not aligned with the forward direction of the field at the start of the match
   public void setHeading(double currentRobotHeadingDegrees) {
-    zeroHeading();
     gyro.setAngleAdjustment(currentRobotHeadingDegrees);
+    zeroHeading();
   }
 
   //Returns the heading of the robot on the field in degrees
@@ -186,6 +168,7 @@ public class SwerveSubsystem extends SubsystemBase {
         desiredStates[3]
       );
       simulatedGyroAngle += Units.radiansToDegrees(originalSpeeds.omegaRadiansPerSecond*DriveConstants.kTeleMaxTurningSpeedRadiansPerSecond*simulatedGyroTimer.get());
+      simulatedRobotAngle += Units.radiansToDegrees(originalSpeeds.omegaRadiansPerSecond*DriveConstants.kTeleMaxTurningSpeedRadiansPerSecond*simulatedGyroTimer.get());
       simulatedGyroTimer.reset();
     }
   }
