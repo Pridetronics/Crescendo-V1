@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.List;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.NoteDepositPosition.DepositLocation;
 
 
 /**
@@ -166,8 +168,29 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
+    //Max number of notes the driver can allow the robot to grab
     public static final int maxNumberOfNotesToPickInShuffleboard = 6;
+    //Locations for depositing notes
+    public static class NoteDepositConstants {
+      public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(
+        new Pose2d(),
+        DepositLocation.kSpeakerCenterSide
+      );
+      public static final NoteDepositPosition speakerAmpSide = new NoteDepositPosition(
+        new Pose2d(),
+        DepositLocation.kSpeakerAmpSide
+      );
+      public static final NoteDepositPosition speakerSourceSide = new NoteDepositPosition(
+        new Pose2d(),
+        DepositLocation.kSpeakerSourceSide
+      );
+      public static final NoteDepositPosition amplifier = new NoteDepositPosition(
+        new Pose2d(),
+        DepositLocation.kAmplifier
+      );
+    }
     public static class NotePositionConstants {
+
       public static final NotePosition StageClose = new NotePosition(
         new Translation2d(), List.of()
       );

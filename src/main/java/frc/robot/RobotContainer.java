@@ -17,12 +17,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
+import frc.robot.NoteDepositPosition.DepositLocation;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
@@ -41,7 +44,7 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
   private final ArrayList<SendableChooser<NotePosition>> noteSelectionList = new ArrayList<SendableChooser<NotePosition>>();
-  private final ArrayList<SendableChooser<Pose2d>> noteDepositList = new ArrayList<SendableChooser<Pose2d>>();
+  private final ArrayList<SendableChooser<NoteDepositPosition>> noteDepositList = new ArrayList<SendableChooser<NoteDepositPosition>>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -57,6 +60,15 @@ public class RobotContainer {
       notePositionLayout.add("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
       noteSelectionList.add(createdChooser);
+    }
+
+    ShuffleboardLayout notDepositLayout = autoTab.getLayout("Note Deposit Order", BuiltInLayouts.kList);
+
+    for (int i = 0; i < AutoConstants.maxNumberOfNotesToPickInShuffleboard; i++) {
+      SendableChooser<NoteDepositPosition> createdChooser = getNewNoteDepositChooser();
+      notDepositLayout.add("Note number: " + (i+1), createdChooser)
+        .withWidget(BuiltInWidgets.kComboBoxChooser);
+      noteDepositList.add(createdChooser);
     }
 
     //Command set to run periodicly to register joystick inputs
@@ -118,16 +130,50 @@ public class RobotContainer {
     return chooser;
   }
 
+  private SendableChooser<NoteDepositPosition> getNewNoteDepositChooser() {
+    SendableChooser<NoteDepositPosition> chooser = new SendableChooser<NoteDepositPosition>();
+    chooser.setDefaultOption("Stage Center-Side", NoteDepositConstants.speakerCenterSide);
+    chooser.addOption("Stage Amp-Side", NoteDepositConstants.speakerAmpSide);
+    chooser.addOption("Stage Source-Side", NoteDepositConstants.speakerSourceSide);
+    chooser.addOption("Amplifier", NoteDepositConstants.amplifier);
+    return chooser;
+  }
+
+  private NoteDepositPosition getClosestDepositLocation() {
+    //TODO make this work
+    NoteDepositPosition closestDepositLocation = null;
+    double distanceOfClosestDepositLocation = 0;
+    for (int i = 0; i < noteDepositList.size(); i++) {
+      NoteDepositPosition currentPos = noteDepositList.get(i).getSelected();
+      double distanceToCurrentPos = swerveSubsystem.getPose().getTranslation().getDistance(
+        currentPos.getPosition().getTranslation()
+      );
+      if (closestDepositLocation == null || distanceToCurrentPos < distanceOfClosestDepositLocation) {
+        closestDepositLocation = currentPos;
+        distanceOfClosestDepositLocation = distanceToCurrentPos;
+      }
+    }
+    return closestDepositLocation;
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //TODO replace with auto selector
-    return new Command() {
+    SequentialCommandGroup totalCommandSequence = new SequentialCommandGroup();
+    NoteDepositPosition lastDepositLocation = null;
+    for (int i = 0; i < noteSelectionList.size(); i++) {
+      NotePosition notePos = noteSelectionList.get(i).getSelected();
+      if (notePos != null) {
+        NoteDepositPosition depositLocation = noteDepositList.get(i).getSelected();
+        if (lastDepositLocation == null) {
+          lastDepositLocation = getClosestDepositLocation();
+        }
+      }
+    }
 
-    };
-
+    return totalCommandSequence;
   }
 }
