@@ -5,37 +5,24 @@
 package frc.robot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.LayoutType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
-import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
-import frc.robot.commands.SwerveAutoPaths;
+import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -58,8 +45,12 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
+    //Create a shufflebaord tab for the drivers to see all autonomous info
     ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
+
+    //Get a list that will hold all list items
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList);
+    //Add a dropdown to choose which notes are going to be collected in what order
     for (int i = 0; i < AutoConstants.maxNumberOfNotesToPickInShuffleboard; i++) {
       SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
       notePositionLayout.add("Note number: " + (i+1), createdChooser)
@@ -73,9 +64,16 @@ public class RobotContainer {
       new SwerveJoystickCmd(
         swerveSubsystem, 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis), 
-        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis), 
-        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
+        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis), 
+        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> !driverJoystick.getRawButton(IOConstants.kDriveFieldOrientedDriveBtnID)
+      )
+    );
+
+    visionSubsystem.setDefaultCommand(
+      new FieldPositionUpdate(
+        visionSubsystem, 
+        swerveSubsystem
       )
     );
 
@@ -107,14 +105,14 @@ public class RobotContainer {
   private SendableChooser<NotePosition> getNewNotePositionChooser() {
     SendableChooser<NotePosition> chooser = new SendableChooser<NotePosition>();
     chooser.setDefaultOption("None", null);
-    chooser.addOption("Stage Close", NotePositionConstants.StageClose);
-    chooser.addOption("Center Close", NotePositionConstants.CenterClose);
-    chooser.addOption("Amp Close", NotePositionConstants.AmpClose);
-    chooser.addOption("Source First Field Center", NotePositionConstants.SourceFirstFieldCenter);
-    chooser.addOption("Source Second Field Center", NotePositionConstants.SourceSecondFieldCenter);
-    chooser.addOption("Center Field Center", NotePositionConstants.CenterFieldCenter);
-    chooser.addOption("Amp Second Field Center", NotePositionConstants.AmpSecondFieldCenter);
-    chooser.addOption("Amp First Field Center", NotePositionConstants.AmpFirstFieldCenter);
+    chooser.addOption("Stage Wing", NotePositionConstants.StageClose);
+    chooser.addOption("Center Wing", NotePositionConstants.CenterClose);
+    chooser.addOption("Amp Wing", NotePositionConstants.AmpClose);
+    chooser.addOption("Source First Center-Line", NotePositionConstants.SourceFirstFieldCenter);
+    chooser.addOption("Source Second Center-Line", NotePositionConstants.SourceSecondFieldCenter);
+    chooser.addOption("Center Center-Line", NotePositionConstants.CenterFieldCenter);
+    chooser.addOption("Amp Second Center-Line", NotePositionConstants.AmpSecondFieldCenter);
+    chooser.addOption("Amp First Center-Line", NotePositionConstants.AmpFirstFieldCenter);
     return chooser;
   }
 

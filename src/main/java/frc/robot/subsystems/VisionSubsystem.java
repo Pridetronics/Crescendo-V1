@@ -4,22 +4,17 @@
 
 package frc.robot.subsystems;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
@@ -32,11 +27,11 @@ public class VisionSubsystem extends SubsystemBase {
     fieldLayout, 
     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, CameraConstants.kRobotToCamera
   );
-  Pose3d lastRobotPose = new Pose3d();
-  /** Creates a new PhotonVision. */
+  Optional<Pose3d> lastRobotPose = Optional.empty();
+  /** Creates a new VisionSubsystem. */
   public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
     m_SwerveSybsystem = swerveSubsystem;
-    //Done so the camera/settings can be viewed at photonvision.local:5800 on google when tethered
+    //Done so the camera and camera settings can be viewed at photonvision.local:5800 on google when tethered
     PortForwarder.add(5800, "photonvision.local", 5800);
 
   }
@@ -48,8 +43,17 @@ public class VisionSubsystem extends SubsystemBase {
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
     if (robotPose.isPresent()) {
       Pose3d currentPose = robotPose.get().estimatedPose;
-      lastRobotPose = currentPose;
-      m_SwerveSybsystem.resetOdometry(currentPose.toPose2d());
-    } else lastRobotPose = null;
+      lastRobotPose = Optional.of(currentPose);
+    } else {
+      lastRobotPose = Optional.empty();
+    };
+  }
+
+  public Optional<Pose2d> getLastRobotFieldPosition() {
+    if (lastRobotPose.isPresent()) {
+      return Optional.of(lastRobotPose.get().toPose2d());
+    } else {
+      return Optional.empty();
+    }
   }
 }

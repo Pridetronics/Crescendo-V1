@@ -58,7 +58,8 @@
       "LiveWindow": {
         ".status": {
           "open": true
-        }
+        },
+        "open": true
       },
       "Shuffleboard": {
         "Autonomous": {
@@ -69,7 +70,8 @@
               }
             },
             "open": true
-          }
+          },
+          "open": true
         },
         "open": true
       },
