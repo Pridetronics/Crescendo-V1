@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -98,7 +99,8 @@ public class RobotContainer {
 
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
-    .onTrue(new ZeroRobotHeading(swerveSubsystem));
+    .onTrue(new ZeroRobotHeading(swerveSubsystem))
+    .debounce(IOConstants.kZeroHeadingDebounceTime);
 
   }
 

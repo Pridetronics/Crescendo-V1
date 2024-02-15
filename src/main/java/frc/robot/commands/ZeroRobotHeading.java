@@ -24,8 +24,6 @@ public class ZeroRobotHeading extends InstantCommand {
     // Use addRequirements() here to declare subsystem dependencies.
     
     this.swerveSubsystem = swerveSubsystem;
-    //Starts timer for later cooldown activation
-    timer.start();
     
   }
 
@@ -33,13 +31,8 @@ public class ZeroRobotHeading extends InstantCommand {
   @Override
   public void initialize() {
     //Runs when button is pressed
-
-    //Checks debounce
-    if (timer.hasElapsed(IOConstants.kZeroHeadingDebounceTime)) {
-      //resets heading
-      swerveSubsystem.zeroHeading();
-      //resets cooldown
-      timer.reset();
-    } 
+    
+    //resets heading
+    swerveSubsystem.zeroHeading();
   }
 }
