@@ -29,7 +29,7 @@ public final class SwerveAutoPaths {
   );
 
   //Center Wing Note
-  public static final List<Translation2d> kCentereWingNoteToAmplifier = List.of(
+  public static final List<Translation2d> kCenterWingNoteToAmplifier = List.of(
 
   );
   public static final List<Translation2d> kCenterWingNoteToSpeakerAmpSide = List.of(
@@ -38,7 +38,7 @@ public final class SwerveAutoPaths {
   public static final List<Translation2d> kCenterWingNoteToSpeakerCenterSide = List.of(
 
   );
-  public static final List<Translation2d> kcenterWingNoteToSpeakerSourceSide = List.of(
+  public static final List<Translation2d> kCenterWingNoteToSpeakerSourceSide = List.of(
 
   );
 

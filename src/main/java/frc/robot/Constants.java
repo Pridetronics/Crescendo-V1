@@ -4,7 +4,9 @@
  
 package frc.robot;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.NoteDepositPosition.DepositLocation;
+import frc.robot.commands.SwerveAutoPaths;
 
 
 /**
@@ -192,29 +195,93 @@ public final class Constants {
     public static class NotePositionConstants {
 
       public static final NotePosition StageClose = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kStageWingNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kStageWingNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kStageWingNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kStageWingNoteToSpeakerSourceSide
+          )
+        ) 
       );
       public static final NotePosition CenterClose = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kCenterWingNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kCenterWingNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kCenterWingNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kCenterWingNoteToSpeakerSourceSide
+          )
+        ) 
       );
       public static final NotePosition AmpClose = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kAmplifierWingNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kAmplifierWingNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kAmplifierWingNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kAmplifierWingNoteToSpeakerSourceSide
+          )
+        ) 
       );
 
       public static final NotePosition SourceFirstFieldCenter = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kFirstSourceCenterLineNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kFirstSourceCenterLineNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kFirstSourceCenterLineNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kFirstSourceCenterLineNoteToSpeakerSourceSide
+          )
+        ) 
       );
       public static final NotePosition SourceSecondFieldCenter = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kSecondSourceCenterLineNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kSecondSourceCenterLineNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kSecondSourceCenterLineNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kSecondSourceCenterLineNoteToSpeakerSourceSide
+          )
+        ) 
       );
       public static final NotePosition CenterFieldCenter = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kCenterCenterLineNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kCenterCenterLineNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kCenterCenterLineNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kCenterCenterLineNoteToSpeakerSourceSide
+          )
+        ) 
       );
       public static final NotePosition AmpSecondFieldCenter = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kSecondAmpCenterLineNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kSecondAmpCenterLineNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kSecondAmpCenterLineNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kSecondAmpCenterLineNoteToSpeakerSourceSide
+          )
+        ) 
       );
       public static final NotePosition AmpFirstFieldCenter = new NotePosition(
-        new Translation2d(), List.of()
+        new Translation2d(), List.of(),
+        new HashMap<DepositLocation, List<Translation2d>>(
+          Map.of(
+            DepositLocation.kAmplifier, SwerveAutoPaths.kFirstAmpCenterLineNoteToAmplifier,
+            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kFirstAmpCenterLineNoteToSpeakerAmpSide,
+            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kFirstAmpCenterLineNoteToSpeakerCenterSide,
+            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kFirstAmpCenterLineNoteToSpeakerSourceSide
+          )
+        ) 
       );
     }
 

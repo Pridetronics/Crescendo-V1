@@ -171,7 +171,23 @@ public class RobotContainer {
         if (lastDepositLocation == null) {
           lastDepositLocation = getClosestDepositLocation();
         }
+
+        /*TODO 
+        Create path from current depoit location, 
+        to the note attack position, 
+        enable intake, 
+        move to note position, 
+        PARRALEL: {
+        back to the chosen deposit
+        wind up shooter
+        }
+        Shoot note
+        */
+        //TODO Use the deposit location hashmap in the note position objects to get the in between paths
+
+        lastDepositLocation = depositLocation;
       }
+      
     }
 
     return totalCommandSequence;

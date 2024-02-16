@@ -4,20 +4,28 @@
 
 package frc.robot;
 
+import java.util.HashMap;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.NoteDepositPosition.DepositLocation;
 
 /** Add your docs here. */
 public class NotePosition {
     private final Translation2d kNotePosition;
     private final List<Pose2d> kAttackPositions;
+    private final HashMap<DepositLocation, List<Translation2d>> kPathsToDepositories;
 
-    public NotePosition(Translation2d notePosition, List<Translation2d> attackPositions) {
+    public NotePosition(
+        Translation2d notePosition, 
+        List<Translation2d> attackPositions, 
+        HashMap<DepositLocation, List<Translation2d>> pathsToDepositories
+    ) {
         kNotePosition = notePosition;
         List<Pose2d> attackPoses = List.of();
+        kPathsToDepositories = pathsToDepositories;
 
         for (int i = 0; i < attackPositions.size(); i++) {
             Translation2d currentAttackPosition = attackPositions.get(i);
