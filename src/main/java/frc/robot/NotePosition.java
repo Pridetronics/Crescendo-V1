@@ -47,6 +47,22 @@ public class NotePosition {
         
     }
 
+    public List<Translation2d> getWaypointsNoteToDeposit(DepositLocation location) {
+        List<Translation2d> waypoints = kPathsToDepositories.get(location);
+        return waypoints;
+    }
+
+    public List<Translation2d> getWaypointsDepositToNote(DepositLocation location) {
+        List<Translation2d> waypoints = kPathsToDepositories.get(location);
+        List<Translation2d> reversedWaypoints = List.of();
+        if (waypoints.size() <= 1) return waypoints;
+
+        for (int i = waypoints.size()-1; i >= 0; i--) {
+            reversedWaypoints.add(waypoints.get(i));
+        }
+        return reversedWaypoints;
+    }
+
     public List<Translation2d> getListOfAttackPositions() {
         List<Translation2d> returnList = List.of();
 
@@ -58,5 +74,13 @@ public class NotePosition {
 
     public Pose2d getClosestAttackPosition(Translation2d startPosition) {
         return new Pose2d(startPosition, new Rotation2d()).nearest(kAttackPositions);
+    }
+
+    public Translation2d getNotePosition() {
+        return kNotePosition;
+    }
+
+    public Pose2d getNotePoseFromAttackPosition(Pose2d attackPose) {
+        return new Pose2d(kNotePosition, attackPose.getRotation());
     }
 }

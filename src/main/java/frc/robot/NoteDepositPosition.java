@@ -23,7 +23,7 @@ public class NoteDepositPosition {
         locationIdentifier = location;
     }
 
-    public DepositLocation getLocationIdentifier() {
+    public DepositLocation getDepositLocationEnum() {
         return locationIdentifier;
     }
 

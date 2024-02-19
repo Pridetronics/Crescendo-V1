@@ -5,10 +5,17 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -17,12 +24,16 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
 import frc.robot.NoteDepositPosition.DepositLocation;
@@ -162,31 +173,109 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
+    //This will have commands added to it later to build the whole autonous phase
     SequentialCommandGroup totalCommandSequence = new SequentialCommandGroup();
-    NoteDepositPosition lastDepositLocation = null;
+    //To track where the robot it at when caculating paths
+    NoteDepositPosition previousOrderDepositPosition = null;
+
+    //For correcting error in driving
+    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
+    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
+    ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    //Go through all of the note dropdowns in the shuffleboard interface
     for (int i = 0; i < noteSelectionList.size(); i++) {
+      //get the note selected for the current ordered position
       NotePosition notePos = noteSelectionList.get(i).getSelected();
-      if (notePos != null) {
-        NoteDepositPosition depositLocation = noteDepositList.get(i).getSelected();
-        if (lastDepositLocation == null) {
-          lastDepositLocation = getClosestDepositLocation();
-        }
+      //Caculate the path for this ordered note position only if one was selected
+      if (notePos == null) continue;
 
-        /*TODO 
-        Create path from current depoit location, 
-        to the note attack position, 
-        enable intake, 
-        move to note position, 
-        PARRALEL: {
-        back to the chosen deposit
-        wind up shooter
-        }
-        Shoot note
-        */
-        //TODO Use the deposit location hashmap in the note position objects to get the in between paths
-
-        lastDepositLocation = depositLocation;
+      //Get the note deposition location in the corresponding note order selected
+      NoteDepositPosition currentDepositPosition = noteDepositList.get(i).getSelected();
+      //If a previous note deposit location does not exist yet, we will set it to the closest deposit location to the robot
+      if (previousOrderDepositPosition == null) {
+        previousOrderDepositPosition = getClosestDepositLocation();
       }
+      //List of waypoints in between the deposit location and the note attack position
+      List<Translation2d> firstWaypoints = notePos.getWaypointsDepositToNote(previousOrderDepositPosition.getDepositLocationEnum());
+      //Find the last position the robot goes to in the waypoint list
+      Translation2d lastWaypointPosInList = firstWaypoints.size() > 0 ? firstWaypoints.get(firstWaypoints.size()-1) : previousOrderDepositPosition.getPosition().getTranslation();
+      //Find the best attack position with the previous attack position
+      Pose2d attackPosition = notePos.getClosestAttackPosition(lastWaypointPosInList);
+
+      //Generate path from the deposit location the robot is at, to the attack position we found to be the best
+      Trajectory depositToNoteAttackPos = TrajectoryGenerator.generateTrajectory(
+        previousOrderDepositPosition.getPosition(), 
+        firstWaypoints, 
+        attackPosition, 
+        Constants.kTrajectoryConfig
+      );
+
+      //Path that goes from the attack position to the note itself
+      Trajectory attackPositionToNote = TrajectoryGenerator.generateTrajectory(
+        attackPosition, 
+        List.of(),
+        notePos.getNotePoseFromAttackPosition(attackPosition), 
+        Constants.kTrajectoryConfig
+      );
+
+      //Positions between the note and the next deposit location
+      List<Translation2d> secondWaypoints = notePos.getWaypointsNoteToDeposit(currentDepositPosition.getDepositLocationEnum());
+      //Path from the current note position to the deposit location
+      Trajectory notePositionToNewDeposit = TrajectoryGenerator.generateTrajectory(
+        notePos.getNotePoseFromAttackPosition(attackPosition), 
+        secondWaypoints, 
+        currentDepositPosition.getPosition(), 
+        Constants.kTrajectoryConfig
+      );
+
+      //Adds a sequence of commands to the overall command sequence that will be returned
+      totalCommandSequence.addCommands(
+        new SequentialCommandGroup(
+          //Move robot from the deposit it's currently at to the target note's closest attack position
+          new SwerveControllerCommand(
+            depositToNoteAttackPos, 
+            swerveSubsystem::getPose, 
+            WheelConstants.kDriveKinematics, 
+            xController,
+            yController,
+            thetaController,
+            swerveSubsystem::setModuleStates,
+            swerveSubsystem
+          ),
+          //ENABLE INTAKE COMMAND HERE
+          //Moves robot from the chosen attack position on the target note to the actual note itself
+          new SwerveControllerCommand(
+            attackPositionToNote, 
+            swerveSubsystem::getPose, 
+            WheelConstants.kDriveKinematics, 
+            xController,
+            yController,
+            thetaController,
+            swerveSubsystem::setModuleStates,
+            swerveSubsystem
+          ),
+          //Does the following all at once:
+          new ParallelCommandGroup(
+            //Move robot to the chosen deposit area
+            new SwerveControllerCommand(
+              depositToNoteAttackPos, 
+              swerveSubsystem::getPose, 
+              WheelConstants.kDriveKinematics, 
+              xController,
+              yController,
+              thetaController,
+              swerveSubsystem::setModuleStates,
+              swerveSubsystem
+            )
+            //SPIN UP SHOOTER HERE W/ WIND UP WAIT
+          )
+          //SHOOT NOTE HERE
+        )
+      );
+      previousOrderDepositPosition = currentDepositPosition;
       
     }
 
