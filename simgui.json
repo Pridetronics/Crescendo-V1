@@ -43,7 +43,8 @@
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 5": "String Chooser",
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 6": "String Chooser",
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 7": "String Chooser",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Field Visual": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -60,6 +61,9 @@
     }
   },
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
     "transitory": {
       "LiveWindow": {
         ".status": {
@@ -92,6 +96,9 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
     "visible": true
   }
 }

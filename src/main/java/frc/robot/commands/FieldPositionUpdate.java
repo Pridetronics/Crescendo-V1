@@ -29,7 +29,7 @@ public class FieldPositionUpdate extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putData(m_field);
+    SmartDashboard.putData("Field Visual", m_field);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,6 +40,7 @@ public class FieldPositionUpdate extends Command {
     //Check if a field position was caculated last cycle
     if (lastRobotFieldPosition.isPresent()) {
       //Update the swerve drive odometry to work with this position
+      System.out.println("Found Apriltag");
       m_SwerveSubsystem.resetOdometry(lastRobotFieldPosition.get());
     }
     

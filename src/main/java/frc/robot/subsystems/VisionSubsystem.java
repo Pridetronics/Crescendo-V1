@@ -39,9 +39,11 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //System.out.println(camera.isConnected());
     if (!camera.isConnected()) return;
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
     if (robotPose.isPresent()) {
+      System.out.println("IS PRESENT");
       Pose3d currentPose = robotPose.get().estimatedPose;
       lastRobotPose = Optional.of(currentPose);
     } else {
