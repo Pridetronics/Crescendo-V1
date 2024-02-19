@@ -21,26 +21,28 @@ import frc.robot.Constants.CameraConstants;
 
 public class VisionSubsystem extends SubsystemBase {
   SwerveSubsystem m_SwerveSybsystem;
-  private PhotonCamera camera = new PhotonCamera("photonvision");
+  private PhotonCamera camera = new PhotonCamera("robotcamera");
   private AprilTagFieldLayout fieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(
     fieldLayout, 
-    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, CameraConstants.kRobotToCamera
+    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
+    camera, 
+    CameraConstants.kRobotToCamera
   );
   Optional<Pose3d> lastRobotPose = Optional.empty();
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
     m_SwerveSybsystem = swerveSubsystem;
-    //Done so the camera and camera settings can be viewed at photonvision.local:5800 on google when tethered
-    PortForwarder.add(5800, "photonvision.local", 5800);
+    //Done so the camera and camera settings can be viewed at robotcamera.local:5800 on google when tethered
+    PortForwarder.add(5800, "robotcamera.local", 5800);
 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //System.out.println(camera.isConnected());
-    if (!camera.isConnected()) return;
+
+    //if (!camera.isConnected()) return;
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
     if (robotPose.isPresent()) {
       System.out.println("IS PRESENT");
