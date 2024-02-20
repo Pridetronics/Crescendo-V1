@@ -9,12 +9,10 @@ import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -31,12 +29,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
-import frc.robot.NoteDepositPosition.DepositLocation;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
@@ -59,7 +55,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
+    //Create a shufflebaord tab for the drivers to see all teleop info
+    ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
     //Create a shufflebaord tab for the drivers to see all autonomous info
     ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
 
@@ -151,7 +148,6 @@ public class RobotContainer {
   }
 
   private NoteDepositPosition getClosestDepositLocation() {
-    //TODO make this work
     NoteDepositPosition closestDepositLocation = null;
     double distanceOfClosestDepositLocation = 0;
     for (int i = 0; i < noteDepositList.size(); i++) {
@@ -261,7 +257,7 @@ public class RobotContainer {
           new ParallelCommandGroup(
             //Move robot to the chosen deposit area
             new SwerveControllerCommand(
-              depositToNoteAttackPos, 
+              notePositionToNewDeposit, 
               swerveSubsystem::getPose, 
               WheelConstants.kDriveKinematics, 
               xController,

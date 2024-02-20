@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public final class SwerveAutoPaths {
 
-  //Naming system: <NOTE-LOCATION>To<DEPOSIT-LOCATION>
+  //Naming system: k<NOTE-LOCATION>To<DEPOSIT-LOCATION>
   //List of positions that are in between the note attack location and the deposit location
 
 
