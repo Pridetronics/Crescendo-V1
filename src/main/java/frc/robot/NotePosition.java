@@ -10,6 +10,7 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.NoteDepositPosition.DepositLocation;
 
 /** Add your docs here. */
@@ -26,7 +27,6 @@ public class NotePosition {
         kNotePosition = notePosition;
         List<Pose2d> attackPoses = List.of();
         kPathsToDepositories = pathsToDepositories;
-
         for (int i = 0; i < attackPositions.size(); i++) {
             Translation2d currentAttackPosition = attackPositions.get(i);
             

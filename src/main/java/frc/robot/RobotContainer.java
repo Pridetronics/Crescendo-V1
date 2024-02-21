@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -16,7 +17,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -151,7 +154,6 @@ public class RobotContainer {
   }
 
   private NoteDepositPosition getClosestDepositLocation() {
-    //TODO make this work
     NoteDepositPosition closestDepositLocation = null;
     double distanceOfClosestDepositLocation = 0;
     for (int i = 0; i < noteDepositList.size(); i++) {
@@ -165,6 +167,43 @@ public class RobotContainer {
       }
     }
     return closestDepositLocation;
+  }
+
+  public static Translation2d toAllianceRelativePosition(Translation2d position) {
+    Optional<Alliance> allianceTeam = DriverStation.getAlliance();
+    if (allianceTeam.isPresent() && allianceTeam.get() == Alliance.Red) {
+      return new Translation2d(DriveConstants.kFieldWidthMeters - position.getX(), position.getY());
+    }
+    return position;
+  }
+
+  public static Pose2d toAllianceRelativePosition(Pose2d position) {
+    Optional<Alliance> allianceTeam = DriverStation.getAlliance();
+    if (allianceTeam.isPresent() && allianceTeam.get() == Alliance.Red) {
+      Rotation2d rotationOfPosition = position.getRotation();
+      return new Pose2d(
+        DriveConstants.kFieldWidthMeters - position.getX(), 
+        position.getY(), 
+        new Rotation2d(Math.atan2(rotationOfPosition.getSin(), -rotationOfPosition.getCos())));
+    }
+    return position;
+  }
+
+  public static Trajectory convertTrajectoryToAllianceRelativeField(Pose2d init, List<Translation2d> points, Pose2d end) {
+    for (int i = 0; i < points.size(); i++) {
+      points.set(
+        i, 
+        toAllianceRelativePosition(
+          points.get(i)
+        )
+      );
+    }
+    return TrajectoryGenerator.generateTrajectory(
+      toAllianceRelativePosition(init), 
+      points, 
+      toAllianceRelativePosition(end), 
+      Constants.kTrajectoryConfig
+    );
   }
 
   /**
@@ -214,11 +253,10 @@ public class RobotContainer {
       );
 
       //Path that goes from the attack position to the note itself
-      Trajectory attackPositionToNote = TrajectoryGenerator.generateTrajectory(
+      Trajectory attackPositionToNote = convertTrajectoryToAllianceRelativeField(
         attackPosition, 
         List.of(),
-        notePos.getNotePoseFromAttackPosition(attackPosition), 
-        Constants.kTrajectoryConfig
+        notePos.getNotePoseFromAttackPosition(attackPosition)
       );
 
       //Positions between the note and the next deposit location

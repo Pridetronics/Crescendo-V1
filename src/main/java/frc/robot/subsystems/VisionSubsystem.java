@@ -21,7 +21,7 @@ import frc.robot.Constants.CameraConstants;
 
 public class VisionSubsystem extends SubsystemBase {
   SwerveSubsystem m_SwerveSybsystem;
-  private PhotonCamera camera = new PhotonCamera("robotcamera");
+  private PhotonCamera camera = new PhotonCamera("Camera_Module_v1");
   private AprilTagFieldLayout fieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(
     fieldLayout, 
@@ -42,7 +42,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    //if (!camera.isConnected()) return;
+    if (!camera.isConnected()) return;
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
     if (robotPose.isPresent()) {
       System.out.println("IS PRESENT");

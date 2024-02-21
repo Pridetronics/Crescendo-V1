@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import frc.robot.NoteDepositPosition.DepositLocation;
 import frc.robot.commands.SwerveAutoPaths;
 
@@ -32,7 +33,11 @@ import frc.robot.commands.SwerveAutoPaths;
 public final class Constants {
   public static class CameraConstants {
     public static final Transform3d kRobotToCamera = new Transform3d(
-      new Translation3d(Units.inchesToMeters(14.5), 0, Units.inchesToMeters(5.5)), 
+      new Translation3d(
+        Units.inchesToMeters(14.5), 
+        0, 
+        Units.inchesToMeters(5.5)
+      ), 
       new Rotation3d(0, -20, 0)
     );
 
@@ -96,6 +101,8 @@ public final class Constants {
 
   //Constants for the movement of the robot
   public static class DriveConstants {
+    public static final double kFieldWidthMeters = Units.inchesToMeters(653.2);
+
     //The literal max speed each wheel is allowed to go
     public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
 
