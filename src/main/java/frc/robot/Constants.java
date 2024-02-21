@@ -107,11 +107,16 @@ public final class Constants {
     public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
 
     /*
-    Imagine 0 means no speed and 1 means 100% speed speed, numbers are in the form of a decimal percent
+    When talking about these acceleration values, 
+    these values influence the rate of change in a number in such a way that the number being influenced 
+    is multiplied by the max speed of the robot so that the influeced number being 0 means no speed, 1 means 
+    100% speed, and -1 mean -100% speed
       -A value of 1 means the 0 to max time is 1 second
       -A value of 3 means the 0 to max time is 0.333333 seconds
       -A value of 0.5 means the 0 to max time is 2 seconds
-    You get the idea
+      -A value 0f 0.2 means the 0 to max time is 5 seconds
+    You get the idea, the number is the max change in velocity, as a percent of the robot's full speed
+    That means that the number is inversley related t0 the 0 to max time
    */
     public static final double kTeleMaxDriveAccelerationUnitsPerSecond = 2;
     public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 2;
@@ -139,11 +144,12 @@ public final class Constants {
             1. Face all wheels in the forward direction of the robot, being as close to perfect as you can
             2. Open the Phoenix Tuner X, connect laptop to RoboRio via USB cable (Not by ethenet cable)
             3. Go through each encoder on the device list, press refresh to get the data for it, and get the current rotation of the encoder in degrees
-              - The data you see when pressing refresh will include ahe absolute position data (NOT "POSITION"; ITS CALLED "ABSOLUTE POSITION"), you will use the Absolute position (without sensor/magnet offset)
+              - The data you see when pressing refresh will include the absolute position data (NOT THE ONE CALLED "POSITION"; ITS CALLED "ABSOLUTE POSITION"), you will use the Absolute position (without sensor/magnet offset)
               - The number will be a number between 0 and 1 (NOT A NEGATIVE NUMBER)
               - Multiply that number by 360 to convert it to degrees
-            4. Take the number and simply just place it below! it will subtract that number from the encoder to make the wheel always face forward on the robot
+            4. Take the number and simply just place it below! it will subtract that number from the encoder to make the wheel's forward direction always face forward on the robot
 
+      (make sure the value's units are in degrees, not rotations)
        Your welcome! -Guy who made this program   
     */
     public static final int kFrontLeftDriveAbsoluteEncoderOffsetDeg = 143;
