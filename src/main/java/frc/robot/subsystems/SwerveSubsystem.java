@@ -142,6 +142,13 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putNumber("Robot Heading", getHeading());
     SmartDashboard.putNumber("Odometer Heading", getPose().getRotation().getDegrees());
+    SmartDashboard.putString("Copy paste pose2d", 
+      String.format("%.2f, %.2f, Rotation2d.fromDegrees(%d)",
+        getPose().getTranslation().getX(),
+        getPose().getTranslation().getY(),
+        (int) Math.rint(getPose().getRotation().getDegrees())
+      )
+    );
   }
 
   //Stops all the modules

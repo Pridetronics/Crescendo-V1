@@ -22,11 +22,7 @@ import frc.robot.Constants.CameraConstants;
 
 public class VisionSubsystem extends SubsystemBase {
   SwerveSubsystem m_SwerveSybsystem;
-<<<<<<< HEAD
-  private PhotonCamera camera = new PhotonCamera("Camera_Module_v1");
-=======
-  private PhotonCamera camera = new PhotonCamera(NetworkTableInstance.getDefault(), "robotcamera");
->>>>>>> ac2b63200d961b5d2f85ea9a41b384c40e056662
+  private PhotonCamera camera = new PhotonCamera(CameraConstants.kCameraName);
   private AprilTagFieldLayout fieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(
     fieldLayout, 
@@ -38,8 +34,9 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
     m_SwerveSybsystem = swerveSubsystem;
-    //Done so the camera and camera settings can be viewed at robotcamera.local:5800 on google when tethered
-    PortForwarder.add(5800, "robotcamera.local", 5800);
+    //Done so the camera and camera settings can be viewed at "<HOSTNAME>.local:5800" on google when tethered
+    //            ^^^replace <HOSTNAME> with the constants variable for the hostname
+    PortForwarder.add(5800, CameraConstants.kHostName + ".local", 5800);
 
   }
 
@@ -50,7 +47,6 @@ public class VisionSubsystem extends SubsystemBase {
     if (!camera.isConnected()) return;
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
     if (robotPose.isPresent()) {
-      System.out.println("IS PRESENT");
       Pose3d currentPose = robotPose.get().estimatedPose;
       lastRobotPose = Optional.of(currentPose);
     } else {

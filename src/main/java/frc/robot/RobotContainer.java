@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
@@ -41,6 +43,9 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.utils.NoteDepositPosition;
+import frc.robot.utils.NotePosition;
+import frc.robot.utils.TrajectoryHelper;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,8 +58,6 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
-  private final ArrayList<SendableChooser<NotePosition>> noteSelectionList = new ArrayList<SendableChooser<NotePosition>>();
-  private final ArrayList<SendableChooser<NoteDepositPosition>> noteDepositList = new ArrayList<SendableChooser<NoteDepositPosition>>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -67,20 +70,22 @@ public class RobotContainer {
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList);
     //Add a dropdown to choose which notes are going to be collected in what order
     for (int i = 0; i < AutoConstants.maxNumberOfNotesToPickInShuffleboard; i++) {
-      SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
+      SendableChooser<NotePosition> createdChooser = NotePosition.getNewNotePositionChooser();
       notePositionLayout.add("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
-      noteSelectionList.add(createdChooser);
+      
     }
 
     ShuffleboardLayout notDepositLayout = autoTab.getLayout("Note Deposit Order", BuiltInLayouts.kList);
 
     for (int i = 0; i < AutoConstants.maxNumberOfNotesToPickInShuffleboard; i++) {
-      SendableChooser<NoteDepositPosition> createdChooser = getNewNoteDepositChooser();
+      SendableChooser<NoteDepositPosition> createdChooser = NoteDepositPosition.getNewNoteDepositChooser();
       notDepositLayout.add("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
-      noteDepositList.add(createdChooser);
+      
     }
+
+    int simulatedYAxisMult = RobotBase.isReal() ? 1 : -1;
 
     //Command set to run periodicly to register joystick inputs
     //It uses suppliers/mini methods to give up to date info easily
@@ -88,7 +93,7 @@ public class RobotContainer {
       new SwerveJoystickCmd(
         swerveSubsystem, 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis), 
-        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis), 
+        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis) * simulatedYAxisMult, 
         () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> !driverJoystick.getRawButton(IOConstants.kDriveFieldOrientedDriveBtnID)
       )
@@ -103,10 +108,6 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
-  }
-
-  public Pose2d getSwervePose() {
-    return new Pose2d(swerveSubsystem.getPose().getTranslation(), Rotation2d.fromDegrees(swerveSubsystem.simulatedRobotAngle));
   }
 
   /**
@@ -125,82 +126,6 @@ public class RobotContainer {
     .onTrue(new ZeroRobotHeading(swerveSubsystem))
     .debounce(IOConstants.kZeroHeadingDebounceTime);
 
-  }
-
-  private SendableChooser<NotePosition> getNewNotePositionChooser() {
-    SendableChooser<NotePosition> chooser = new SendableChooser<NotePosition>();
-    chooser.setDefaultOption("None", null);
-    chooser.addOption("Stage Wing", NotePositionConstants.StageClose);
-    chooser.addOption("Center Wing", NotePositionConstants.CenterClose);
-    chooser.addOption("Amp Wing", NotePositionConstants.AmpClose);
-    chooser.addOption("Source First Center-Line", NotePositionConstants.SourceFirstFieldCenter);
-    chooser.addOption("Source Second Center-Line", NotePositionConstants.SourceSecondFieldCenter);
-    chooser.addOption("Center Center-Line", NotePositionConstants.CenterFieldCenter);
-    chooser.addOption("Amp Second Center-Line", NotePositionConstants.AmpSecondFieldCenter);
-    chooser.addOption("Amp First Center-Line", NotePositionConstants.AmpFirstFieldCenter);
-    return chooser;
-  }
-
-  private SendableChooser<NoteDepositPosition> getNewNoteDepositChooser() {
-    SendableChooser<NoteDepositPosition> chooser = new SendableChooser<NoteDepositPosition>();
-    chooser.setDefaultOption("Stage Center-Side", NoteDepositConstants.speakerCenterSide);
-    chooser.addOption("Stage Amp-Side", NoteDepositConstants.speakerAmpSide);
-    chooser.addOption("Stage Source-Side", NoteDepositConstants.speakerSourceSide);
-    chooser.addOption("Amplifier", NoteDepositConstants.amplifier);
-    return chooser;
-  }
-
-  private NoteDepositPosition getClosestDepositLocation() {
-    NoteDepositPosition closestDepositLocation = null;
-    double distanceOfClosestDepositLocation = 0;
-    for (int i = 0; i < noteDepositList.size(); i++) {
-      NoteDepositPosition currentPos = noteDepositList.get(i).getSelected();
-      double distanceToCurrentPos = swerveSubsystem.getPose().getTranslation().getDistance(
-        currentPos.getPosition().getTranslation()
-      );
-      if (closestDepositLocation == null || distanceToCurrentPos < distanceOfClosestDepositLocation) {
-        closestDepositLocation = currentPos;
-        distanceOfClosestDepositLocation = distanceToCurrentPos;
-      }
-    }
-    return closestDepositLocation;
-  }
-
-  public static Translation2d toAllianceRelativePosition(Translation2d position) {
-    Optional<Alliance> allianceTeam = DriverStation.getAlliance();
-    if (allianceTeam.isPresent() && allianceTeam.get() == Alliance.Red) {
-      return new Translation2d(DriveConstants.kFieldWidthMeters - position.getX(), position.getY());
-    }
-    return position;
-  }
-
-  public static Pose2d toAllianceRelativePosition(Pose2d position) {
-    Optional<Alliance> allianceTeam = DriverStation.getAlliance();
-    if (allianceTeam.isPresent() && allianceTeam.get() == Alliance.Red) {
-      Rotation2d rotationOfPosition = position.getRotation();
-      return new Pose2d(
-        DriveConstants.kFieldWidthMeters - position.getX(), 
-        position.getY(), 
-        new Rotation2d(Math.atan2(rotationOfPosition.getSin(), -rotationOfPosition.getCos())));
-    }
-    return position;
-  }
-
-  public static Trajectory convertTrajectoryToAllianceRelativeField(Pose2d init, List<Translation2d> points, Pose2d end) {
-    for (int i = 0; i < points.size(); i++) {
-      points.set(
-        i, 
-        toAllianceRelativePosition(
-          points.get(i)
-        )
-      );
-    }
-    return TrajectoryGenerator.generateTrajectory(
-      toAllianceRelativePosition(init), 
-      points, 
-      toAllianceRelativePosition(end), 
-      Constants.kTrajectoryConfig
-    );
   }
 
   /**
@@ -222,17 +147,17 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     //Go through all of the note dropdowns in the shuffleboard interface
-    for (int i = 0; i < noteSelectionList.size(); i++) {
+    for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
       //get the note selected for the current ordered position
-      NotePosition notePos = noteSelectionList.get(i).getSelected();
+      NotePosition notePos = NotePosition.noteSelectionList.get(i).getSelected();
       //Caculate the path for this ordered note position only if one was selected
       if (notePos == null) continue;
 
       //Get the note deposition location in the corresponding note order selected
-      NoteDepositPosition currentDepositPosition = noteDepositList.get(i).getSelected();
+      NoteDepositPosition currentDepositPosition = NoteDepositPosition.noteDepositList.get(i).getSelected();
       //If a previous note deposit location does not exist yet, we will set it to the closest deposit location to the robot
       if (previousOrderDepositPosition == null) {
-        previousOrderDepositPosition = getClosestDepositLocation();
+        previousOrderDepositPosition = NoteDepositPosition.getClosestDepositLocationFromPoint(swerveSubsystem.getPose().getTranslation());
       }
       //List of waypoints in between the deposit location and the note attack position
       List<Translation2d> firstWaypoints = notePos.getWaypointsDepositToNote(previousOrderDepositPosition.getDepositLocationEnum());
@@ -242,15 +167,14 @@ public class RobotContainer {
       Pose2d attackPosition = notePos.getClosestAttackPosition(lastWaypointPosInList);
 
       //Generate path from the deposit location the robot is at, to the attack position we found to be the best
-      Trajectory depositToNoteAttackPos = TrajectoryGenerator.generateTrajectory(
+      Trajectory depositToNoteAttackPos = TrajectoryHelper.createTrajectoryWithAllianceRelativePositioning(
         previousOrderDepositPosition.getPosition(), 
-        firstWaypoints, 
-        attackPosition, 
-        Constants.kTrajectoryConfig
+        firstWaypoints,
+        attackPosition
       );
 
       //Path that goes from the attack position to the note itself
-      Trajectory attackPositionToNote = convertTrajectoryToAllianceRelativeField(
+      Trajectory attackPositionToNote = TrajectoryHelper.createTrajectoryWithAllianceRelativePositioning(
         attackPosition, 
         List.of(),
         notePos.getNotePoseFromAttackPosition(attackPosition)
@@ -259,11 +183,11 @@ public class RobotContainer {
       //Positions between the note and the next deposit location
       List<Translation2d> secondWaypoints = notePos.getWaypointsNoteToDeposit(currentDepositPosition.getDepositLocationEnum());
       //Path from the current note position to the deposit location
-      Trajectory notePositionToNewDeposit = TrajectoryGenerator.generateTrajectory(
+
+      Trajectory notePositionToNewDeposit = TrajectoryHelper.createTrajectoryWithAllianceRelativePositioning(
         notePos.getNotePoseFromAttackPosition(attackPosition), 
-        secondWaypoints, 
-        currentDepositPosition.getPosition(), 
-        Constants.kTrajectoryConfig
+        secondWaypoints,
+        currentDepositPosition.getPosition()
       );
 
       //Adds a sequence of commands to the overall command sequence that will be returned

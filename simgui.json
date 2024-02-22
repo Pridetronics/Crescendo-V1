@@ -47,6 +47,36 @@
       "/SmartDashboard/Field Visual": "Field2d"
     },
     "windows": {
+      "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 1": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 2": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 3": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 1": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 2": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 3": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -75,13 +105,13 @@
         "Autonomous": {
           "Note Selection Order": {
             "Note number: 1": {
+              "open": true,
               "string[]##v_/Shuffleboard/Autonomous/Note Selection Order/Note number: 1/options": {
                 "open": true
               }
             },
             "open": true
-          },
-          "open": true
+          }
         },
         "open": true
       },
@@ -97,6 +127,9 @@
   },
   "NetworkTables Info": {
     "Clients": {
+      "open": true
+    },
+    "Server": {
       "open": true
     },
     "visible": true

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,8 +19,10 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
-import frc.robot.NoteDepositPosition.DepositLocation;
 import frc.robot.commands.SwerveAutoPaths;
+import frc.robot.utils.NoteDepositPosition;
+import frc.robot.utils.NotePosition;
+import frc.robot.utils.NoteDepositPosition.DepositLocation;
 
 
 /**
@@ -32,6 +35,8 @@ import frc.robot.commands.SwerveAutoPaths;
  */
 public final class Constants {
   public static class CameraConstants {
+    public static final String kHostName = "robotcamera";
+    public static final String kCameraName = "Camera_Module_v1";
     public static final Transform3d kRobotToCamera = new Transform3d(
       new Translation3d(
         Units.inchesToMeters(14.5), 
@@ -184,31 +189,38 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
+    public static final double kNoteGrabDistanceOvershootMeters = .5;
+
     //Max number of notes the driver can allow the robot to grab
     public static final int maxNumberOfNotesToPickInShuffleboard = 6;
     //Locations for depositing notes
     public static class NoteDepositConstants {
       public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(
-        new Pose2d(),
+        new Pose2d(1.46, 5.54, Rotation2d.fromDegrees(180)),
         DepositLocation.kSpeakerCenterSide
       );
       public static final NoteDepositPosition speakerAmpSide = new NoteDepositPosition(
-        new Pose2d(),
+        new Pose2d(0.94, 6.75, Rotation2d.fromDegrees(226)),
         DepositLocation.kSpeakerAmpSide
       );
       public static final NoteDepositPosition speakerSourceSide = new NoteDepositPosition(
-        new Pose2d(),
+        new Pose2d(0.94, 4.31, Rotation2d.fromDegrees(135)),
         DepositLocation.kSpeakerSourceSide
       );
       public static final NoteDepositPosition amplifier = new NoteDepositPosition(
-        new Pose2d(),
+        new Pose2d(1.85, 7.66, Rotation2d.fromDegrees(90)),
         DepositLocation.kAmplifier
       );
     }
     public static class NotePositionConstants {
 
       public static final NotePosition StageClose = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(2.74, 4.11), 
+        List.of(
+          new Translation2d(2.18, 4.12),
+          new Translation2d(2.53, 4.78),
+          new Translation2d(2.46, 3.53)
+        ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kStageWingNoteToAmplifier,
@@ -219,7 +231,12 @@ public final class Constants {
         ) 
       );
       public static final NotePosition CenterClose = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(2.90, 5.54), 
+        List.of(
+          new Translation2d(2.12, 5.58),
+          new Translation2d(2.48, 6.07),
+          new Translation2d(2.52, 5.02)
+        ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kCenterWingNoteToAmplifier,
@@ -230,7 +247,12 @@ public final class Constants {
         ) 
       );
       public static final NotePosition AmpClose = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(2.90, 6.99), 
+        List.of(
+          new Translation2d(2.24, 7.04),
+          new Translation2d(2.41, 6.55),
+          new Translation2d(2.34, 7.36)
+        ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kAmplifierWingNoteToAmplifier,
@@ -242,7 +264,11 @@ public final class Constants {
       );
 
       public static final NotePosition SourceFirstFieldCenter = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(8.29, 0.74), 
+        List.of(
+          new Translation2d(7.54, 0.74),
+          new Translation2d(7.73, 1.24)
+        ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kFirstSourceCenterLineNoteToAmplifier,
@@ -253,7 +279,8 @@ public final class Constants {
         ) 
       );
       public static final NotePosition SourceSecondFieldCenter = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(8.26, 2.42), 
+        List.of(),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kSecondSourceCenterLineNoteToAmplifier,
@@ -264,7 +291,8 @@ public final class Constants {
         ) 
       );
       public static final NotePosition CenterFieldCenter = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(8.27, 4.11), 
+        List.of(),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kCenterCenterLineNoteToAmplifier,
@@ -275,7 +303,8 @@ public final class Constants {
         ) 
       );
       public static final NotePosition AmpSecondFieldCenter = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(8.28, 5.80), 
+          List.of(),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kSecondAmpCenterLineNoteToAmplifier,
@@ -286,7 +315,8 @@ public final class Constants {
         ) 
       );
       public static final NotePosition AmpFirstFieldCenter = new NotePosition(
-        new Translation2d(), List.of(),
+        new Translation2d(8.28, 7.47), 
+        List.of(),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kFirstAmpCenterLineNoteToAmplifier,
@@ -299,14 +329,14 @@ public final class Constants {
     }
 
     //Max speed during autonomous
-    public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kMaxSpeedMetersPerSecond = 4.5;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 3;
+    public static final double kMaxAccelerationMetersPerSecond = 4;
 
     //Max turning speed during autonomous
-    public static final double kMaxTurningSpeedRadiansPerSecond = 30 * (Math.PI / 180);
+    public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
     //Acceleration during autonomous (note its in radians, not units)
-    public static final double kMaxTurningAccelerationRadiansPerSecond = 180 * (Math.PI / 180);
+    public static final double kMaxTurningAccelerationRadiansPerSecond = 540 * (Math.PI / 180);
 
     //Power Controllers for the robot to keep it on course
     public static final double kPXController = 1.5;
