@@ -4,12 +4,6 @@
  
 package frc.robot;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,10 +13,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
-import frc.robot.commands.SwerveAutoPaths;
-import frc.robot.utils.NoteDepositPosition;
-import frc.robot.utils.NotePosition;
-import frc.robot.utils.NoteDepositPosition.DepositLocation;
+
 
 
 /**
@@ -35,17 +26,16 @@ import frc.robot.utils.NoteDepositPosition.DepositLocation;
  */
 public final class Constants {
   public static class CameraConstants {
-    public static final String kHostName = "robotcamera";
-    public static final String kCameraName = "Camera_Module_v1";
     public static final Transform3d kRobotToCamera = new Transform3d(
-      new Translation3d(
-        Units.inchesToMeters(14.5), 
-        0, 
-        Units.inchesToMeters(5.5)
-      ), 
-      new Rotation3d(0, Units.degreesToRadians(-20), 0)
+      new Translation3d(Units.inchesToMeters(14.5), 0, Units.inchesToMeters(5.5)), 
+      new Rotation3d(0, -20, 0)
     );
 
+  }
+
+  public static class ShooterConstants {
+    public static final int kShooterMotorCANID = 13;
+    public static final double kShooterPValue = 0.1;
   }
 
   //Constants for features related to user controller input
@@ -106,30 +96,23 @@ public final class Constants {
 
   //Constants for the movement of the robot
   public static class DriveConstants {
-    public static final double kFieldWidthMeters = Units.inchesToMeters(653.2);
-
     //The literal max speed each wheel is allowed to go
     public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
 
     /*
-    When talking about these acceleration values, 
-    these values influence the rate of change in a number in such a way that the number being influenced 
-    is multiplied by the max speed of the robot so that the influeced number being 0 means no speed, 1 means 
-    100% speed, and -1 mean -100% speed
+    Imagine 0 means no speed and 1 means 100% speed speed, numbers are in the form of a decimal percent
       -A value of 1 means the 0 to max time is 1 second
       -A value of 3 means the 0 to max time is 0.333333 seconds
       -A value of 0.5 means the 0 to max time is 2 seconds
-      -A value 0f 0.2 means the 0 to max time is 5 seconds
-    You get the idea, the number is the max change in velocity, as a percent of the robot's full speed
-    That means that the number is inversley related t0 the 0 to max time
+    You get the idea
    */
-    public static final double kTeleMaxDriveAccelerationUnitsPerSecond = 2;
-    public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 2;
+    public static final double kTeleMaxDriveAccelerationUnitsPerSecond = 3;
+    public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 3;
 
     //Max speed of the robot itself
-    public static final double kTeleMaxDriveSpeedMetersPerSecond = 4;
+    public static final double kTeleMaxDriveSpeedMetersPerSecond = 2.25;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
-    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 225 * (Math.PI/180);
+    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI/180);
 
     //ID of the Can Spark Max the propels the swerve module wheel
     public static final int kFrontLeftDriveMotorCANID = 2;
@@ -149,12 +132,11 @@ public final class Constants {
             1. Face all wheels in the forward direction of the robot, being as close to perfect as you can
             2. Open the Phoenix Tuner X, connect laptop to RoboRio via USB cable (Not by ethenet cable)
             3. Go through each encoder on the device list, press refresh to get the data for it, and get the current rotation of the encoder in degrees
-              - The data you see when pressing refresh will include the absolute position data (NOT THE ONE CALLED "POSITION"; ITS CALLED "ABSOLUTE POSITION"), you will use the Absolute position (without sensor/magnet offset)
+              - The data you see when pressing refresh will include ahe absolute position data (NOT "POSITION"; ITS CALLED "ABSOLUTE POSITION"), you will use the Absolute position (without sensor/magnet offset)
               - The number will be a number between 0 and 1 (NOT A NEGATIVE NUMBER)
               - Multiply that number by 360 to convert it to degrees
-            4. Take the number and simply just place it below! it will subtract that number from the encoder to make the wheel's forward direction always face forward on the robot
+            4. Take the number and simply just place it below! it will subtract that number from the encoder to make the wheel always face forward on the robot
 
-      (make sure the value's units are in degrees, not rotations)
        Your welcome! -Guy who made this program   
     */
     public static final int kFrontLeftDriveAbsoluteEncoderOffsetDeg = 143;
@@ -189,154 +171,15 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
-    public static final double kNoteGrabDistanceOvershootMeters = .5;
-
-    //Max number of notes the driver can allow the robot to grab
-    public static final int maxNumberOfNotesToPickInShuffleboard = 6;
-    //Locations for depositing notes
-    public static class NoteDepositConstants {
-      public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(
-        new Pose2d(1.46, 5.54, Rotation2d.fromDegrees(180)),
-        DepositLocation.kSpeakerCenterSide
-      );
-      public static final NoteDepositPosition speakerAmpSide = new NoteDepositPosition(
-        new Pose2d(0.94, 6.75, Rotation2d.fromDegrees(226)),
-        DepositLocation.kSpeakerAmpSide
-      );
-      public static final NoteDepositPosition speakerSourceSide = new NoteDepositPosition(
-        new Pose2d(0.94, 4.31, Rotation2d.fromDegrees(135)),
-        DepositLocation.kSpeakerSourceSide
-      );
-      public static final NoteDepositPosition amplifier = new NoteDepositPosition(
-        new Pose2d(1.85, 7.66, Rotation2d.fromDegrees(90)),
-        DepositLocation.kAmplifier
-      );
-    }
-    public static class NotePositionConstants {
-
-      public static final NotePosition StageClose = new NotePosition(
-        new Translation2d(2.74, 4.11), 
-        List.of(
-          new Translation2d(2.18, 4.12),
-          new Translation2d(2.53, 4.78),
-          new Translation2d(2.46, 3.53)
-        ),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kStageWingNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kStageWingNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kStageWingNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kStageWingNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-      public static final NotePosition CenterClose = new NotePosition(
-        new Translation2d(2.90, 5.54), 
-        List.of(
-          new Translation2d(2.12, 5.58),
-          new Translation2d(2.48, 6.07),
-          new Translation2d(2.52, 5.02)
-        ),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kCenterWingNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kCenterWingNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kCenterWingNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kCenterWingNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-      public static final NotePosition AmpClose = new NotePosition(
-        new Translation2d(2.90, 6.99), 
-        List.of(
-          new Translation2d(2.24, 7.04),
-          new Translation2d(2.41, 6.55),
-          new Translation2d(2.34, 7.36)
-        ),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kAmplifierWingNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kAmplifierWingNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kAmplifierWingNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kAmplifierWingNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-
-      public static final NotePosition SourceFirstFieldCenter = new NotePosition(
-        new Translation2d(8.29, 0.74), 
-        List.of(
-          new Translation2d(7.54, 0.74),
-          new Translation2d(7.73, 1.24)
-        ),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kFirstSourceCenterLineNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kFirstSourceCenterLineNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kFirstSourceCenterLineNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kFirstSourceCenterLineNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-      public static final NotePosition SourceSecondFieldCenter = new NotePosition(
-        new Translation2d(8.26, 2.42), 
-        List.of(),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kSecondSourceCenterLineNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kSecondSourceCenterLineNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kSecondSourceCenterLineNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kSecondSourceCenterLineNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-      public static final NotePosition CenterFieldCenter = new NotePosition(
-        new Translation2d(8.27, 4.11), 
-        List.of(),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kCenterCenterLineNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kCenterCenterLineNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kCenterCenterLineNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kCenterCenterLineNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-      public static final NotePosition AmpSecondFieldCenter = new NotePosition(
-        new Translation2d(8.28, 5.80), 
-          List.of(),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kSecondAmpCenterLineNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kSecondAmpCenterLineNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kSecondAmpCenterLineNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kSecondAmpCenterLineNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-      public static final NotePosition AmpFirstFieldCenter = new NotePosition(
-        new Translation2d(8.28, 7.47), 
-        List.of(),
-        new HashMap<DepositLocation, List<Translation2d>>(
-          Map.of(
-            DepositLocation.kAmplifier, SwerveAutoPaths.kFirstAmpCenterLineNoteToAmplifier,
-            DepositLocation.kSpeakerAmpSide, SwerveAutoPaths.kFirstAmpCenterLineNoteToSpeakerAmpSide,
-            DepositLocation.kSpeakerCenterSide, SwerveAutoPaths.kFirstAmpCenterLineNoteToSpeakerCenterSide,
-            DepositLocation.kSpeakerSourceSide, SwerveAutoPaths.kFirstAmpCenterLineNoteToSpeakerSourceSide
-          )
-        ) 
-      );
-    }
-
     //Max speed during autonomous
-    public static final double kMaxSpeedMetersPerSecond = 4.5;
+    public static final double kMaxSpeedMetersPerSecond = 1.5;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 4;
+    public static final double kMaxAccelerationMetersPerSecond = 3;
 
     //Max turning speed during autonomous
-    public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
+    public static final double kMaxTurningSpeedRadiansPerSecond = 30 * (Math.PI / 180);
     //Acceleration during autonomous (note its in radians, not units)
-    public static final double kMaxTurningAccelerationRadiansPerSecond = 540 * (Math.PI / 180);
+    public static final double kMaxTurningAccelerationRadiansPerSecond = 180 * (Math.PI / 180);
 
     //Power Controllers for the robot to keep it on course
     public static final double kPXController = 1.5;
