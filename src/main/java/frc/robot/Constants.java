@@ -34,6 +34,16 @@ public final class Constants {
 
   }
 
+  public static class ShooterConstants {
+    public static final int kShooterMotorCANID = 13;
+    public static final double kShooterPValue = 0.1;
+  }
+
+  public static class IntakeConstants {
+    public static final int kIntakeMotorCANID = 14;
+    public static final double kIntakePValue = 0.1;
+  }
+
   //Constants for features related to user controller input
   public static class IOConstants {
     //Deadband for the joysticks (for driving inputs so the robot doesnt move when not touching controller)

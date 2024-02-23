@@ -37,6 +37,7 @@ import frc.robot.Constants.AutoConstants.NotePositionConstants;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -50,6 +51,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
   private final ArrayList<SendableChooser<NotePosition>> noteSelectionList = new ArrayList<SendableChooser<NotePosition>>();
   private final ArrayList<SendableChooser<Pose2d>> noteDepositList = new ArrayList<SendableChooser<Pose2d>>();
@@ -60,7 +62,7 @@ public class RobotContainer {
     ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
     .withSize(2, 4);
-
+    intakeSubsystem.setIntakeDirection(true);
     for (int i = 0; i <= 6; i++) {
       SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
       notePositionLayout.addPersistent("Note number: " + (i+1), createdChooser)
