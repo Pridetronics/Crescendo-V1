@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,12 +38,12 @@ public class FieldPositionUpdate extends Command {
   @Override
   public void execute() {
     //Get the caculated robot position on the field from the last camera rendering cycle
-    Optional<Pose2d> lastRobotFieldPosition = m_VisionSubsystem.getLastRobotFieldPosition();
+    Optional<EstimatedRobotPose> robotPose = m_VisionSubsystem.getEstimatedPose();
     //Check if a field position was caculated last cycle
-    if (lastRobotFieldPosition.isPresent()) {
+    if (robotPose.isPresent()) {
       //Update the swerve drive odometry to work with this position
       System.out.println("Found Apriltag");
-      m_SwerveSubsystem.resetOdometry(lastRobotFieldPosition.get());
+      m_SwerveSubsystem.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds);
     }
     
     m_field.setRobotPose(m_SwerveSubsystem.getPose());

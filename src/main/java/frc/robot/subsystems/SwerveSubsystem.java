@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -41,7 +42,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private Timer simulatedGyroTimer;
 
   //Uses the positions of each module to perdict where the robot is on the field (Mainly for autonomous)
-  private final SwerveDriveOdometry odometer;
+  private final SwerveDrivePoseEstimator odometer;
   
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
@@ -59,13 +60,16 @@ public class SwerveSubsystem extends SubsystemBase {
       backLeft = new SimulatedSwerveModule(SwerveModuleSettings.backLeft);
       backRight = new SimulatedSwerveModule(SwerveModuleSettings.backRight);
     }
-    this.odometer = new SwerveDriveOdometry(WheelConstants.kDriveKinematics,
-      new Rotation2d(0), new SwerveModulePosition[] {
+    this.odometer = new SwerveDrivePoseEstimator(
+      WheelConstants.kDriveKinematics,
+      new Rotation2d(0), 
+      new SwerveModulePosition[] {
         frontLeft.getSwervePosition(),
         frontRight.getSwervePosition(),
         backLeft.getSwervePosition(),
         backRight.getSwervePosition()
-      }
+      }, 
+      new Pose2d()
     );
 
     //Waits one second to let the gyro calibrate and then resets the forward direction
@@ -115,7 +119,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Gets the position + rotation of the robot for use by WPILIB systems
   public Pose2d getPose() {
-    return odometer.getPoseMeters();
+    return odometer.getEstimatedPosition();
+  }
+
+  public void addVisionMeasurement(Pose2d pose, double time) {
+    odometer.addVisionMeasurement(getPose(), time);
   }
 
   //Resets the odometry to the robots current position and orientation (does NOT reset the gyro, just the odometer)

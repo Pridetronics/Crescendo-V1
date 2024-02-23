@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,6 +63,10 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    Optional<EstimatedRobotPose> startingRobotPose = visionSubsystem.getEstimatedPose();
+    if (startingRobotPose.isPresent()) {
+      swerveSubsystem.resetOdometry(startingRobotPose.get().estimatedPose.toPose2d());
+    }
     //Create a shufflebaord tab for the drivers to see all teleop info
     ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
     //Create a shufflebaord tab for the drivers to see all autonomous info
@@ -158,6 +164,10 @@ public class RobotContainer {
       //If a previous note deposit location does not exist yet, we will set it to the closest deposit location to the robot
       if (previousOrderDepositPosition == null) {
         previousOrderDepositPosition = NoteDepositPosition.getClosestDepositLocationFromPoint(swerveSubsystem.getPose().getTranslation());
+        //If the camera is not looking at an april tag, the robot will guess its starting pose
+        if (!visionSubsystem.lookingAtAprilTag()) {
+          swerveSubsystem.resetOdometry(previousOrderDepositPosition.getPosition());
+        }
       }
       //List of waypoints in between the deposit location and the note attack position
       List<Translation2d> firstWaypoints = notePos.getWaypointsDepositToNote(previousOrderDepositPosition.getDepositLocationEnum());

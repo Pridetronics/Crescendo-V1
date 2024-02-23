@@ -31,6 +31,8 @@ public class VisionSubsystem extends SubsystemBase {
     CameraConstants.kRobotToCamera
   );
   Optional<Pose3d> lastRobotPose = Optional.empty();
+  private boolean currentlyLookingAtAprilTag = false;
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
     m_SwerveSybsystem = swerveSubsystem;
@@ -44,21 +46,30 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    if (!camera.isConnected()) return;
-    Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
-    if (robotPose.isPresent()) {
-      Pose3d currentPose = robotPose.get().estimatedPose;
-      lastRobotPose = Optional.of(currentPose);
-    } else {
-      lastRobotPose = Optional.empty();
-    };
+    // if (!camera.isConnected()) return;
+    // Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
+    // if (robotPose.isPresent()) {
+    //   Pose3d currentPose = robotPose.get().estimatedPose;
+    //   lastRobotPose = Optional.of(currentPose);
+    // } else {
+    //   lastRobotPose = Optional.empty();
+    // };
   }
 
-  public Optional<Pose2d> getLastRobotFieldPosition() {
-    if (lastRobotPose.isPresent()) {
-      return Optional.of(lastRobotPose.get().toPose2d());
-    } else {
-      return Optional.empty();
-    }
+  public Optional<EstimatedRobotPose> getEstimatedPose() {
+    Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
+    currentlyLookingAtAprilTag = robotPose.isPresent();
+    return robotPose;
   }
+  public boolean lookingAtAprilTag() {
+    return currentlyLookingAtAprilTag;
+  }
+
+  // public Optional<Pose2d> getLastRobotFieldPosition() {
+  //   if (lastRobotPose.isPresent()) {
+  //     return Optional.of(lastRobotPose.get().toPose2d());
+  //   } else {
+  //     return Optional.empty();
+  //   }
+  // }
 }
