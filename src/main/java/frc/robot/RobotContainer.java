@@ -34,6 +34,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
@@ -100,6 +101,9 @@ public class RobotContainer {
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
+
+    new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID)
+    .onTrue(new IntakeCommand(intakeSubsystem));
 
   }
 
