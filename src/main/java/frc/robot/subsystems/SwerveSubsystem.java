@@ -6,6 +6,10 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Num;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +18,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
@@ -59,7 +65,8 @@ public class SwerveSubsystem extends SubsystemBase {
       frontRight = new SimulatedSwerveModule(SwerveModuleSettings.frontRight);
       backLeft = new SimulatedSwerveModule(SwerveModuleSettings.backLeft);
       backRight = new SimulatedSwerveModule(SwerveModuleSettings.backRight);
-    }
+    }    
+
     this.odometer = new SwerveDrivePoseEstimator(
       WheelConstants.kDriveKinematics,
       new Rotation2d(0), 
@@ -69,7 +76,9 @@ public class SwerveSubsystem extends SubsystemBase {
         backLeft.getSwervePosition(),
         backRight.getSwervePosition()
       }, 
-      new Pose2d()
+      new Pose2d(),
+      VecBuilder.fill(0.1, 0.1, 0.1),
+      VecBuilder.fill(2,2, 2)
     );
 
     //Waits one second to let the gyro calibrate and then resets the forward direction
@@ -123,7 +132,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void addVisionMeasurement(Pose2d pose, double time) {
-    odometer.addVisionMeasurement(getPose(), time);
+    odometer.addVisionMeasurement(pose, time);
   }
 
   //Resets the odometry to the robots current position and orientation (does NOT reset the gyro, just the odometer)
@@ -150,13 +159,13 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putNumber("Robot Heading", getHeading());
     SmartDashboard.putNumber("Odometer Heading", getPose().getRotation().getDegrees());
-    SmartDashboard.putString("Copy paste pose2d", 
-      String.format("%.2f, %.2f, Rotation2d.fromDegrees(%d)",
-        getPose().getTranslation().getX(),
-        getPose().getTranslation().getY(),
-        (int) Math.rint(getPose().getRotation().getDegrees())
-      )
-    );
+    // SmartDashboard.putString("Copy paste pose2d", 
+    //   String.format("%.2f, %.2f, Rotation2d.fromDegrees(%d)",
+    //     getPose().getTranslation().getX(),
+    //     getPose().getTranslation().getY(),
+    //     (int) Math.rint(getPose().getRotation().getDegrees())
+    //   )
+    // );
   }
 
   //Stops all the modules

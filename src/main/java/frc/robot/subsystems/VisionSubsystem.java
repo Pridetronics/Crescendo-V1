@@ -61,6 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
     currentlyLookingAtAprilTag = robotPose.isPresent();
     return robotPose;
   }
+  
   public boolean lookingAtAprilTag() {
     return currentlyLookingAtAprilTag;
   }
