@@ -33,6 +33,13 @@ public final class Constants {
 
   }
 
+  public static class ClimberConstants {
+    public static final int climberLeftMotorID = 15;
+    public static final int climberRightMotorID = 16;
+    public static final int climberLeftLimitSwitchID = 2;
+    public static final int climberRightLimitSwitchID = 1;
+  }
+
   //Constants for features related to user controller input
   public static class IOConstants {
     //Deadband for the joysticks (for driving inputs so the robot doesnt move when not touching controller)
