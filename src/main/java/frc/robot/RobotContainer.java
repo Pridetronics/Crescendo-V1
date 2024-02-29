@@ -40,9 +40,12 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
+import frc.robot.commands.FieldPositionUpdate;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.NoteDepositPosition;
@@ -59,6 +62,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -71,22 +75,12 @@ public class RobotContainer {
     ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
     //Create a shufflebaord tab for the drivers to see all autonomous info
     ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
+    ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
+    .withSize(2, 4);
 
-    //Get a list that will hold all list items
-    ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList);
-    //Add a dropdown to choose which notes are going to be collected in what order
-    for (int i = 0; i < AutoConstants.maxNumberOfNotesToPickInShuffleboard; i++) {
-      SendableChooser<NotePosition> createdChooser = NotePosition.getNewNotePositionChooser();
-      notePositionLayout.add("Note number: " + (i+1), createdChooser)
-        .withWidget(BuiltInWidgets.kComboBoxChooser);
-      
-    }
-
-    ShuffleboardLayout notDepositLayout = autoTab.getLayout("Note Deposit Order", BuiltInLayouts.kList);
-
-    for (int i = 0; i < AutoConstants.maxNumberOfNotesToPickInShuffleboard; i++) {
-      SendableChooser<NoteDepositPosition> createdChooser = NoteDepositPosition.getNewNoteDepositChooser();
-      notDepositLayout.add("Note number: " + (i+1), createdChooser)
+    for (int i = 0; i <= 6; i++) {
+      SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
+      notePositionLayout.addPersistent("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
       
     }
@@ -129,9 +123,22 @@ public class RobotContainer {
 
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
-    .onTrue(new ZeroRobotHeading(swerveSubsystem))
-    .debounce(IOConstants.kZeroHeadingDebounceTime);
+    .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
+  }
+
+  private SendableChooser<NotePosition> getNewNotePositionChooser() {
+    SendableChooser<NotePosition> chooser = new SendableChooser<NotePosition>();
+    chooser.setDefaultOption("None", null);
+    chooser.addOption("Stage Close", NotePositionConstants.StageClose);
+    chooser.addOption("Center Close", NotePositionConstants.CenterClose);
+    chooser.addOption("Amp Close", NotePositionConstants.AmpClose);
+    chooser.addOption("Source First Field Center", NotePositionConstants.SourceFirstFieldCenter);
+    chooser.addOption("Source Second Field Center", NotePositionConstants.SourceSecondFieldCenter);
+    chooser.addOption("Center Field Center", NotePositionConstants.CenterFieldCenter);
+    chooser.addOption("Amp Second Field Center", NotePositionConstants.AmpSecondFieldCenter);
+    chooser.addOption("Amp First Field Center", NotePositionConstants.AmpFirstFieldCenter);
+    return chooser;
   }
 
   /**

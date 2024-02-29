@@ -47,6 +47,20 @@ public final class Constants {
 
   }
 
+  public static class ShooterConstants {
+    public static final int kShooterMotorCANID = 13;
+    public static final double kShooterPValue = 0.1;
+  }
+
+  public static class IntakeConstants {
+    public static final int kIntakeMotorCANID = 14;
+    public static final double kIntakePValue = 0.1;
+    public static final int upperSensorChannelID = 0;
+    public static final int lowerSensorChannelID =3;
+    public static final int intakeRPM =3;
+  }
+
+
   //Constants for features related to user controller input
   public static class IOConstants {
     //Deadband for the joysticks (for driving inputs so the robot doesnt move when not touching controller)
@@ -66,6 +80,8 @@ public final class Constants {
     public static final int kZeroHeadingBtnID = 2;
     //Time it takes before you can press the zero heading button again (seconds)
     public static final double kZeroHeadingDebounceTime = 2;
+    //Sets our intake ID
+    public static final int kIntakeButtonID = 4;
   }
 
   //Constants for data related to the wheels of each module (not the module itself)
