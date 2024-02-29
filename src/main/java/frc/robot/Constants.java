@@ -47,6 +47,13 @@ public final class Constants {
 
   }
 
+  public static class ClimberConstants {
+    public static final int climberLeftMotorID = 15;
+    public static final int climberRightMotorID = 16;
+    public static final int climberLeftLimitSwitchID = 2;
+    public static final int climberRightLimitSwitchID = 1;
+  }
+
   public static class ShooterConstants {
     public static final int kShooterMotorCANID = 13;
     public static final double kShooterPValue = 0.1;

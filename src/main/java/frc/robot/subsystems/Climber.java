@@ -21,13 +21,11 @@ public class Climber {
 	private PIDController climbController;
 	private RelativeEncoder climbeNcoder;
 	private DigitalInput climbDigitalInput; 
-	void Climber(int motorId) {
-			climberMotor=new CANSparkMax(motorId,CANSparkLowLevel.MotorType.kBrushless);
-			climbController = new PIDController(motorId, motorId, motorId);
-			climbeNcoder= climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
-			climbDigitalInput = new DigitalInput(motorId); 
+	Climber(int motorId, int limitSwitchID) {
+		climberMotor = new CANSparkMax(motorId,CANSparkLowLevel.MotorType.kBrushless);
+		climbController = new PIDController(motorId, motorId, motorId);
+		climbeNcoder = climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
+		climbDigitalInput = new DigitalInput(limitSwitchID); 
 			
-}
-
-
+	}
 }
