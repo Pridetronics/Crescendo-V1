@@ -20,6 +20,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -66,10 +67,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    Optional<EstimatedRobotPose> startingRobotPose = visionSubsystem.getEstimatedPose();
-    if (startingRobotPose.isPresent()) {
-      swerveSubsystem.resetOdometry(startingRobotPose.get().estimatedPose.toPose2d());
-    }
+
     //Create a shufflebaord tab for the drivers to see all teleop info
     ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
     //Create a shufflebaord tab for the drivers to see all autonomous info
