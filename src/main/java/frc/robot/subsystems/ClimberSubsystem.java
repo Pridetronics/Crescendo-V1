@@ -11,7 +11,8 @@ public class ClimberSubsystem extends SubsystemBase {
   Climber climberLeft;
   Climber climberRight; 
 
-  void ClimberSubsystem() {};
+  void ClimberSubsystem() 
+  {
 
 
    climberLeft = new Climber(ClimberConstants.climberLeftMotorID, ClimberConstants.climberLeftLimitSwitchID ); // this creates a new left climber object 
@@ -19,6 +20,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   /** Creates a new ClimberSubsystem. */ 
 {}
+}
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
