@@ -42,10 +42,12 @@ import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootForSeconds;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.NoteDepositPosition;
@@ -63,6 +65,7 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -117,6 +120,12 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
+    new JoystickButton(driverJoystick, IOConstants.KShooterButtonID)
+    .onTrue(new ShootForSeconds(shooterSubsystem));
+
+    new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID)
+    .onTrue(new IntakeCommand(intakeSubsystem));
 
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)

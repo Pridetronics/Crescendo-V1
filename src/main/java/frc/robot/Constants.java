@@ -57,6 +57,8 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterMotorCANID = 13;
     public static final double kShooterPValue = 0.1;
+    public static final int shooterRPM =3;
+    public static final int TimeToShootSeconds =10; //This tells us when we want to stop shooting
   }
 
   public static class IntakeConstants {
@@ -89,6 +91,8 @@ public final class Constants {
     public static final double kZeroHeadingDebounceTime = 2;
     //Sets our intake ID
     public static final int kIntakeButtonID = 4;
+    //Sets our shooter ID
+    public static final int KShooterButtonID =3;
   }
 
   //Constants for data related to the wheels of each module (not the module itself)
