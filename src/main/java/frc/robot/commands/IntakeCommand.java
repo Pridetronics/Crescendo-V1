@@ -20,7 +20,7 @@ public class IntakeCommand extends Command {
     m_IntakeSubsystem = intakeSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IntakeSubsystem);
-  }
+  } //End of Class
 
 
 
@@ -28,21 +28,21 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     m_IntakeSubsystem.setMotorAtRPM(Constants.IntakeConstants.intakeRPM); //Sets our intake RPM by caling what we set in Robot Container
-  }
+  } //End of Method
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
-
+//End of Class
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_IntakeSubsystem.stopMotorSpeed(); //Tells our intake to stop
-  }
+  } //End of Class
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return m_IntakeSubsystem.isNoteInsideIntake(); //Checks if the note is inside the intake
   }
-}
+} //End of Class

@@ -18,7 +18,7 @@ public class ShootForSeconds extends Command {
     m_ShooterSubsystem = shooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_ShooterSubsystem);
-  } //Command not ready First step, tell motor to start moving on initialize, second step, tell motor to stop moving in the end, third step, tell command to stop in finished when a certain amount of time has passed
+  } //End of Class
 
   // Called when the command is initially scheduled.
   @Override
@@ -26,19 +26,19 @@ public class ShootForSeconds extends Command {
     m_ShooterSubsystem.setMotorAtRPM(Constants.ShooterConstants.shooterRPM); //Setting our shooter rpm
     ShooterTimer.start();
     ShooterTimer.reset();  //This starts our timer for the shooter running, then resets it (Line above this is included)
-  }
+  } //End of Class
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
-
+ //End of Class
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
-
+ //End of Class
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return ShooterTimer.hasElapsed(Constants.ShooterConstants.TimeToShootSeconds); //Sets when our timer will stop
   }
-}
+} //End of Class

@@ -52,14 +52,14 @@ public final class Constants {
     public static final int climberRightMotorID = 16;
     public static final int climberLeftLimitSwitchID = 2;
     public static final int climberRightLimitSwitchID = 1;
-  }
+  } //End of Class
 
   public static class ShooterConstants {
     public static final int kShooterMotorCANID = 13; //Our Motor ID
     public static final double kShooterPValue = 0.1;
     public static final int shooterRPM =3; //Our shooter RPM
     public static final int TimeToShootSeconds =10; //This tells us when we want to stop shooting
-  }
+  } //End of Class
 
   public static class IntakeConstants {
     public static final int kIntakeMotorCANID = 14; //Our Motor ID
@@ -67,7 +67,7 @@ public final class Constants {
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID =3; //Which sensor is the lower sensor
     public static final int intakeRPM =3; //Setting our intake RPM
-  }
+  } //End of Class
 
 
   //Constants for features related to user controller input
