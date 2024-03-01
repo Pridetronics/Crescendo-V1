@@ -11,7 +11,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 //import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootForSeconds extends Command {
-  private ShooterSubsystem m_ShooterSubsystem;
+  private ShooterSubsystem m_ShooterSubsystem; //Telling the system how to identify our shooter subsystem
   private Timer ShooterTimer = new Timer(); //Setting a timer for our shooter
   /** Creates a new ShootShooterCmd. */
   public ShootForSeconds(ShooterSubsystem shooterSubsystem) {
@@ -23,7 +23,7 @@ public class ShootForSeconds extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_ShooterSubsystem.setMotorAtRPM(Constants.ShooterConstants.shooterRPM);
+    m_ShooterSubsystem.setMotorAtRPM(Constants.ShooterConstants.shooterRPM); //Setting our shooter rpm
     ShooterTimer.start();
     ShooterTimer.reset();  //This starts our timer for the shooter running, then resets it (Line above this is included)
   }

@@ -18,15 +18,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    shooterPIDController.setP(ShooterConstants.kShooterPValue);
+    shooterPIDController.setP(ShooterConstants.kShooterPValue); //Calling our shooter constants
   }
 //Sets the motor RPM
   public void setMotorAtRPM(double targetRPM) {
-    shooterPIDController.setReference(targetRPM, ControlType.kVelocity);
+    shooterPIDController.setReference(targetRPM, ControlType.kVelocity); //Setting our motor velocity
   }
 //Stops the shooter
   public void stopMotorSpeed() {
-    shooterPIDController.setReference(0, ControlType.kVelocity);
+    shooterPIDController.setReference(0, ControlType.kVelocity); //Stopping our PID controller (motor)
   }
 
   @Override

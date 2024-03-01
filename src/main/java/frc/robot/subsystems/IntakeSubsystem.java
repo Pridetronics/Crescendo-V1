@@ -18,33 +18,33 @@ public class IntakeSubsystem extends SubsystemBase {
   private SparkPIDController intakePIDController = intakeMotor.getPIDController();
   /** Creates a new IntakeSubsystem. */
 
-  public DigitalInput upperSensor = new DigitalInput(IntakeConstants.upperSensorChannelID);
+  public DigitalInput upperSensor = new DigitalInput(IntakeConstants.upperSensorChannelID); //Setting our upper sensor
 
-  public DigitalInput lowerSensor = new DigitalInput(IntakeConstants.lowerSensorChannelID);
+  public DigitalInput lowerSensor = new DigitalInput(IntakeConstants.lowerSensorChannelID); //Setting our lower sensor
 //** Creates the upper and lower Sensors. */
 
   public IntakeSubsystem() {
-    intakePIDController.setP(IntakeConstants.kIntakePValue);
+    intakePIDController.setP(IntakeConstants.kIntakePValue); //Calling our intake constants
   }
 
 
   public void setMotorAtRPM(double targetRPM) {
-    intakePIDController.setReference(targetRPM, ControlType.kVelocity);
+    intakePIDController.setReference(targetRPM, ControlType.kVelocity); //Setting our motor RPM
   }
 
   public void stopMotorSpeed() {
-    intakePIDController.setReference(0, ControlType.kVelocity);
+    intakePIDController.setReference(0, ControlType.kVelocity); //Stopping our motor
   }
   
-  public void setIntakeDirection(boolean direction) {
+  public void setIntakeDirection(boolean direction) { //Telling the Intake what and when our direction changes to
     intakeMotor.setInverted(direction);
   }
   
-  public boolean isNoteInsideIntake() {
+  public boolean isNoteInsideIntake() { //Checks if the note is inside the intake by using the upper sensor
      return upperSensor.get();
   }
 
-  public boolean hasNoEnteredIntake() {
+  public boolean hasNoEnteredIntake() { //Checking if the note has entered the intake yet
     return lowerSensor.get();
   }
 
