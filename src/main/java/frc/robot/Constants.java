@@ -52,6 +52,8 @@ public final class Constants {
     public static final int climberRightMotorID = 16;
     public static final int climberLeftLimitSwitchID = 2;
     public static final int climberRightLimitSwitchID = 1;
+    public static final double defaultClimberSpeedMetersPerSecond = 0.2;
+    public static final double winchCircumfrenceMeters = Units.inchesToMeters(0.75*Math.PI);
   }
 
   public static class ShooterConstants {
