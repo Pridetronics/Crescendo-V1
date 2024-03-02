@@ -70,7 +70,7 @@ public final class Constants {
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID =3; //Which sensor is the lower sensor
-    public static final int intakeRPM =3; //Setting our intake RPM
+    public static final int intakeRPM = 3000; //Setting our intake RPM
   } //End of Class
 
 
@@ -88,7 +88,7 @@ public final class Constants {
     //Axis for turning
     public static final int kDriveJoystickTurningAxis = 4;
     //Button ID for robot oriented drive (when holding)
-    public static final int kDriveFieldOrientedDriveBtnID = 4;
+    public static final int kDriveFieldOrientedDriveBtnID = 0;
     //Button ID for reseting the orientation of the robot to the forward direction of the robot
     public static final int kZeroHeadingBtnID = 2;
     //Time it takes before you can press the zero heading button again (seconds)
@@ -96,7 +96,7 @@ public final class Constants {
     //Sets our intake ID
     public static final int kIntakeButtonID = 4;
     //Sets our shooter ID
-    public static final int KShooterButtonID =3;
+    public static final int KShooterButtonID = 3;
   }
 
   //Constants for data related to the wheels of each module (not the module itself)

@@ -44,11 +44,11 @@ public class IntakeSubsystem extends SubsystemBase {
   } //End of Class
   
   public boolean isNoteInsideIntake() { //Checks if the note is inside the intake (Using Upper Sensor))
-     return upperSensor.get();
+     return !upperSensor.get();
   } //End of Class
 
   public boolean hasNoEnteredIntake() { //Checking if the note has entered the intake yet (Using Lower Sensor)
-    return lowerSensor.get();
+    return !lowerSensor.get();
   } //End of Class
 
   @Override
