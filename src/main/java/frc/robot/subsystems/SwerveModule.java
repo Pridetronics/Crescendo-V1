@@ -142,7 +142,7 @@ public class SwerveModule extends SubsystemBase implements SwerveModuleInterface
 
   //Sets the module to a drive velocity and directional position
   public void setDesiredState(SwerveModuleState state) {    
-    SmartDashboard.putString("Module [" + (absoluteEncoder.getDeviceID()-8) + "] state", state.toString());
+    SmartDashboard.putString("Module [" + (absoluteEncoder.getDeviceID()) + "] state", state.toString());
 
     if (Math.abs(state.speedMetersPerSecond) < 0.01) {
       stop();

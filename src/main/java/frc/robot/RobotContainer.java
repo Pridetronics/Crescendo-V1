@@ -76,8 +76,8 @@ public class RobotContainer {
     .withSize(2, 4);
 
     for (int i = 0; i <= 6; i++) {
-      SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
-      notePositionLayout.addPersistent("Note number: " + (i+1), createdChooser)
+      SendableChooser<NotePosition> createdChooser = NotePosition.getNewNotePositionChooser();
+      notePositionLayout.add("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
       
     }
@@ -91,7 +91,7 @@ public class RobotContainer {
         swerveSubsystem, 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis), 
         () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis) * simulatedYAxisMult, 
-        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
+        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> !driverJoystick.getRawButton(IOConstants.kDriveFieldOrientedDriveBtnID)
       )
     );
@@ -122,20 +122,6 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
-  }
-
-  private SendableChooser<NotePosition> getNewNotePositionChooser() {
-    SendableChooser<NotePosition> chooser = new SendableChooser<NotePosition>();
-    chooser.setDefaultOption("None", null);
-    chooser.addOption("Stage Close", NotePositionConstants.StageClose);
-    chooser.addOption("Center Close", NotePositionConstants.CenterClose);
-    chooser.addOption("Amp Close", NotePositionConstants.AmpClose);
-    chooser.addOption("Source First Field Center", NotePositionConstants.SourceFirstFieldCenter);
-    chooser.addOption("Source Second Field Center", NotePositionConstants.SourceSecondFieldCenter);
-    chooser.addOption("Center Field Center", NotePositionConstants.CenterFieldCenter);
-    chooser.addOption("Amp Second Field Center", NotePositionConstants.AmpSecondFieldCenter);
-    chooser.addOption("Amp First Field Center", NotePositionConstants.AmpFirstFieldCenter);
-    return chooser;
   }
 
   /**
