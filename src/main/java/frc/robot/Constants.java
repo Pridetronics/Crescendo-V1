@@ -108,7 +108,7 @@ public final class Constants {
     public static final double k360DegreesToRadians = 2*Math.PI;
 
     //Power value in the PIDController that controls the wheel direction
-    public static final double kPTurning = 1;
+    public static final double kPTurning = 0.8;
 
     
     //Distance between the right and left wheels
@@ -181,7 +181,7 @@ public final class Constants {
       (make sure the value's units are in degrees, not rotations)
        Your welcome! -Guy who made this program   
     */
-    public static final int kFrontLeftDriveAbsoluteEncoderOffsetDeg = 67;
+    public static final double kFrontLeftDriveAbsoluteEncoderOffsetDeg = 75.76;
 
     //Everything above applies for the below modules
     
@@ -191,7 +191,7 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = true;
     public static final int kFrontRightDriveAbsoluteEncoderCANID = 2;
     public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
-    public static final int kFrontRightDriveAbsoluteEncoderOffsetDeg = 69;
+    public static final double kFrontRightDriveAbsoluteEncoderOffsetDeg = 72.24;
 
 
     public static final int kBackRightDriveMotorCANID = 9;
@@ -200,7 +200,7 @@ public final class Constants {
     public static final boolean kBackRightDriveEncoderReversed = true;
     public static final int kBackRightDriveAbsoluteEncoderCANID = 3;
     public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
-    public static final int kBackRightDriveAbsoluteEncoderOffsetDeg = 101;
+    public static final double kBackRightDriveAbsoluteEncoderOffsetDeg = 101.25;
 
     public static final int kBackLeftDriveMotorCANID = 11;
     public static final int kBackLeftTurningMotorCANID = 12;
@@ -208,7 +208,7 @@ public final class Constants {
     public static final boolean kBackLeftDriveEncoderReversed = false;
     public static final int kBackLeftDriveAbsoluteEncoderCANID = 4;
     public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
-    public static final int kBackLeftDriveAbsoluteEncoderOffsetDeg = 118; 
+    public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 121.72; 
   }
 
   //Constants related to the autonomous period
@@ -393,7 +393,7 @@ public final class Constants {
               int driveMotorCANID, 
               int turningMotorCANID, 
               int CTRETurningEncoderID,
-              int absoluteEncoderOffsetDegrees,
+              double absoluteEncoderOffsetDegrees,
               boolean absoluteEncoderReversed,
               boolean driveEncoderReversed,
               boolean turningEncoderReversed
