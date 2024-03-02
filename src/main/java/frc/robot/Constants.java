@@ -59,7 +59,7 @@ public final class Constants {
     public static final double kShooterPValue = 0.0002;
     public static final double kShooterIValue = 0.0000005;
     public static final double kShooterDValue = 0.0029;
-    public static final int shooterRPM = 4000; //Our shooter RPM
+    public static final int shooterRPM = -4000; //Our shooter RPM
     public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
   } //End of Class
 
