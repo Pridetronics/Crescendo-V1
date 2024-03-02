@@ -224,7 +224,7 @@ public final class Constants {
     public static final double kNoteGrabDistanceOvershootMeters = .5;
 
     //Max number of notes the driver can allow the robot to grab
-    public static final int maxNumberOfNotesToPickInShuffleboard = 6;
+    public static final int kMaxNumberOfNotesToPickInShuffleboard = 6;
     //Locations for depositing notes
     public static class NoteDepositConstants {
       public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(

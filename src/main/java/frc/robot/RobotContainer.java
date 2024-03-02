@@ -71,6 +71,12 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
+    Optional<EstimatedRobotPose> startingRobotPose = visionSubsystem.getEstimatedPose();
+    if (startingRobotPose.isPresent()) {
+      swerveSubsystem.resetOdometry(startingRobotPose.get().estimatedPose.toPose2d());
+    }
+
+
     //Create a shufflebaord tab for the drivers to see all teleop info
     ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
     //Create a shufflebaord tab for the drivers to see all autonomous info
@@ -78,9 +84,18 @@ public class RobotContainer {
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
     .withSize(2, 4);
 
-    for (int i = 0; i <= 6; i++) {
+    for (int i = 0; i < AutoConstants.kMaxNumberOfNotesToPickInShuffleboard; i++) {
       SendableChooser<NotePosition> createdChooser = NotePosition.getNewNotePositionChooser();
       notePositionLayout.add("Note number: " + (i+1), createdChooser)
+        .withWidget(BuiltInWidgets.kComboBoxChooser);
+      
+    }
+
+    ShuffleboardLayout notDepositLayout = autoTab.getLayout("Note Deposit Order", BuiltInLayouts.kList);
+
+    for (int i = 0; i < AutoConstants.kMaxNumberOfNotesToPickInShuffleboard; i++) {
+      SendableChooser<NoteDepositPosition> createdChooser = NoteDepositPosition.getNewNoteDepositChooser();
+      notDepositLayout.add("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
       
     }
@@ -129,7 +144,8 @@ public class RobotContainer {
 
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
-    .onTrue(new ZeroRobotHeading(swerveSubsystem));
+    .onTrue(new ZeroRobotHeading(swerveSubsystem))
+    .debounce(IOConstants.kZeroHeadingDebounceTime);  
 
   }
 
