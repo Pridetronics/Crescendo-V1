@@ -15,12 +15,14 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeCommand extends Command {
   private IntakeSubsystem m_IntakeSubsystem; //Telling the system how to identify our intake subystem
+  private boolean hasNoteNotBeenDetected; //Telling the system how to see our upper sensor (checking)
+  //end of methods
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
+  public IntakeCommand(IntakeSubsystem intakeSubsystem) { //storing subsystem
     m_IntakeSubsystem = intakeSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_IntakeSubsystem);
-  } //End of Class
+    addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
+  } //End of Entire Class
 
 
 
@@ -32,17 +34,26 @@ public class IntakeCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_IntakeSubsystem.isNoteInsideIntake();
+    if (m_IntakeSubsystem.isNoteInsideIntake() == false) { //telling the command how to use our digital inputs
+      hasNoteNotBeenDetected = true;
+    } //end of class
+  }
 //End of Class
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_IntakeSubsystem.stopMotorSpeed(); //Tells our intake to stop
+    m_IntakeSubsystem.stopMotorSpeed(); //Tells our intake what to do when it stops
+    hasNoteNotBeenDetected = false;
   } //End of Class
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_IntakeSubsystem.isNoteInsideIntake(); //Checks if the note is inside the intake
+    if (m_IntakeSubsystem.isNoteInsideIntake() && hasNoteNotBeenDetected == true) { //end if the sensor(digital input) has previously been false and currently true, if not then continue running
+      return true;
+    }
+    return false; //Shorthand for else
   }
 } //End of Class
