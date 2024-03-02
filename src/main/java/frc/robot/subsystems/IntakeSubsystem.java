@@ -16,40 +16,41 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorCANID, MotorType.kBrushless); //This is setting our intake motor
   private SparkPIDController intakePIDController = intakeMotor.getPIDController();
-  /** Creates a new IntakeSubsystem. */
-
+  /** Creates a new IntakeSubsystem. ^ */ 
+//End of Class
   public DigitalInput upperSensor = new DigitalInput(IntakeConstants.upperSensorChannelID);
 
   public DigitalInput lowerSensor = new DigitalInput(IntakeConstants.lowerSensorChannelID);
-//** Creates the upper and lower Sensors. */
-
+//** Creates the upper and lower Sensors. ^ */
+//End of Method
   public IntakeSubsystem() {
-    intakePIDController.setP(IntakeConstants.kIntakePValue);
+    intakePIDController.setP(IntakeConstants.kIntakePValue); //Calling our intake constants
   }
-
+//End of Method
 
   public void setMotorAtRPM(double targetRPM) {
-    intakePIDController.setReference(targetRPM, ControlType.kVelocity);
-  }
+    intakePIDController.setReference(targetRPM, ControlType.kVelocity); //Setting our motor RPM
+  } //End of Method
 
   public void stopMotorSpeed() {
-    intakePIDController.setReference(0, ControlType.kVelocity);
-  }
+    intakePIDController.setReference(0, ControlType.kVelocity); //Stopping our motor
+  } //End of Class
   
-  public void setIntakeDirection(boolean direction) {
+  public void setIntakeDirection(boolean direction) { //Telling the Intake what and when our direction changes to
     intakeMotor.setInverted(direction);
-  }
+  } //End of Class
   
-  public boolean isNoteInsideIntake() {
+  public boolean isNoteInsideIntake() { //Checks if the note is inside the intake (Using Upper Sensor))
      return upperSensor.get();
-  }
+  } //End of Class
 
-  public boolean hasNoEnteredIntake() {
+  public boolean hasNoEnteredIntake() { //Checking if the note has entered the intake yet (Using Lower Sensor)
     return lowerSensor.get();
-  }
+  } //End of Class
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
 }
+//End of Method

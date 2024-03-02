@@ -14,35 +14,35 @@ import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeCommand extends Command {
-  private IntakeSubsystem m_IntakeSubsystem;
+  private IntakeSubsystem m_IntakeSubsystem; //Telling the system how to identify our intake subystem
   /** Creates a new IntakeCommand. */
   public IntakeCommand(IntakeSubsystem intakeSubsystem) {
     m_IntakeSubsystem = intakeSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IntakeSubsystem);
-  }
+  } //End of Class
 
 
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_IntakeSubsystem.setMotorAtRPM(Constants.IntakeConstants.intakeRPM);
-  }
+    m_IntakeSubsystem.setMotorAtRPM(Constants.IntakeConstants.intakeRPM); //Sets our intake RPM by caling what we set in Robot Container
+  } //End of Method
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
-
+//End of Class
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_IntakeSubsystem.stopMotorSpeed();
-  }
+    m_IntakeSubsystem.stopMotorSpeed(); //Tells our intake to stop
+  } //End of Class
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_IntakeSubsystem.isNoteInsideIntake();
+    return m_IntakeSubsystem.isNoteInsideIntake(); //Checks if the note is inside the intake
   }
-}
+} //End of Class

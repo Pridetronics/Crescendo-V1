@@ -15,22 +15,22 @@ import frc.robot.Constants.ShooterConstants;
 public class ShooterSubsystem extends SubsystemBase {
   CANSparkMax shooterMotor = new CANSparkMax(ShooterConstants.kShooterMotorCANID, MotorType.kBrushless); //This is setting our Motor
   SparkPIDController shooterPIDController = shooterMotor.getPIDController();
-
+//End of Class
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     shooterPIDController.setP(ShooterConstants.kShooterPValue);
-  }
-
-  void setMotorAtRPM(double targetRPM) {
-    shooterPIDController.setReference(targetRPM, ControlType.kVelocity);
-  }
-
-  void stopMotorSpeed() {
+  } //End of Class
+//Sets the motor RPM
+  public void setMotorAtRPM(double targetRPM) {
+    shooterPIDController.setReference(targetRPM, ControlType.kVelocity)
+  } //End of Class
+//Stops the shooter
+  public void stopMotorSpeed() {
     shooterPIDController.setReference(0, ControlType.kVelocity);
-  }
+  } //End of Class
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-}
+} //End of Class
