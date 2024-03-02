@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorCANID, MotorType.kBrushless); //This is setting our intake motor
@@ -24,7 +25,9 @@ public class IntakeSubsystem extends SubsystemBase {
 //** Creates the upper and lower Sensors. ^ */
 //End of Method
   public IntakeSubsystem() {
-    intakePIDController.setP(IntakeConstants.kIntakePValue); //Calling our intake constants
+    intakePIDController.setP(IntakeConstants.kIntakePValue);
+    intakePIDController.setI(IntakeConstants.kIntakeIValue);
+    intakePIDController.setD(IntakeConstants.kIntakeDValue); //Calling our intake constants
   }
 //End of Method
 

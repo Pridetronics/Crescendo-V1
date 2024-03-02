@@ -19,8 +19,11 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     shooterPIDController.setP(ShooterConstants.kShooterPValue);
+    shooterPIDController.setI(ShooterConstants.kShooterIValue);
+    shooterPIDController.setD(ShooterConstants.kShooterDValue);
   } //End of Class
-//Sets the motor RPM
+  
+  //Sets the motor RPM
   public void setMotorAtRPM(double targetRPM) {
     shooterPIDController.setReference(targetRPM, ControlType.kVelocity);
   } //End of Class

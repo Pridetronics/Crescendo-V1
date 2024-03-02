@@ -34,7 +34,9 @@ public class ShootForSeconds extends Command {
  //End of Class
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_ShooterSubsystem.stopMotorSpeed();
+  }
  //End of Class
   // Returns true when the command should end.
   @Override
