@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -38,13 +39,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootForSeconds;
+import frc.robot.commands.StopShooter;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.WaitForLowerIntakeSensor;
+import frc.robot.commands.WindUpShooter;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -137,7 +142,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to activate the shooter
-    .onTrue(new ShootForSeconds(shooterSubsystem));
+    .onTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds));
 
     new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake
     .onTrue(new IntakeCommand(intakeSubsystem));
@@ -215,6 +220,24 @@ public class RobotContainer {
         currentDepositPosition.getPosition()
       );
 
+      SequentialCommandGroup intakeDrivingSequence = new SequentialCommandGroup(
+        new ParallelRaceGroup(
+          //Moves robot from the chosen attack position on the target note to the actual note itself
+          new SwerveControllerCommand(
+            attackPositionToNote, 
+            swerveSubsystem::getPose, 
+            WheelConstants.kDriveKinematics, 
+            xController,
+            yController,
+            thetaController,
+            swerveSubsystem::setModuleStates,
+            swerveSubsystem
+          ),
+          //If the lower sensor in activated then cut off this sequence early
+          new WaitForLowerIntakeSensor(intakeSubsystem)
+        )
+      );
+
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
         new SequentialCommandGroup(
@@ -229,38 +252,42 @@ public class RobotContainer {
             swerveSubsystem::setModuleStates,
             swerveSubsystem
           ),
-          //ENABLE INTAKE COMMAND HERE
-          //Moves robot from the chosen attack position on the target note to the actual note itself
-          new SwerveControllerCommand(
-            attackPositionToNote, 
-            swerveSubsystem::getPose, 
-            WheelConstants.kDriveKinematics, 
-            xController,
-            yController,
-            thetaController,
-            swerveSubsystem::setModuleStates,
-            swerveSubsystem
-          ),
-          //Does the following all at once:
+          //Run both the intake and driving in parallel
           new ParallelCommandGroup(
-            //Move robot to the chosen deposit area
-            new SwerveControllerCommand(
-              notePositionToNewDeposit, 
-              swerveSubsystem::getPose, 
-              WheelConstants.kDriveKinematics, 
-              xController,
-              yController,
-              thetaController,
-              swerveSubsystem::setModuleStates,
-              swerveSubsystem
+            //Runs intake
+            new IntakeCommand(intakeSubsystem),
+            //Drives to note and then drives to deposit location
+            new SequentialCommandGroup(
+              //Manuvers intake into note and collects it
+              intakeDrivingSequence,
+              //Does the following all at once:
+              new ParallelCommandGroup(
+                //Move robot to the chosen deposit area
+                new SwerveControllerCommand(
+                  notePositionToNewDeposit, 
+                  swerveSubsystem::getPose, 
+                  WheelConstants.kDriveKinematics, 
+                  xController,
+                  yController,
+                  thetaController,
+                  swerveSubsystem::setModuleStates,
+                  swerveSubsystem
+                ),
+                //Wind up the shooter to target RPM
+                new WindUpShooter(shooterSubsystem)
+              ),
+              new SequentialCommandGroup(
+                //INtake note into shooter
+                new IntakeCommand(intakeSubsystem),
+                //Once intake is off, stop shooter
+                new StopShooter(shooterSubsystem)
+              )
             )
-            //SPIN UP SHOOTER HERE W/ WIND UP WAIT
           )
-          //SHOOT NOTE HERE
         )
-      );
+      ); //END OF COMMAND SEQUENCE FOR THIS NOTE
+
       previousOrderDepositPosition = currentDepositPosition;
-      
     }
 
     return totalCommandSequence;

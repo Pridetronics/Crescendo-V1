@@ -13,9 +13,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShootForSeconds extends Command {
   private ShooterSubsystem m_ShooterSubsystem; //Telling the system how to identify our shooter subsystem
   private Timer ShooterTimer = new Timer(); //Setting a timer for our shooter
+  private double timeToShootFor;
   /** Creates a new ShootShooterCmd. */
-  public ShootForSeconds(ShooterSubsystem shooterSubsystem) {
+  public ShootForSeconds(ShooterSubsystem shooterSubsystem, double timeEnabledFor) {
     m_ShooterSubsystem = shooterSubsystem;
+    timeToShootFor = timeEnabledFor;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_ShooterSubsystem);
   } //End of Class
@@ -41,6 +43,6 @@ public class ShootForSeconds extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ShooterTimer.hasElapsed(Constants.ShooterConstants.TimeToShootSeconds); //Sets when our timer will stop
+    return ShooterTimer.hasElapsed(timeToShootFor); //Sets when our timer will stop
   }
 } //End of Class
