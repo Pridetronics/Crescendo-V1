@@ -73,7 +73,6 @@ public final class Constants {
     public static final int intakeRPM = 3000; //Setting our intake RPM
   } //End of Class
 
-
   //Constants for features related to user controller input
   public static class IOConstants {
     //Deadband for the joysticks (for driving inputs so the robot doesnt move when not touching controller)
