@@ -24,6 +24,9 @@ public class FieldPositionUpdate extends Command {
   public FieldPositionUpdate(VisionSubsystem visionSubsystem, SwerveSubsystem swerveSubsystem) {
     m_VisionSubsystem = visionSubsystem;
     m_SwerveSubsystem = swerveSubsystem;
+
+    SmartDashboard.putData("Field Position Visual", m_field);
+
     addRequirements(m_VisionSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -31,7 +34,6 @@ public class FieldPositionUpdate extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putData("Field Position Visual", m_field);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +44,6 @@ public class FieldPositionUpdate extends Command {
     //Check if a field position was caculated last cycle
     if (robotPose.isPresent()) {
       //Update the swerve drive odometry to work with this position
-      System.out.println("FOUDN APRIL TAG");
       m_SwerveSubsystem.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds);
     }
     
@@ -65,9 +66,9 @@ public class FieldPositionUpdate extends Command {
     return true;
   }
 
-  //Makes it so other commands do not cancel this command
-  @Override
-  public InterruptionBehavior getInterruptionBehavior() {
-    return InterruptionBehavior.kCancelIncoming;
-  }
+  // //Makes it so other commands do not cancel this command
+  // @Override
+  // public InterruptionBehavior getInterruptionBehavior() {
+  //   return InterruptionBehavior.kCancelIncoming;
+  // }
 }

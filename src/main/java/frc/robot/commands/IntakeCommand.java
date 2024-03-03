@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.RobotBase;
+
 //import com.revrobotics.CANSparkBase.ControlType;
 //import com.revrobotics.SparkPIDController;
 
@@ -21,7 +23,7 @@ public class IntakeCommand extends Command {
   public IntakeCommand(IntakeSubsystem intakeSubsystem) { //storing subsystem
     m_IntakeSubsystem = intakeSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
+    //addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
   } //End of Entire Class
 
 
@@ -51,6 +53,9 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //For autonomous simulation
+    if (RobotBase.isSimulation()) return true;
+
     if (m_IntakeSubsystem.isNoteInsideIntake() && hasNoteNotBeenDetected == true) { //end if the sensor(digital input) has previously been false and currently true, if not then continue running
       return true;
     }

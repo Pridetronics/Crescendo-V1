@@ -26,9 +26,9 @@ public class NoteDepositPosition {
     public static final ArrayList<SendableChooser<NoteDepositPosition>> noteDepositList = new ArrayList<SendableChooser<NoteDepositPosition>>();
     public static SendableChooser<NoteDepositPosition> getNewNoteDepositChooser() {
         SendableChooser<NoteDepositPosition> chooser = new SendableChooser<NoteDepositPosition>();
-        chooser.setDefaultOption("Stage Center-Side", NoteDepositConstants.speakerCenterSide);
-        chooser.addOption("Stage Amp-Side", NoteDepositConstants.speakerAmpSide);
-        chooser.addOption("Stage Source-Side", NoteDepositConstants.speakerSourceSide);
+        chooser.setDefaultOption("Speaker Center-Side", NoteDepositConstants.speakerCenterSide);
+        chooser.addOption("Speaker Amp-Side", NoteDepositConstants.speakerAmpSide);
+        chooser.addOption("Speaker Source-Side", NoteDepositConstants.speakerSourceSide);
         chooser.addOption("Amplifier", NoteDepositConstants.amplifier);
 
         noteDepositList.add(chooser);

@@ -12,8 +12,7 @@ public class WaitForLowerIntakeSensor extends Command {
   /** Creates a new WaitForLowerIntakeSensor. */
   public WaitForLowerIntakeSensor(IntakeSubsystem intakeSubsystem) {
     m_IntakeSubsystem = intakeSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem);
+    //No need for adding requirements here
   }
 
   // Called when the command is initially scheduled.

@@ -13,15 +13,10 @@ import org.photonvision.EstimatedRobotPose;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -37,13 +32,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
-import frc.robot.Constants.AutoConstants.NotePositionConstants;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.SetOdometerWithCamera;
 import frc.robot.commands.ShootForSeconds;
 import frc.robot.commands.StopShooter;
 import frc.robot.commands.FieldPositionUpdate;
@@ -72,6 +66,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
+  private SendableChooser<Pose2d> emergencyStartingPose = new SendableChooser<Pose2d>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -105,6 +100,12 @@ public class RobotContainer {
       
     }
 
+    emergencyStartingPose.setDefaultOption("Speaker Center-Side", NoteDepositConstants.speakerCenterSide.getPosition());
+    emergencyStartingPose.addOption("Speaker Amp-Side", NoteDepositConstants.speakerAmpSide.getPosition());
+    emergencyStartingPose.addOption("Speaker Source-Side", NoteDepositConstants.speakerSourceSide.getPosition());
+    emergencyStartingPose.addOption("Amplifier", NoteDepositConstants.amplifier.getPosition());
+    autoTab.add("Emergency Starting Pose", emergencyStartingPose);
+
     int simulatedYAxisMult = RobotBase.isReal() ? 1 : -1;
 
     //Command set to run periodicly to register joystick inputs
@@ -119,12 +120,15 @@ public class RobotContainer {
       )
     );
 
+    //Runs the command when other vision commands are not being used
     visionSubsystem.setDefaultCommand(
       new FieldPositionUpdate(
         visionSubsystem, 
         swerveSubsystem
       )
     );
+    //Schedule this command so that it will update the odometer, and then allow the default command to run once it it done
+    new SetOdometerWithCamera(swerveSubsystem, visionSubsystem).schedule();
 
     // Configure the trigger bindings
     configureBindings();
@@ -183,11 +187,19 @@ public class RobotContainer {
       NoteDepositPosition currentDepositPosition = NoteDepositPosition.noteDepositList.get(i).getSelected();
       //If a previous note deposit location does not exist yet, we will set it to the closest deposit location to the robot
       if (previousOrderDepositPosition == null) {
-        previousOrderDepositPosition = NoteDepositPosition.getClosestDepositLocationFromPoint(swerveSubsystem.getPose().getTranslation());
         //If the camera is not looking at an april tag, the robot will guess its starting pose
         if (!visionSubsystem.lookingAtAprilTag()) {
-          swerveSubsystem.resetOdometry(previousOrderDepositPosition.getPosition());
+          swerveSubsystem.resetOdometry(
+            TrajectoryHelper.toAllianceRelativePosition(
+              emergencyStartingPose.getSelected()
+            )
+          );
         }
+        //Update the previous deposit location variable
+        previousOrderDepositPosition = NoteDepositPosition.getClosestDepositLocationFromPoint(
+          //Converts the robots current position to a blue alliance relative position
+          TrajectoryHelper.toAllianceRelativePosition(swerveSubsystem.getPose().getTranslation())
+        );
       }
       //List of waypoints in between the deposit location and the note attack position
       List<Translation2d> firstWaypoints = notePos.getWaypointsDepositToNote(previousOrderDepositPosition.getDepositLocationEnum());
@@ -277,7 +289,7 @@ public class RobotContainer {
                 new WindUpShooter(shooterSubsystem)
               ),
               new SequentialCommandGroup(
-                //INtake note into shooter
+                //Intake note into shooter
                 new IntakeCommand(intakeSubsystem),
                 //Once intake is off, stop shooter
                 new StopShooter(shooterSubsystem)

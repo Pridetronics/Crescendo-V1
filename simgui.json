@@ -44,6 +44,7 @@
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 6": "String Chooser",
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 7": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Field Position Visual": "Field2d",
       "/SmartDashboard/Field Visual": "Field2d"
     },
     "windows": {

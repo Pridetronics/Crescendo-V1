@@ -103,7 +103,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     gyro.reset();
-    resetOdometry(new Pose2d(getPose().getTranslation(), getRotation2d()));
+    
+    resetOdometry(
+      new Pose2d(
+        getPose().getTranslation(), 
+        getRotation2d()
+      )
+    );
   }
 
   //Sets the robot heading to be what it currently is on the field, useful if the robot is not aligned with the forward direction of the field at the start of the match
@@ -120,6 +126,9 @@ public class SwerveSubsystem extends SubsystemBase {
     return gyro.getAngle() % 360;
   }
 
+  public double getRollDegrees() {
+    return gyro.getRoll();
+  }
 
   //Gets the rotation of the robot for use by WPILIB systems
   public Rotation2d getRotation2d() {

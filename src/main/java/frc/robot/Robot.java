@@ -95,6 +95,23 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    /*
+    TODO: run a sequence of tests and show a series of booleans in shuffleboard
+      Types of booleans to show:
+      - Front left module
+      - Front right module
+      - Back right module
+      - Back left module
+      - Intake
+      - Intake Lower Sensor
+      - Intake Upper Sensor
+      - Shooter
+      - Left climber motor
+      - Left climber sensor
+      - Right climber motor
+      - Right climber sensor
+    */
   }
 
   /** This function is called periodically during test mode. */

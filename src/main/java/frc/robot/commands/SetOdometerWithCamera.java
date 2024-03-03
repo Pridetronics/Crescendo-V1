@@ -23,6 +23,7 @@ public class SetOdometerWithCamera extends Command {
     m_SwerveSubsystem = swerveSubsystem;
     m_VisionSubsystem = visionSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_VisionSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -47,5 +48,11 @@ public class SetOdometerWithCamera extends Command {
   @Override
   public boolean isFinished() {
     return hasReset || DriverStation.isEnabled();
+  }
+
+  //Allows the command to run when disabled
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
   }
 }
