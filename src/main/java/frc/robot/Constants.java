@@ -311,7 +311,11 @@ public final class Constants {
       );
       public static final NotePosition SourceSecondFieldCenter = new NotePosition(
         new Translation2d(8.26, 2.42), 
-        List.of(),
+        List.of(
+          new Translation2d(7.59, 1.93),
+          new Translation2d(7.53, 2.40),
+          new Translation2d(7.58, 2.81)
+        ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kSecondSourceCenterLineNoteToAmplifier,
@@ -323,7 +327,11 @@ public final class Constants {
       );
       public static final NotePosition CenterFieldCenter = new NotePosition(
         new Translation2d(8.27, 4.11), 
-        List.of(),
+        List.of(
+          new Translation2d(7.65, 3.51),
+          new Translation2d(7.54, 4.13),
+          new Translation2d(7.66, 4.51)
+        ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kCenterCenterLineNoteToAmplifier,
@@ -335,7 +343,11 @@ public final class Constants {
       );
       public static final NotePosition AmpSecondFieldCenter = new NotePosition(
         new Translation2d(8.28, 5.80), 
-          List.of(),
+          List.of(
+            new Translation2d(7.70, 5.12),
+            new Translation2d(7.50, 5.73),
+            new Translation2d(7.60, 6.25)
+          ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kSecondAmpCenterLineNoteToAmplifier,
@@ -347,7 +359,10 @@ public final class Constants {
       );
       public static final NotePosition AmpFirstFieldCenter = new NotePosition(
         new Translation2d(8.28, 7.47), 
-        List.of(),
+        List.of(
+          new Translation2d(7.71, 6.81),
+          new Translation2d(7.55, 7.44)
+        ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
             DepositLocation.kAmplifier, SwerveAutoPaths.kFirstAmpCenterLineNoteToAmplifier,
