@@ -66,7 +66,6 @@ public class NotePosition {
             attackPoses.add(i, poseToSet);
         }
         kAttackPositions = attackPoses;
-        
     }
 
     public List<Translation2d> getWaypointsNoteToDeposit(DepositLocation location) {
@@ -76,11 +75,13 @@ public class NotePosition {
 
     public List<Translation2d> getWaypointsDepositToNote(DepositLocation location) {
         List<Translation2d> waypoints = kPathsToDepositories.get(location);
-        List<Translation2d> reversedWaypoints = List.of();
+        List<Translation2d> reversedWaypoints = new ArrayList<Translation2d>();
         if (waypoints.size() <= 1) return waypoints;
 
         for (int i = waypoints.size()-1; i >= 0; i--) {
-            reversedWaypoints.add(waypoints.get(i));
+            reversedWaypoints.add(
+                waypoints.get(i)
+            );
         }
         return reversedWaypoints;
     }

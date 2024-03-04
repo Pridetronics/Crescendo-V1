@@ -118,6 +118,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "Field Position Visual": {
+          "open": true
+        },
         "open": true
       },
       "photonvision": {

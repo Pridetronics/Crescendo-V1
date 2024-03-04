@@ -4,6 +4,7 @@
 
 package frc.robot.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,17 +48,17 @@ public class TrajectoryHelper {
     }
 
     public static Trajectory createTrajectoryWithAllianceRelativePositioning(Pose2d init, List<Translation2d> points, Pose2d end) {
+        List<Translation2d> newPointList = new ArrayList<Translation2d>();
         for (int i = 0; i < points.size(); i++) {
-        points.set(
-            i, 
-            toAllianceRelativePosition(
-                points.get(i)
-            )
-        );
+            newPointList.add(
+                toAllianceRelativePosition(
+                    points.get(i)
+                )
+            );
         }
         return TrajectoryGenerator.generateTrajectory(
             toAllianceRelativePosition(init), 
-            points, 
+            newPointList, 
             toAllianceRelativePosition(end), 
             Constants.kTrajectoryConfig
         );

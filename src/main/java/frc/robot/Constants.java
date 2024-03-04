@@ -220,7 +220,7 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
-    public static final double kNoteGrabDistanceOvershootMeters = .5;
+    public static final double kNoteGrabDistanceOvershootMeters = 1;
 
     //Max number of notes the driver can allow the robot to grab
     public static final int kMaxNumberOfNotesToPickInShuffleboard = 6;
@@ -375,14 +375,14 @@ public final class Constants {
     }
 
     //Max speed during autonomous
-    public static final double kMaxSpeedMetersPerSecond = 4.5;
+    public static final double kMaxSpeedMetersPerSecond = 5;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 4;
+    public static final double kMaxAccelerationMetersPerSecond = 6;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
     //Acceleration during autonomous (note its in radians, not units)
-    public static final double kMaxTurningAccelerationRadiansPerSecond = 540 * (Math.PI / 180);
+    public static final double kMaxTurningAccelerationRadiansPerSecond = 360 * (Math.PI / 180);
 
     //Power Controllers for the robot to keep it on course
     public static final double kPXController = 1.5;
