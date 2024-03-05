@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import com.revrobotics.CANSparkBase.ControlType;
-
 import edu.wpi.first.wpilibj.RobotBase;
 
 //import com.revrobotics.CANSparkBase.ControlType;

@@ -5,15 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.Climber;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   Climber climberLeft;
   Climber climberRight; 
 
-  void ClimberSubsystem() 
-  {
+  public ClimberSubsystem() {
 
 
    climberLeft = new Climber(ClimberConstants.climberLeftMotorID, ClimberConstants.climberLeftLimitSwitchID ); // this creates a new left climber object 
