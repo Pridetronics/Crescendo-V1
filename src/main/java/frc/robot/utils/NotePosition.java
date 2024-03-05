@@ -28,6 +28,9 @@ public class NotePosition {
     public static SendableChooser<NotePosition> getNewNotePositionChooser() {
         SendableChooser<NotePosition> chooser = new SendableChooser<NotePosition>();
         chooser.setDefaultOption("None", null);
+        chooser.addOption("Wait 1 Sec", new WaitingNotePosition(1));
+        chooser.addOption("Wait 3 Sec", new WaitingNotePosition(3));
+        chooser.addOption("Wait 5 Sec", new WaitingNotePosition(5));
         chooser.addOption("Stage Wing", NotePositionConstants.StageClose);
         chooser.addOption("Center Wing", NotePositionConstants.CenterClose);
         chooser.addOption("Amp Wing", NotePositionConstants.AmpClose);

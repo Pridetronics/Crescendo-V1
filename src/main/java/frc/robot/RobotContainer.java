@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -52,6 +53,7 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.NoteDepositPosition;
 import frc.robot.utils.NotePosition;
 import frc.robot.utils.TrajectoryHelper;
+import frc.robot.utils.WaitingNotePosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -180,8 +182,21 @@ public class RobotContainer {
     for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
       //get the note selected for the current ordered position
       NotePosition notePos = NotePosition.noteSelectionList.get(i).getSelected();
-      //Caculate the path for this ordered note position only if one was selected
+
+      //If the "None" option was selected then skip to the next note position order
       if (notePos == null) continue;
+
+      //If the chosen item is an order to wait, tell the sequence to wait here for the specified period
+      if (notePos instanceof WaitingNotePosition) {
+        totalCommandSequence.addCommands(
+          new WaitCommand(
+            ((WaitingNotePosition) notePos)
+            .getWaitTime()
+          )
+        );
+        //continue to next note position
+        continue;
+      }
 
       //Get the note deposition location in the corresponding note order selected
       NoteDepositPosition currentDepositPosition = NoteDepositPosition.noteDepositList.get(i).getSelected();
