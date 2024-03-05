@@ -121,11 +121,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to activate the shooter
-    .onTrue(new ShootForSeconds(shooterSubsystem));
+    new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to toggle the shooter
+    .toggleOnTrue(new ShootForSeconds(shooterSubsystem));
 
-    new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake
-    .onTrue(new IntakeCommand(intakeSubsystem));
+    new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake while held
+    .whileTrue(new IntakeCommand(intakeSubsystem));
 
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,9 +26,10 @@ public class IntakeSubsystem extends SubsystemBase {
 //** Creates the upper and lower Sensors. ^ */
 //End of Method
   public IntakeSubsystem() {
-    intakePIDController.setP(IntakeConstants.kIntakePValue);
-    intakePIDController.setI(IntakeConstants.kIntakeIValue);
-    intakePIDController.setD(IntakeConstants.kIntakeDValue); //Calling our intake constants
+    intakePIDController.setP(IntakeConstants.kIntakePValue); //V
+    intakePIDController.setI(IntakeConstants.kIntakeIValue); //V
+    intakePIDController.setD(IntakeConstants.kIntakeDValue); //Calling our intake constants (values we stated as well)
+    intakeMotor.setIdleMode(IdleMode.kBrake); //Sets our idle mode on our controller to brake mode
   }
 //End of Method
 
@@ -36,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
   } //End of Method
 
   public void stopMotorSpeed() {
-    intakePIDController.setReference(0, ControlType.kVelocity); //Stopping our motor
+    intakeMotor.set(0); //Stopping our motor
   } //End of Class
   
   public void setIntakeDirection(boolean direction) { //Telling the Intake what and when our direction changes to
