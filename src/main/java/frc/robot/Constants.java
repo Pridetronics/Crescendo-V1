@@ -59,8 +59,9 @@ public final class Constants {
     public static final double kShooterPValue = 0.0002;
     public static final double kShooterIValue = 0.0000005;
     public static final double kShooterDValue = 0.0029;
-    public static final int shooterRPM = -4000; //Our shooter RPM (negative because if positive it will suck it in)
+    public static final int shooterRPM = 5800; //Our shooter RPM
     public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
+    public static final int kMinRPMForIntake = 5000; //Minimum RPM needed for putting a note into the shooter
   } //End of Class
 
   public static class IntakeConstants {
@@ -70,7 +71,7 @@ public final class Constants {
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID =3; //Which sensor is the lower sensor
-    public static final int intakeRPM = 10000; //Setting our intake RPM
+    public static final int intakeRPM = 7500; //Setting our intake RPM
   } //End of Class
 
   //Constants for features related to user controller input

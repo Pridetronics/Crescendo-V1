@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -147,11 +148,22 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to activate the shooter
-    .onTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds));
+    new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to toggle the shooter
+    .toggleOnTrue(new ShootForSeconds(shooterSubsystem));
 
-    new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake
-    .onTrue(new IntakeCommand(intakeSubsystem));
+    new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake while held
+    .whileTrue(
+      //Runs these commandws sequentially when holding button
+      new SequentialCommandGroup(
+        //Wait for shooter to be disabled or for velocity to be beyond a threshold before we use the intake
+        new ParallelRaceGroup(
+          new WaitUntilCommand(shooterSubsystem::isDisabled),
+          new WaitUntilCommand(() -> shooterSubsystem.getVelocity() >= ShooterConstants.kMinRPMForIntake)
+        ),
+        //Run intake after previous command
+        new IntakeCommand(intakeSubsystem)
+      )
+    );
 
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
