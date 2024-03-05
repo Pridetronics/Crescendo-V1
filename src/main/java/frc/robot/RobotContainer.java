@@ -149,7 +149,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to toggle the shooter
-    .toggleOnTrue(new ShootForSeconds(shooterSubsystem));
+    .toggleOnTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds));
 
     new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake while held
     .whileTrue(
