@@ -25,14 +25,42 @@ public class Climber {
 	private RelativeEncoder climbEncoder;
 	private DigitalInput climberLimitSwitch; 
 	Climber(int motorId, int limitSwitchID) {
-	private SparkPIDController climbController;
-	private RelativeEncoder climbeNcoder;
-	private DigitalInput climbDigitalInput; 
-	Climber(int motorId, int limitSwitchID) { //climber methods
 		climberMotor = new CANSparkMax(motorId,CANSparkLowLevel.MotorType.kBrushless);
-		climbController = new PIDController(motorId, motorId, motorId);
-		climbeNcoder = climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
-		climbDigitalInput = new DigitalInput(limitSwitchID); 
-			
+		climbController = climberMotor.getPIDController();
+		climbEncoder = climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
+		climberLimitSwitch = new DigitalInput(limitSwitchID); 
+
+		climbController.setP(ClimberConstants.kClimberPValue);
+		climbController.setI(ClimberConstants.kClimberIValue);
+		climbController.setD(ClimberConstants.kClimberDValue);
+	}
+
+	public void setTarget(double position) {
+
+	}
+
+	public void stopClimbers() {
+
+	}
+
+	public void setCurrentPosition(double position) {
+
+	}
+
+	public double getPosition() {
+		return 0; //TODO: replace with actual numbers later (Currently a placeholder value)
+	}
+
+	//Used for honing
+	public void moveAtPercentSpeed(double speed) {
+
+	}
+
+	public boolean limitSwitchActivated() {
+		return false; //TODO: replace with actual value later (Currently a placeholder value)
+	}
+
+	public void setMaxVelocity(double velocityMetersPerSecond) {
+		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond, 0);
 	}
 }
