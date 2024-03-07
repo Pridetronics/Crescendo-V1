@@ -98,19 +98,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
     gyro.reset();
     
-    resetOdometry(
-      new Pose2d(
-        getPose().getTranslation(), 
-        getRotation2d()
-      )
-    );
+    resetOdometry(getPose());
   }
 
   //Sets the robot heading to be what it currently is on the field, useful if the robot is not aligned with the forward direction of the field at the start of the match
-  public void setHeading(double currentRobotHeadingDegrees) {
-    gyro.setAngleAdjustment(currentRobotHeadingDegrees);
-    zeroHeading();
-  }
+  // public void setHeading(double currentRobotHeadingDegrees) {
+  //   gyro.setAngleAdjustment(currentRobotHeadingDegrees);
+  //   zeroHeading();
+  // }
 
   //Returns the heading of the robot on the field in degrees
   public double getHeading() {
@@ -126,7 +121,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Gets the rotation of the robot for use by WPILIB systems
   public Rotation2d getRotation2d() {
+    return odometer.getEstimatedPosition().getRotation();
+  }
+
+  private Rotation2d getGyroRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
+    
   }
 
   //Gets the position + rotation of the robot for use by WPILIB systems
@@ -140,7 +140,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Resets the odometry to the robots current position and orientation (does NOT reset the gyro, just the odometer)
   public void resetOdometry(Pose2d pose) {
-    odometer.resetPosition(getRotation2d(), new SwerveModulePosition[] {
+    odometer.resetPosition(getGyroRotation2d(), new SwerveModulePosition[] {
       frontLeft.getSwervePosition(),
       frontRight.getSwervePosition(),
       backLeft.getSwervePosition(),
@@ -153,7 +153,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     //Tells the odometer the current position to compare with the last position and thus update its predicted position
-    odometer.update(getRotation2d(), new SwerveModulePosition[] {
+    odometer.update(getGyroRotation2d(), new SwerveModulePosition[] {
       frontLeft.getSwervePosition(),
       frontRight.getSwervePosition(),
       backLeft.getSwervePosition(),
