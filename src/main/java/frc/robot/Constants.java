@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -18,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.utils.NoteDepositPosition;
 import frc.robot.utils.NotePosition;
@@ -48,10 +51,21 @@ public final class Constants {
   }
 
   public static class ClimberConstants {
-    public static final int climberLeftMotorID = 15;
-    public static final int climberRightMotorID = 16;
-    public static final int climberLeftLimitSwitchID = 2;
-    public static final int climberRightLimitSwitchID = 1;
+    public static final int kClimberLeftMotorID = 15;
+    public static final int kClimberRightMotorID = 16;
+    public static final int kClimberLeftLimitSwitchID = 2;
+    public static final int kClimberRightLimitSwitchID = 1;
+
+    public static final double kClimberPValue = 0.0002;
+    public static final double kClimberIValue = 0.000001;
+    public static final double kClimberDValue = 0.0004;
+
+    public static final double kWinchCircumfrenceMeters = Units.inchesToMeters(0.75*Math.PI);
+    public static final double kMaxHeightMeters = Units.inchesToMeters(14.5);
+    public static final double kHomingHeightMeters = Units.inchesToMeters(1.5);
+
+    public static final double kMaxVelocityWhenRaisingMetersPerSecond = 0.3;
+    public static final double kMaxVelocityWhenLoweringMetersPerSecond = 0.05;
   }
 
   public static class ShooterConstants {

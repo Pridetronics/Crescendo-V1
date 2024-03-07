@@ -4,32 +4,41 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  Climber climberLeft;
-  Climber climberRight; 
-
-  void ClimberSubsystem() 
-  {
-
-
-   climberLeft = new Climber(ClimberConstants.climberLeftMotorID, ClimberConstants.climberLeftLimitSwitchID ); // this creates a new left climber object 
-   climberRight = new Climber(ClimberConstants.climberRightMotorID, ClimberConstants.climberRightLimitSwitchID); // this creates a new right climber object
-
+  private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID); // this creates a new left climber object ;
+  private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID); // this creates a new right climber object; 
+  private final Supplier<Double> getRollFunction;
   /** Creates a new ClimberSubsystem. */ 
-{}
-}
+  public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {
+    this.getRollFunction = swerveSubsystem::getGyroRoll;
+    
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    //TODO IN THIS METHOD: If homing, check limit switches and handle accordingly
+    //TODO IN THIS METHOD: Check roll and adjust climber speeds accordingly
   }
 
-  public ClimberSubsystem(Climber climberLeft, Climber climberRight) {
-    this.climberLeft = climberLeft;
-    this.climberRight = climberRight;
+  public void beginClimberHoming() {
+
+  }
+
+  public void raiseClimbers() {
+    
+  }
+
+    public void lowerClimbers() {
+    
   }
 } 
 
