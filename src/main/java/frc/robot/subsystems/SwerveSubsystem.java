@@ -120,6 +120,10 @@ public class SwerveSubsystem extends SubsystemBase {
     return gyro.getAngle() % 360;
   }
 
+  //Used in climber subsystem
+  public double getGyroRoll() {
+    return gyro.getRoll();
+  }
 
   //Gets the rotation of the robot for use by WPILIB systems
   public Rotation2d getRotation2d() {
