@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
@@ -149,7 +150,12 @@ public class RobotContainer {
   private void configureBindings() {
 
     new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to toggle the shooter
-    .toggleOnTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds));
+    .toggleOnTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds, ShooterConstants.kShooterRPM));
+
+
+
+    new JoystickButton(driverJoystick, IOConstants.kAmplifierShooterButtonID) //Setting our button to toggle the shooter
+    .toggleOnTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds, ShooterConstants.kShootForAmpRPM));
 
     new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake while held
     .whileTrue(
@@ -161,7 +167,15 @@ public class RobotContainer {
           new WaitUntilCommand(() -> shooterSubsystem.getVelocity() >= ShooterConstants.kMinRPMForIntake)
         ),
         //Run intake after previous command
-        new IntakeCommand(intakeSubsystem)
+        new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM)
+      )
+    );
+
+    new JoystickButton(driverJoystick, IOConstants.kReverseIntakeButtonID) //Setting our button to activate the intake while held
+    .whileTrue(
+      new IntakeCommand(
+        intakeSubsystem, 
+        IntakeConstants.kReverseIntakeRPM
       )
     );
 

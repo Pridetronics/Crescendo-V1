@@ -59,9 +59,11 @@ public final class Constants {
     public static final double kShooterPValue = 0.0002;
     public static final double kShooterIValue = 0.0000005;
     public static final double kShooterDValue = 0.0029;
-    public static final int shooterRPM = 5800; //Our shooter RPM
+    public static final int kShooterRPM = 5800; //Our shooter RPM
     public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
     public static final int kMinRPMForIntake = 5000; //Minimum RPM needed for putting a note into the shooter
+    public static final int kShootForAmpRPM = 1000; //Setting an initial value for our AMP shooting
+    public static final int kMinForAmpRPM = 800; //Setting our minimum AMP shooting value
   } //End of Class
 
   public static class IntakeConstants {
@@ -71,7 +73,8 @@ public final class Constants {
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID =3; //Which sensor is the lower sensor
-    public static final int intakeRPM = 7500; //Setting our intake RPM
+    public static final int kIntakeRPM = 7500; //Setting our intake RPM
+    public static final int kReverseIntakeRPM = -7500; //Creating a reverse value for exceptions
   } //End of Class
 
   //Constants for features related to user controller input
@@ -97,6 +100,10 @@ public final class Constants {
     public static final int kIntakeButtonID = 4;
     //Sets our shooter ID
     public static final int KShooterButtonID = 3;
+    //Setting button ID for our amp
+    public static final int kAmplifierShooterButtonID = 6;
+    //Setting our button ID for reversing our intake
+    public static final int kReverseIntakeButtonID = 3;
   }
 
   //Constants for data related to the wheels of each module (not the module itself)
