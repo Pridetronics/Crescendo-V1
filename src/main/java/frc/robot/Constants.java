@@ -99,7 +99,7 @@ public final class Constants {
     //Sets our intake ID
     public static final int kIntakeButtonID = 4;
     //Sets our shooter ID
-    public static final int KShooterButtonID = 3;
+    public static final int KShooterButtonID = 2;
     //Setting button ID for our amp
     public static final int kAmplifierShooterButtonID = 6;
     //Setting our button ID for reversing our intake

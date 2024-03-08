@@ -23,7 +23,7 @@ public class IntakeCommand extends Command {
     m_IntakeSubsystem = intakeSubsystem;
     intakeRPM = RPMForIntake;
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
+    addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
   } //End of Entire Class
 
 
@@ -61,4 +61,11 @@ public class IntakeCommand extends Command {
     }
     return false; //Shorthand for else
   }
+
+  //Makes it so other commands do not cancel this command
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
+  }
+
 } //End of Class
