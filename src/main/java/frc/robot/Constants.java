@@ -62,8 +62,8 @@ public final class Constants {
     public static final int kShooterRPM = 5800; //Our shooter RPM
     public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
     public static final int kMinRPMForIntake = 5000; //Minimum RPM needed for putting a note into the shooter
-    public static final int kShootForAmpRPM = 1000; //Setting an initial value for our AMP shooting
-    public static final int kMinForAmpRPM = 800; //Setting our minimum AMP shooting value
+    public static final int kShootForAmpRPM = 1025; //Setting an initial value for our AMP shooting
+    public static final int kMinForAmpRPM = 900; //Setting our minimum AMP shooting value
   } //End of Class
 
   public static class IntakeConstants {

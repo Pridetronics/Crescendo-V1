@@ -110,15 +110,15 @@ public class RobotContainer {
     emergencyStartingPose.addOption("Amplifier", NoteDepositConstants.amplifier.getPosition());
     autoTab.add("Emergency Starting Pose", emergencyStartingPose);
 
-    int simulatedYAxisMult = RobotBase.isReal() ? 1 : -1;
+    int simulatedXAxisMult = RobotBase.isReal() ? 1 : -1;
 
     //Command set to run periodicly to register joystick inputs
     //It uses suppliers/mini methods to give up to date info easily
     swerveSubsystem.setDefaultCommand(
       new SwerveJoystickCmd(
         swerveSubsystem, 
-        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis), 
-        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis) * simulatedYAxisMult, 
+        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis) * simulatedXAxisMult, 
+        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis), 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> !driverJoystick.getRawButton(IOConstants.kDriveFieldOrientedDriveBtnID)
       )

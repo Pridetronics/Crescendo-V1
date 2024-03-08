@@ -59,8 +59,8 @@ public class ShootForSeconds extends Command {
   }
 
   //Makes it so other commands do not cancel this command
-  @Override
-  public InterruptionBehavior getInterruptionBehavior() {
-    return InterruptionBehavior.kCancelIncoming;
-  }
+  // @Override
+  // public InterruptionBehavior getInterruptionBehavior() {
+  //   return InterruptionBehavior.kCancelIncoming;
+  // }
 } //End of Class
