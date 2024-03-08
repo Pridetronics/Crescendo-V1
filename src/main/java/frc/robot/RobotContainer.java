@@ -308,7 +308,6 @@ public class RobotContainer {
           new WaitForLowerIntakeSensor(intakeSubsystem)
         )
       );
-
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
         new SequentialCommandGroup(

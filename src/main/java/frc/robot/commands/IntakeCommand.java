@@ -23,7 +23,7 @@ public class IntakeCommand extends Command {
     m_IntakeSubsystem = intakeSubsystem;
     intakeRPM = RPMForIntake;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
+    //addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
   } //End of Entire Class
 
 
