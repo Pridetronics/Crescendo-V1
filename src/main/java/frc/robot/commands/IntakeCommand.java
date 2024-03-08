@@ -16,10 +16,12 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeCommand extends Command {
   private IntakeSubsystem m_IntakeSubsystem; //Telling the system how to identify our intake subystem
   private boolean hasNoteNotBeenDetected; //Telling the system how to see our upper sensor (checking)
+  private int intakeRPM;
   //end of methods
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem) { //storing subsystem
+  public IntakeCommand(IntakeSubsystem intakeSubsystem, int RPMForIntake) { //storing subsystem
     m_IntakeSubsystem = intakeSubsystem;
+    intakeRPM = RPMForIntake;
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(m_IntakeSubsystem); //prevents two commands that use the same subystem to run at the same time
   } //End of Entire Class
@@ -29,7 +31,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_IntakeSubsystem.setMotorAtRPM(Constants.IntakeConstants.intakeRPM); //Sets our intake RPM by caling what we set in Robot Container
+    m_IntakeSubsystem.setMotorAtRPM(intakeRPM); //Sets our intake RPM by caling what we set in Robot Container
   } //End of Method
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,4 +61,11 @@ public class IntakeCommand extends Command {
     }
     return false; //Shorthand for else
   }
+
+  //Makes it so other commands do not cancel this command
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
+  }
+
 } //End of Class

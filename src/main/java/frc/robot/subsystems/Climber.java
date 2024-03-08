@@ -22,6 +22,6 @@ public class Climber {
 		climbController = new PIDController(motorId, motorId, motorId);
 		climbeNcoder = climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
 		climbDigitalInput = new DigitalInput(limitSwitchID); 
-	
+			
 	}
 }

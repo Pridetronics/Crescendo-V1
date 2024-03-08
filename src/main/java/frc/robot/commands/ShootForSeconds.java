@@ -14,18 +14,30 @@ public class ShootForSeconds extends Command {
   private ShooterSubsystem m_ShooterSubsystem; //Telling the system how to identify our shooter subsystem
   private Timer ShooterTimer = new Timer(); //Setting a timer for our shooter
   private double timeToShootFor;
+  private int shootRPM;
+  private int shooterMinimumRPM;
   /** Creates a new ShootShooterCmd. */
-  public ShootForSeconds(ShooterSubsystem shooterSubsystem, double timeEnabledFor) {
+  public ShootForSeconds(ShooterSubsystem shooterSubsystem, double timeEnabledFor, int shooterRPM, int minimumRPM) {
     m_ShooterSubsystem = shooterSubsystem;
     timeToShootFor = timeEnabledFor;
+    shootRPM = shooterRPM;
+    shooterMinimumRPM = minimumRPM;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_ShooterSubsystem);
   } //End of Class
 
+  public double getTargetRPM() {
+    return shootRPM;
+  }
+
+  public double getMinimumRPM() {
+    return shooterMinimumRPM;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_ShooterSubsystem.setMotorAtRPM(Constants.ShooterConstants.shooterRPM); //Setting our shooter rpm
+    m_ShooterSubsystem.setMotorAtRPM(shootRPM); //Setting our shooter rpm
     ShooterTimer.start();
     ShooterTimer.reset();  //This starts our timer for the shooter running, then resets it (Line above this is included)
   } //End of Class
@@ -44,5 +56,11 @@ public class ShootForSeconds extends Command {
   @Override
   public boolean isFinished() {
     return ShooterTimer.hasElapsed(timeToShootFor); //Sets when our timer will stop
+  }
+
+  //Makes it so other commands do not cancel this command
+  @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
   }
 } //End of Class
