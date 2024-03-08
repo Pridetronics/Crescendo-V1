@@ -15,14 +15,24 @@ public class ShootForSeconds extends Command {
   private Timer ShooterTimer = new Timer(); //Setting a timer for our shooter
   private double timeToShootFor;
   private int shootRPM;
+  private int shooterMinimumRPM;
   /** Creates a new ShootShooterCmd. */
-  public ShootForSeconds(ShooterSubsystem shooterSubsystem, double timeEnabledFor, int shooterRPM) {
+  public ShootForSeconds(ShooterSubsystem shooterSubsystem, double timeEnabledFor, int shooterRPM, int minimumRPM) {
     m_ShooterSubsystem = shooterSubsystem;
     timeToShootFor = timeEnabledFor;
     shootRPM = shooterRPM;
+    shooterMinimumRPM = minimumRPM;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_ShooterSubsystem);
   } //End of Class
+
+  public double getTargetRPM() {
+    return shootRPM;
+  }
+
+  public double getMinimumRPM() {
+    return shooterMinimumRPM;
+  }
 
   // Called when the command is initially scheduled.
   @Override

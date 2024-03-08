@@ -150,12 +150,26 @@ public class RobotContainer {
   private void configureBindings() {
 
     new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to toggle the shooter
-    .toggleOnTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds, ShooterConstants.kShooterRPM));
+    .toggleOnTrue(
+      new ShootForSeconds(
+        shooterSubsystem, 
+        ShooterConstants.TimeToShootSeconds, 
+        ShooterConstants.kShooterRPM,
+        ShooterConstants.kMinRPMForIntake
+      )
+    );
 
 
 
     new JoystickButton(driverJoystick, IOConstants.kAmplifierShooterButtonID) //Setting our button to toggle the shooter
-    .toggleOnTrue(new ShootForSeconds(shooterSubsystem, ShooterConstants.TimeToShootSeconds, ShooterConstants.kShootForAmpRPM));
+    .toggleOnTrue(
+      new ShootForSeconds(
+        shooterSubsystem, 
+        ShooterConstants.TimeToShootSeconds, 
+        ShooterConstants.kShootForAmpRPM,
+        ShooterConstants.kMinForAmpRPM
+      )
+    );
 
     new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake while held
     .whileTrue(
@@ -164,7 +178,11 @@ public class RobotContainer {
         //Wait for shooter to be disabled or for velocity to be beyond a threshold before we use the intake
         new ParallelRaceGroup(
           new WaitUntilCommand(shooterSubsystem::isDisabled),
-          new WaitUntilCommand(() -> shooterSubsystem.getVelocity() >= ShooterConstants.kMinRPMForIntake)
+          new WaitUntilCommand(
+            () -> {
+              return shooterSubsystem.getCurrentCommand() != null && shooterSubsystem.getVelocity() >= ((ShootForSeconds) shooterSubsystem.getCurrentCommand()).getMinimumRPM();
+            }
+          )
         ),
         //Run intake after previous command
         new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM)
@@ -308,7 +326,7 @@ public class RobotContainer {
           //Run both the intake and driving in parallel
           new ParallelCommandGroup(
             //Runs intake
-            new IntakeCommand(intakeSubsystem),
+            new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(
               //Manuvers intake into note and collects it
@@ -331,7 +349,7 @@ public class RobotContainer {
               ),
               new SequentialCommandGroup(
                 //Intake note into shooter
-                new IntakeCommand(intakeSubsystem),
+                new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM),
                 //Once intake is off, stop shooter
                 new StopShooter(shooterSubsystem)
               )
