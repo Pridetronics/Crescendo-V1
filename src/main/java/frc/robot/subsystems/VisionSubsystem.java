@@ -44,6 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
+    if (robotPose.isPresent()) currentRobotPose = robotPose;
     currentlyLookingAtAprilTag = robotPose.isPresent();
   }
 
