@@ -48,11 +48,10 @@ public class TrajectoryHelper {
     }
 
     public static Trajectory createTrajectoryWithAllianceRelativePositioning(Pose2d init, List<Translation2d> points, Pose2d end) {
-        List<Translation2d> newPointList = new ArrayList<Translation2d>(points.size());
+        List<Translation2d> newPointList = new ArrayList<Translation2d>();
         for (int i = 0; i < points.size(); i++) {
-            if (points.size() == 0) break;
             
-            newPointList.set(i, 
+            newPointList.add( 
                 toAllianceRelativePosition(
                     points.get(i)
                 )
