@@ -16,6 +16,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID); // this creates a new left climber object ;
   private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID); // this creates a new right climber object; 
   private final Supplier<Double> getRollFunction;
+  private boolean currentlyHoming;
+  private boolean hasHomed;
   /** Creates a new ClimberSubsystem. */ 
   public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {
     this.getRollFunction = swerveSubsystem::getGyroRoll;
@@ -23,38 +25,40 @@ public class ClimberSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    if (homing) {  
-      leftClimber.limitSwitchActivated(DigitalInput);
-      rightClimber.limitSwitchActivated(DigitalInput);
-    
-    
-      
+    if (currentlyHoming) {  
+      boolean leftClimberHomed = climberLeft.updateHomingState();
+      boolean rightClimberHomed = climberRight.updateHomingState();
 
-      // This method will be called once per scheduler run
-
-      //TODO IN THIS METHOD: If homing, check limit switches and handle accordingly
-      //TODO IN THIS METHOD: Check roll and adjust climber speeds accordingly
+      if (leftClimberHomed && rightClimberHomed) {
+        currentlyHoming = false;
+        hasHomed = true;
+      }
     }
   }
 
   public void beginClimberHoming() {
-    setMotorPercentSpeed(0.5)//placeholder value 
-    leftClimber.limitSwitchActivated(DigitalInput);
-    rightClimber.limitSwitchActivated(DigitalInput);
-
+    if (hasHomed || currentlyHoming) return;
+    currentlyHoming = true;
+    climberLeft.moveAtPercentSpeed(-0.05);
+    climberRight.moveAtPercentSpeed(-0.05);
   }
 
   public void raiseClimbers() {
-    setTarget(0) //placeholder value 
-    leftClimber.raiseClimbers(DigitalInput);
-    rightClimber.raiseClimbers(DigitalInput);
+    if (!hasHomed) return;
+    climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
+    climberLeft.setTarget(ClimberConstants.kMaxHeightMeters);
     
+    climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
+    climberRight.setTarget(ClimberConstants.kMaxHeightMeters);
   }
 
-    public void lowerClimbers() {
-    setTarget(0)//placeholder value 
-    leftClimber.lowerClimbers(DigitalInput);
-    rightClimber.lowerClimbers(DigitalInput);
+  public void lowerClimbers() {
+    if (!hasHomed) return;
+    climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
+    climberLeft.setTarget(0);
+    
+    climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
+    climberRight.setTarget(0);
   }
 } 
 

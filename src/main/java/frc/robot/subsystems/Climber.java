@@ -23,7 +23,8 @@ public class Climber {
 	private CANSparkMax climberMotor;
 	private SparkPIDController climbController;
 	private RelativeEncoder climbEncoder;
-	private DigitalInput climberLimitSwitch; 
+	private DigitalInput climberLimitSwitch;
+	private boolean hasHomed;
 	Climber(int motorId, int limitSwitchID) {
 		climberMotor = new CANSparkMax(motorId,CANSparkLowLevel.MotorType.kBrushless);
 		climbController = climberMotor.getPIDController();
@@ -32,41 +33,46 @@ public class Climber {
 		climbController.setP(ClimberConstants.kClimberPValue);
 		climbController.setI(ClimberConstants.kClimberIValue);
 		climbController.setD(ClimberConstants.kClimberDValue);
+		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters);
+		setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
 	}
 // for all of these i need to check api docs and stuff
 	public void setTarget(double position) {
-// use set reference method on PID controller
-setreference(0,PIDController);//0 is a placeholder , i put ksmartmotion for now because it wanted a control type 
-//and i was unsure if we needed position or smartmotion
+		climbController.setReference(position, ControlType.kSmartMotion, 0);
 	}
 
 	public void stopClimbers() {
-// use setreference with the target value to the current position
-setreference(0,kPosition);//0 is a placeholder value 
+		// use setreference with the target value to the current position
+		climbController.setReference(getPosition(), ControlType.kSmartMotion, 0);//0 is a placeholder value 
 	}
 
 	public void setCurrentPosition(double position) {
-//use setrefernenece with the target value to the current position
-setreference(0,kPosition);
+		climbEncoder.setPosition(position);
 	}
 
 	public double getPosition() {
-		setPositionConversionFactor(); //done for now???
+		return climbEncoder.getPosition();
 	}
 
 	//Used for homing
 	public void moveAtPercentSpeed(double speed) {
-		
-//use setmethod on the CANSparkMax object i created in the climber
-set(climberMotor.moveAtPercentSpeed);
-return 0; //this is a placeholder value for now until we get the real one
+		climberMotor.set(speed);
 	}
 
-	public boolean limitSwitchActivated() {
+	public boolean isLimitSwitchActivated() {
 		return climberLimitSwitch.get(); //done
 	}
 
 	public void setMaxVelocity(double velocityMetersPerSecond) {
 		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond, 0);
+	}
+
+	public boolean updateHomingState() {
+		if (!hasHomed && isLimitSwitchActivated()) {
+			hasHomed = true;
+			setCurrentPosition(ClimberConstants.kHomingHeightMeters);
+			setTarget(ClimberConstants.kHomingHeightMeters);
+		}
+		return hasHomed;
 	}
 }
