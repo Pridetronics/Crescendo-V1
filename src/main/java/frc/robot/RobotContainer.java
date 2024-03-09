@@ -45,7 +45,10 @@ import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.Constants.AutoConstants.NotePositionConstants;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.LowerClimber;
+import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.FieldPositionUpdate;
+import frc.robot.commands.HomeClimber;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -67,7 +70,7 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem(swerveSubsystem);
+  public final ClimberSubsystem climberSubsystem = new ClimberSubsystem(swerveSubsystem);
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -80,12 +83,6 @@ public class RobotContainer {
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
     .withSize(2, 4);
 
-    for (int i = 0; i <= 6; i++) {
-      SendableChooser<NotePosition> createdChooser = getNewNotePositionChooser();
-      notePositionLayout.addPersistent("Note number: " + (i+1), createdChooser)
-        .withWidget(BuiltInWidgets.kComboBoxChooser);
-      
-    }
 
     int simulatedYAxisMult = RobotBase.isReal() ? 1 : -1;
 
@@ -154,114 +151,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
-    //This will have commands added to it later to build the whole autonous phase
-    SequentialCommandGroup totalCommandSequence = new SequentialCommandGroup();
-    //To track where the robot it at when caculating paths
-    NoteDepositPosition previousOrderDepositPosition = null;
-
-    //For correcting error in driving
-    PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
-    PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    //Go through all of the note dropdowns in the shuffleboard interface
-    for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
-      //get the note selected for the current ordered position
-      NotePosition notePos = NotePosition.noteSelectionList.get(i).getSelected();
-      //Caculate the path for this ordered note position only if one was selected
-      if (notePos == null) continue;
-
-      //Get the note deposition location in the corresponding note order selected
-      NoteDepositPosition currentDepositPosition = NoteDepositPosition.noteDepositList.get(i).getSelected();
-      //If a previous note deposit location does not exist yet, we will set it to the closest deposit location to the robot
-      if (previousOrderDepositPosition == null) {
-        previousOrderDepositPosition = NoteDepositPosition.getClosestDepositLocationFromPoint(swerveSubsystem.getPose().getTranslation());
-        //If the camera is not looking at an april tag, the robot will guess its starting pose
-        if (!visionSubsystem.lookingAtAprilTag()) {
-          swerveSubsystem.resetOdometry(previousOrderDepositPosition.getPosition());
-        }
-      }
-      //List of waypoints in between the deposit location and the note attack position
-      List<Translation2d> firstWaypoints = notePos.getWaypointsDepositToNote(previousOrderDepositPosition.getDepositLocationEnum());
-      //Find the last position the robot goes to in the waypoint list
-      Translation2d lastWaypointPosInList = firstWaypoints.size() > 0 ? firstWaypoints.get(firstWaypoints.size()-1) : previousOrderDepositPosition.getPosition().getTranslation();
-      //Find the best attack position with the previous attack position
-      Pose2d attackPosition = notePos.getClosestAttackPosition(lastWaypointPosInList);
-
-      //Generate path from the deposit location the robot is at, to the attack position we found to be the best
-      Trajectory depositToNoteAttackPos = TrajectoryHelper.createTrajectoryWithAllianceRelativePositioning(
-        previousOrderDepositPosition.getPosition(), 
-        firstWaypoints,
-        attackPosition
-      );
-
-      //Path that goes from the attack position to the note itself
-      Trajectory attackPositionToNote = TrajectoryHelper.createTrajectoryWithAllianceRelativePositioning(
-        attackPosition, 
-        List.of(),
-        notePos.getNotePoseFromAttackPosition(attackPosition)
-      );
-
-      //Positions between the note and the next deposit location
-      List<Translation2d> secondWaypoints = notePos.getWaypointsNoteToDeposit(currentDepositPosition.getDepositLocationEnum());
-      //Path from the current note position to the deposit location
-
-      Trajectory notePositionToNewDeposit = TrajectoryHelper.createTrajectoryWithAllianceRelativePositioning(
-        notePos.getNotePoseFromAttackPosition(attackPosition), 
-        secondWaypoints,
-        currentDepositPosition.getPosition()
-      );
-
-      //Adds a sequence of commands to the overall command sequence that will be returned
-      totalCommandSequence.addCommands(
-        new SequentialCommandGroup(
-          //Move robot from the deposit it's currently at to the target note's closest attack position
-          new SwerveControllerCommand(
-            depositToNoteAttackPos, 
-            swerveSubsystem::getPose, 
-            WheelConstants.kDriveKinematics, 
-            xController,
-            yController,
-            thetaController,
-            swerveSubsystem::setModuleStates,
-            swerveSubsystem
-          ),
-          //ENABLE INTAKE COMMAND HERE
-          //Moves robot from the chosen attack position on the target note to the actual note itself
-          new SwerveControllerCommand(
-            attackPositionToNote, 
-            swerveSubsystem::getPose, 
-            WheelConstants.kDriveKinematics, 
-            xController,
-            yController,
-            thetaController,
-            swerveSubsystem::setModuleStates,
-            swerveSubsystem
-          ),
-          //Does the following all at once:
-          new ParallelCommandGroup(
-            //Move robot to the chosen deposit area
-            new SwerveControllerCommand(
-              notePositionToNewDeposit, 
-              swerveSubsystem::getPose, 
-              WheelConstants.kDriveKinematics, 
-              xController,
-              yController,
-              thetaController,
-              swerveSubsystem::setModuleStates,
-              swerveSubsystem
-            )
-            //SPIN UP SHOOTER HERE W/ WIND UP WAIT
-          )
-          //SHOOT NOTE HERE
-        )
-      );
-      previousOrderDepositPosition = currentDepositPosition;
-      
-    }
-
-    return totalCommandSequence;
+    return new HomeClimber(climberSubsystem);
   }
 }

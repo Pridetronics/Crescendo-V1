@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class LowerClimber extends InstantCommand {
   ClimberSubsystem m_ClimberSubsystem;
   public LowerClimber(ClimberSubsystem climberSubsystem) {
-    m_ClimberSubsystem = ClimberSubsystem; 
+    m_ClimberSubsystem = climberSubsystem; 
     addRequirements(m_ClimberSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }

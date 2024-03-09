@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.Constants.ClimberConstants;
@@ -16,8 +18,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID, false); // this creates a new left climber object ;
   private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID, true); // this creates a new right climber object; 
   private final Supplier<Double> getRollFunction;
-  private boolean currentlyHoming;
-  private boolean hasHomed;
+  private boolean currentlyHoming = false;
+  private boolean hasHomed = false;
   /** Creates a new ClimberSubsystem. */ 
   public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {
     this.getRollFunction = swerveSubsystem::getGyroRoll;
@@ -25,6 +27,8 @@ public class ClimberSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Left height", climberLeft.getPosition());
+    SmartDashboard.putNumber("Right height", climberRight.getPosition());
     if (currentlyHoming) {  
       boolean leftClimberHomed = climberLeft.updateHomingState();
       boolean rightClimberHomed = climberRight.updateHomingState();
@@ -42,8 +46,8 @@ public class ClimberSubsystem extends SubsystemBase {
     //Stores in the subsystem a state to tell us that we a re homing
     currentlyHoming = true;
     //Sets the motors for each climber at a percent speed
-    climberLeft.moveAtPercentSpeed(-0.05);
-    climberRight.moveAtPercentSpeed(-0.05);
+    climberLeft.moveAtPercentSpeed(-0.1d);
+    climberRight.moveAtPercentSpeed(-0.1d);
   }
 
   public void raiseClimbers() {
@@ -62,10 +66,10 @@ public class ClimberSubsystem extends SubsystemBase {
     if (!hasHomed) return;
     //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
-    climberLeft.setTarget(0);
+    climberLeft.setTarget(Units.inchesToMeters(0.3));
     
     climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
-    climberRight.setTarget(0);
+    climberRight.setTarget(Units.inchesToMeters(0.3));
   }
 } 
 

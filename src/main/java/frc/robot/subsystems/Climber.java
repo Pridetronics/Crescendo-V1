@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.ClimberConstants;
 
@@ -26,7 +27,7 @@ public class Climber {
 	private DigitalInput climberLimitSwitch;
 	private boolean hasHomed;
 	Climber(int motorId, int limitSwitchID, boolean reversed) {
-		climberMotor = new CANSparkMax(motorId,CANSparkLowLevel.MotorType.kBrushless);
+		climberMotor = new CANSparkMax(motorId, CANSparkLowLevel.MotorType.kBrushless);
 		climbController = climberMotor.getPIDController();
 		climbEncoder = climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
 		climberLimitSwitch = new DigitalInput(limitSwitchID); 
@@ -44,7 +45,7 @@ public class Climber {
 	//Tells the climbres to stop where they currently are
 	public void stopClimbers() {
 		// use setreference with the target value to the current position
-		climbController.setReference(getPosition(), ControlType.kSmartMotion, 0);//0 is a placeholder value 
+		climbController.setReference(getPosition(), ControlType.kSmartMotion);//0 is a placeholder value 
 	}
 	//Changes the encoder position of where the climber is currently at to the given position
 	public void setCurrentPosition(double position) {
@@ -62,12 +63,13 @@ public class Climber {
 
 	//Returns the state of the limit switch
 	public boolean isLimitSwitchActivated() {
-		return climberLimitSwitch.get(); //done
+		return !climberLimitSwitch.get(); //done
 	}
 
 	//Sets the maximum velocity
 	public void setMaxVelocity(double velocityMetersPerSecond) {
 		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond, 0);
+		climbController.setSmartMotionMaxAccel(10*velocityMetersPerSecond, 0);
 	}
 
 	//Used by subsystem to automaticly handle the homing sequence for ths climber.  Returns if the homing phase has finished
