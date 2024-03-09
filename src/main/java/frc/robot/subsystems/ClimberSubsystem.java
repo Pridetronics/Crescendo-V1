@@ -38,21 +38,21 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void beginClimberHoming() {
-    initialize();
+    setMotorPercentSpeed(0.5)//placeholder value 
     leftClimber.limitSwitchActivated(DigitalInput);
     rightClimber.limitSwitchActivated(DigitalInput);
 
   }
 
   public void raiseClimbers() {
-    execute();
+    setTarget(0) //placeholder value 
     leftClimber.raiseClimbers(DigitalInput);
     rightClimber.raiseClimbers(DigitalInput);
     
   }
 
     public void lowerClimbers() {
-    execute();
+    setTarget(0)//placeholder value 
     leftClimber.lowerClimbers(DigitalInput);
     rightClimber.lowerClimbers(DigitalInput);
   }
