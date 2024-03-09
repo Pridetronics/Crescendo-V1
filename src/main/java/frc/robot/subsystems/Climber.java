@@ -25,7 +25,7 @@ public class Climber {
 	private RelativeEncoder climbEncoder;
 	private DigitalInput climberLimitSwitch;
 	private boolean hasHomed;
-	Climber(int motorId, int limitSwitchID) {
+	Climber(int motorId, int limitSwitchID, boolean reversed) {
 		climberMotor = new CANSparkMax(motorId,CANSparkLowLevel.MotorType.kBrushless);
 		climbController = climberMotor.getPIDController();
 		climbEncoder = climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
@@ -33,8 +33,9 @@ public class Climber {
 		climbController.setP(ClimberConstants.kClimberPValue);
 		climbController.setI(ClimberConstants.kClimberIValue);
 		climbController.setD(ClimberConstants.kClimberDValue);
-		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters);
+		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters*ClimberConstants.kClimberGearRatio);
 		setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
+		climberMotor.setInverted(reversed);
 	}
 	//Sets the target point for the PID controller
 	public void setTarget(double position) {

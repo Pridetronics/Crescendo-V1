@@ -61,6 +61,7 @@ public final class Constants {
     public static final double kClimberDValue = 0.0004;
 
     public static final double kWinchCircumfrenceMeters = Units.inchesToMeters(0.75*Math.PI);
+    public static final double kClimberGearRatio = 1.0/16.0;
     public static final double kMaxHeightMeters = Units.inchesToMeters(14.5);
     public static final double kHomingHeightMeters = Units.inchesToMeters(1.5);
 

@@ -13,8 +13,8 @@ import frc.robot.subsystems.Climber;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID); // this creates a new left climber object ;
-  private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID); // this creates a new right climber object; 
+  private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID, false); // this creates a new left climber object ;
+  private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID, true); // this creates a new right climber object; 
   private final Supplier<Double> getRollFunction;
   private boolean currentlyHoming;
   private boolean hasHomed;
