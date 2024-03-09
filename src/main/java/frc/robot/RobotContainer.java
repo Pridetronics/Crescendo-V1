@@ -127,6 +127,11 @@ public class RobotContainer {
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
+    new JoystickButton(driverJoystick, IOConstants.kRaiseClimberBtnID)
+    .onTrue(new RaiseClimber(climberSubsystem));
+
+    new JoystickButton(driverJoystick, IOConstants.kLowerClimberBtnID)
+    .onTrue(new LowerClimber(climberSubsystem));
   }
 
   private SendableChooser<NotePosition> getNewNotePositionChooser() {

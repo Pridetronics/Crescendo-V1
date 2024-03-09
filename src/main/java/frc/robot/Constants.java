@@ -89,6 +89,9 @@ public final class Constants {
     public static final double kDeadband = 0.1;
     //Identifier for the controller
     public static final int kDriveJoystickID = 0;
+    
+    public static final int kRaiseClimberBtnID = 7;
+    public static final int kLowerClimberBtnID = 8;
 
     //Axis for right/left movement
     public static final int kDriveJoystickXAxis = 1;

@@ -9,17 +9,18 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class HomeClimber extends InstantCommand {
+public class RaiseClimber extends InstantCommand {
   ClimberSubsystem m_ClimberSubsystem;
-  public HomeClimber(ClimberSubsystem climberSubsystem) {
-    m_ClimberSubsystem = ClimberSubsystem;
+  public RaiseClimber(ClimberSubsystem climberSubsystem) { 
+    m_ClimberSubsystem = climberSubsystem;
     addRequirements(m_ClimberSubsystem);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
+    
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-m_ClimberSubsystem.beginClimberHoming();
+    m_ClimberSubsystem.RaiseClimbers();
+  
   }
 }
