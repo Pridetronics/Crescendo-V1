@@ -23,22 +23,38 @@ public class ClimberSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (homing) {  
+      leftClimber.limitSwitchActivated(DigitalInput);
+      rightClimber.limitSwitchActivated(DigitalInput);
+    
+    
+      
 
-    //TODO IN THIS METHOD: If homing, check limit switches and handle accordingly
-    //TODO IN THIS METHOD: Check roll and adjust climber speeds accordingly
+      // This method will be called once per scheduler run
+
+      //TODO IN THIS METHOD: If homing, check limit switches and handle accordingly
+      //TODO IN THIS METHOD: Check roll and adjust climber speeds accordingly
+    }
   }
 
   public void beginClimberHoming() {
+    initialize();
+    leftClimber.limitSwitchActivated(DigitalInput);
+    rightClimber.limitSwitchActivated(DigitalInput);
 
   }
 
   public void raiseClimbers() {
+    execute();
+    leftClimber.raiseClimbers(DigitalInput);
+    rightClimber.raiseClimbers(DigitalInput);
     
   }
 
     public void lowerClimbers() {
-    
+    execute();
+    leftClimber.lowerClimbers(DigitalInput);
+    rightClimber.lowerClimbers(DigitalInput);
   }
 } 
 

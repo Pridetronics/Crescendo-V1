@@ -29,35 +29,41 @@ public class Climber {
 		climbController = climberMotor.getPIDController();
 		climbEncoder = climberMotor.getEncoder(com.revrobotics.SparkRelativeEncoder.Type.kHallSensor, 42);
 		climberLimitSwitch = new DigitalInput(limitSwitchID); 
-
 		climbController.setP(ClimberConstants.kClimberPValue);
 		climbController.setI(ClimberConstants.kClimberIValue);
 		climbController.setD(ClimberConstants.kClimberDValue);
 	}
-
+// for all of these i need to check api docs and stuff
 	public void setTarget(double position) {
-
+// use set reference method on PID controller
+setreference(0,PIDController);//0 is a placeholder , i put ksmartmotion for now because it wanted a control type 
+//and i was unsure if we needed position or smartmotion
 	}
 
 	public void stopClimbers() {
-
+// use setreference with the target value to the current position
+setreference(0,kPosition);//0 is a placeholder value 
 	}
 
 	public void setCurrentPosition(double position) {
-
+//use setrefernenece with the target value to the current position
+setreference(0,kPosition);
 	}
 
 	public double getPosition() {
-		return 0; //TODO: replace with actual numbers later (Currently a placeholder value)
+		setPositionConversionFactor(); //done for now???
 	}
 
-	//Used for honing
+	//Used for homing
 	public void moveAtPercentSpeed(double speed) {
-
+		
+//use setmethod on the CANSparkMax object i created in the climber
+set(climberMotor.moveAtPercentSpeed);
+return 0; //this is a placeholder value for now until we get the real one
 	}
 
 	public boolean limitSwitchActivated() {
-		return false; //TODO: replace with actual value later (Currently a placeholder value)
+		return climberLimitSwitch.get(); //done
 	}
 
 	public void setMaxVelocity(double velocityMetersPerSecond) {
