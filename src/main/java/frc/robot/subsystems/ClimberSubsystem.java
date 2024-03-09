@@ -37,14 +37,19 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void beginClimberHoming() {
+    //If the climbers have been homed OR if we are currently in the proccess of homing, we cancel the hmoming sequence
     if (hasHomed || currentlyHoming) return;
+    //Stores in the subsystem a state to tell us that we a re homing
     currentlyHoming = true;
+    //Sets the motors for each climber at a percent speed
     climberLeft.moveAtPercentSpeed(-0.05);
     climberRight.moveAtPercentSpeed(-0.05);
   }
 
   public void raiseClimbers() {
+    //If the climbers have not been homed, we not raise the climbers
     if (!hasHomed) return;
+    //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
     climberLeft.setTarget(ClimberConstants.kMaxHeightMeters);
     
@@ -53,7 +58,9 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void lowerClimbers() {
+    //If the climbers have not been homed, we not raise the climbers
     if (!hasHomed) return;
+    //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
     climberLeft.setTarget(0);
     
