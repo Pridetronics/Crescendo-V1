@@ -71,10 +71,14 @@ public class Climber {
 
 	//Used by subsystem to automaticly handle the homing sequence for ths climber.  Returns if the homing phase has finished
 	public boolean updateHomingState() {
+		//Continue only if the homing phase has not finished and the limit switch has activated
 		if (!hasHomed && isLimitSwitchActivated()) {
+			//Store a boolean that we have finihsed homing
 			hasHomed = true;
+			//Sets the current position to the height the climber is at when triggered by the sensor
 			setCurrentPosition(ClimberConstants.kHomingHeightMeters);
-			setTarget(ClimberConstants.kHomingHeightMeters);
+			//Sets the target position to aim for to be the the lowest height possible
+			setTarget(0);
 		}
 		return hasHomed;
 	}
