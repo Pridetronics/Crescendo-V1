@@ -36,37 +36,40 @@ public class Climber {
 		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters);
 		setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
 	}
-// for all of these i need to check api docs and stuff
+	//Sets the target point for the PID controller
 	public void setTarget(double position) {
 		climbController.setReference(position, ControlType.kSmartMotion, 0);
 	}
-
+	//Tells the climbres to stop where they currently are
 	public void stopClimbers() {
 		// use setreference with the target value to the current position
 		climbController.setReference(getPosition(), ControlType.kSmartMotion, 0);//0 is a placeholder value 
 	}
-
+	//Changes the encoder position of where the climber is currently at to the given position
 	public void setCurrentPosition(double position) {
 		climbEncoder.setPosition(position);
 	}
-
+	//Returns the current position of the encoder
 	public double getPosition() {
 		return climbEncoder.getPosition();
 	}
 
-	//Used for homing
+	//Moves the motor at a percent speed (without a PID controller)
 	public void moveAtPercentSpeed(double speed) {
 		climberMotor.set(speed);
 	}
 
+	//Returns the state of the limit switch
 	public boolean isLimitSwitchActivated() {
 		return climberLimitSwitch.get(); //done
 	}
 
+	//Sets the maximum velocity
 	public void setMaxVelocity(double velocityMetersPerSecond) {
 		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond, 0);
 	}
 
+	//Used by subsystem to automaticly handle the homing sequence for ths climber.  Returns if the homing phase has finished
 	public boolean updateHomingState() {
 		if (!hasHomed && isLimitSwitchActivated()) {
 			hasHomed = true;
