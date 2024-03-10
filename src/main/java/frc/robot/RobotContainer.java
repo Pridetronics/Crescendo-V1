@@ -76,8 +76,28 @@ public class RobotContainer {
   private SendableChooser<Pose2d> emergencyStartingPose = new SendableChooser<Pose2d>();
       //Create a shufflebaord tab for the drivers to see all teleop info
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
+  /*
+   Includes:
+    - Joystick mode (Joystick or button board)
+    - Max robot speed percent (Slider)
+    - Looking at april tag
+    - Shooter enabled
+    - Intake enabled
+    - Shooter mode (Shooter, amp, or none)
+    - Climber state
+    - Reverse field direction (emergency only button)
+    - Robot field position
+   */
     //Create a shufflebaord tab for the drivers to see all autonomous info
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
+  /*
+   Includes:
+    - Note Selection
+    - Note Deposit Location
+    - Emergency Start Position
+    - Robot location of field
+    - Looking at april tag
+   */
     //Create a shufflebaord tab for the drivers to see all test info
   private final ShuffleboardTab testingTab = Shuffleboard.getTab("Testing");
 

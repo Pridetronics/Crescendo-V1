@@ -37,9 +37,9 @@ public class Climber {
 		climbController.setReference(position, ControlType.kSmartMotion, 0);
 	}
 	//Tells the climbres to stop where they currently are
-	public void stopClimbers() {
+	public void stopClimber() {
 		// use setreference with the target value to the current position
-		climbController.setReference(getPosition(), ControlType.kSmartMotion);//0 is a placeholder value 
+		climbController.setReference(getPosition(), ControlType.kSmartMotion, 0);//0 is a placeholder value 
 	}
 	//Changes the encoder position of where the climber is currently at to the given position
 	public void setCurrentPosition(double position) {
@@ -62,8 +62,9 @@ public class Climber {
 
 	//Sets the maximum velocity
 	public void setMaxVelocity(double velocityMetersPerSecond) {
-		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond, 0);
-		climbController.setSmartMotionMaxAccel(10*velocityMetersPerSecond, 0);
+		//Sets the velocity and accleration by converting the units from meters to RPM
+		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor()*60, 0);
+		climbController.setSmartMotionMaxAccel(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor()*60, 0);
 	}
 
 	//Used by subsystem to automaticly handle the homing sequence for ths climber.  Returns if the homing phase has finished

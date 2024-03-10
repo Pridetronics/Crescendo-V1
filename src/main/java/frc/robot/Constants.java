@@ -59,11 +59,13 @@ public final class Constants {
 
     public static final double kWinchCircumfrenceMeters = Units.inchesToMeters(0.75*Math.PI);
     public static final double kClimberGearRatio = 1.0/16.0;
-    public static final double kMaxHeightMeters = Units.inchesToMeters(9);
+    public static final double kMaxHeightMeters = Units.inchesToMeters(11.5);
     public static final double kHomingHeightMeters = Units.inchesToMeters(0);
 
-    public static final double kMaxVelocityWhenRaisingMetersPerSecond = 80000;
-    public static final double kMaxVelocityWhenLoweringMetersPerSecond = 30000;
+    public static final double kMaxVelocityWhenRaisingMetersPerSecond = 10;
+    public static final double kMaxVelocityWhenLoweringMetersPerSecond = 3;
+
+    public static final double kProportionalVelocityChangePerDegreeOfRoll = 0.03;
   }
 
   public static class ShooterConstants {

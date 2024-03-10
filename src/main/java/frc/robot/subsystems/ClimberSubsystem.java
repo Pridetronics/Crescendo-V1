@@ -12,11 +12,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
+  public static enum climberState {
+    kRaising,
+    kLowering,
+    kStopped,
+    kHoming,
+    kNone
+  }
   private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID, false); // this creates a new left climber object ;
   private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID, true); // this creates a new right climber object; 
   private final Supplier<Double> getRollFunction;
-  private boolean currentlyHoming = false;
-  private boolean hasHomed = false;
+  private climberState state = climberState.kNone;
   /** Creates a new ClimberSubsystem. */ 
   public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {
     this.getRollFunction = swerveSubsystem::getGyroRoll;
@@ -24,24 +30,38 @@ public class ClimberSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left height", climberLeft.getPosition());
-    SmartDashboard.putNumber("Right height", climberRight.getPosition());
-    if (currentlyHoming) {  
+    if (state == climberState.kHoming) {  
       boolean leftClimberHomed = climberLeft.updateHomingState();
       boolean rightClimberHomed = climberRight.updateHomingState();
 
       if (leftClimberHomed && rightClimberHomed) {
-        currentlyHoming = false;
-        hasHomed = true;
+        state = climberState.kStopped;
       }
+    } else if (state == climberState.kLowering) {
+
+      if (climberLeft.isLimitSwitchActivated() || climberRight.isLimitSwitchActivated()) {
+        stopClimbers();
+        return;
+      }
+
+      double degreesOfRoll = getRollFunction.get();
+
+      climberLeft.setMaxVelocity(
+        ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond*( 1 + degreesOfRoll*-ClimberConstants.kProportionalVelocityChangePerDegreeOfRoll)
+      );
+      climberRight.setMaxVelocity(
+        ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond*( 1 + degreesOfRoll*ClimberConstants.kProportionalVelocityChangePerDegreeOfRoll)
+      );
+    } else if (state == climberState.kStopped) {
+      //TODO: Balance robot when stopped for when another robot hops on the chain
     }
   }
 
   public void beginClimberHoming() {
     //If the climbers have been homed OR if we are currently in the proccess of homing, we cancel the hmoming sequence
-    if (hasHomed || currentlyHoming) return;
+    if (state != climberState.kNone) return;
     //Stores in the subsystem a state to tell us that we a re homing
-    currentlyHoming = true;
+    state = climberState.kHoming;
     //Sets the motors for each climber at a percent speed
     climberLeft.moveAtPercentSpeed(-0.1d);
     climberRight.moveAtPercentSpeed(-0.1d);
@@ -49,7 +69,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void raiseClimbers() {
     //If the climbers have not been homed, we not raise the climbers
-    if (!hasHomed) return;
+    if (state == climberState.kHoming || state == climberState.kNone) return;
+    state = climberState.kRaising;
     //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
     climberLeft.setTarget(ClimberConstants.kMaxHeightMeters);
@@ -60,13 +81,26 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void lowerClimbers() {
     //If the climbers have not been homed, we not raise the climbers
-    if (!hasHomed) return;
+    if (state == climberState.kHoming || state == climberState.kNone) return;
+    state = climberState.kLowering;
     //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
     climberLeft.setTarget(Units.inchesToMeters(0.3));
     
     climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
     climberRight.setTarget(Units.inchesToMeters(0.3));
+  }
+
+  public void stopClimbers() {
+    //If the climbers have not been homed, we not stop the climbers
+    if (state == climberState.kHoming || state == climberState.kNone) return;
+    state = climberState.kStopped;
+    //Sets the max velocity and target height for the climbers
+    climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
+    climberLeft.stopClimber();
+    
+    climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
+    climberRight.stopClimber();
   }
 } 
 
