@@ -4,30 +4,69 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  Climber climberLeft;
-  Climber climberRight; 
-
-  public ClimberSubsystem() {
-
-
-   climberLeft = new Climber(ClimberConstants.climberLeftMotorID, ClimberConstants.climberLeftLimitSwitchID ); // this creates a new left climber object 
-   climberRight = new Climber(ClimberConstants.climberRightMotorID, ClimberConstants.climberRightLimitSwitchID); // this creates a new right climber object
-
+  private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID, false); // this creates a new left climber object ;
+  private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID, true); // this creates a new right climber object; 
+  private final Supplier<Double> getRollFunction;
+  private boolean currentlyHoming = false;
+  private boolean hasHomed = false;
   /** Creates a new ClimberSubsystem. */ 
-{}
-}
+  public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {
+    this.getRollFunction = swerveSubsystem::getGyroRoll;
+    
+  }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Left height", climberLeft.getPosition());
+    SmartDashboard.putNumber("Right height", climberRight.getPosition());
+    if (currentlyHoming) {  
+      boolean leftClimberHomed = climberLeft.updateHomingState();
+      boolean rightClimberHomed = climberRight.updateHomingState();
+
+      if (leftClimberHomed && rightClimberHomed) {
+        currentlyHoming = false;
+        hasHomed = true;
+      }
+    }
   }
 
-  public ClimberSubsystem(Climber climberLeft, Climber climberRight) {
-    this.climberLeft = climberLeft;
-    this.climberRight = climberRight;
+  public void beginClimberHoming() {
+    //If the climbers have been homed OR if we are currently in the proccess of homing, we cancel the hmoming sequence
+    if (hasHomed || currentlyHoming) return;
+    //Stores in the subsystem a state to tell us that we a re homing
+    currentlyHoming = true;
+    //Sets the motors for each climber at a percent speed
+    climberLeft.moveAtPercentSpeed(-0.1d);
+    climberRight.moveAtPercentSpeed(-0.1d);
+  }
+
+  public void raiseClimbers() {
+    //If the climbers have not been homed, we not raise the climbers
+    if (!hasHomed) return;
+    //Sets the max velocity and target height for the climbers
+    climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
+    climberLeft.setTarget(ClimberConstants.kMaxHeightMeters);
+    
+    climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
+    climberRight.setTarget(ClimberConstants.kMaxHeightMeters);
+  }
+
+  public void lowerClimbers() {
+    //If the climbers have not been homed, we not raise the climbers
+    if (!hasHomed) return;
+    //Sets the max velocity and target height for the climbers
+    climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
+    climberLeft.setTarget(Units.inchesToMeters(0.3));
+    
+    climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
+    climberRight.setTarget(Units.inchesToMeters(0.3));
   }
 } 
 

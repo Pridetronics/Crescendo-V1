@@ -115,7 +115,8 @@ public class SwerveSubsystem extends SubsystemBase {
     return gyro.getAngle() % 360;
   }
 
-  public double getRollDegrees() {
+  //Used in climber subsystem
+  public double getGyroRoll() {
     return gyro.getRoll();
   }
 

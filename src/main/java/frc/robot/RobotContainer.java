@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +39,8 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.LowerClimber;
+import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.SetOdometerWithCamera;
 import frc.robot.commands.ShootForSeconds;
 import frc.robot.commands.StopShooter;
@@ -48,6 +49,7 @@ import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.WaitForLowerIntakeSensor;
 import frc.robot.commands.WindUpShooter;
 import frc.robot.commands.ZeroRobotHeading;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -69,8 +71,15 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  public final ClimberSubsystem climberSubsystem = new ClimberSubsystem(swerveSubsystem);
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
   private SendableChooser<Pose2d> emergencyStartingPose = new SendableChooser<Pose2d>();
+      //Create a shufflebaord tab for the drivers to see all teleop info
+  private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
+    //Create a shufflebaord tab for the drivers to see all autonomous info
+  private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
+    //Create a shufflebaord tab for the drivers to see all test info
+  private final ShuffleboardTab testingTab = Shuffleboard.getTab("Testing");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -80,11 +89,6 @@ public class RobotContainer {
       swerveSubsystem.resetOdometry(startingRobotPose.get().estimatedPose.toPose2d());
     }
 
-
-    //Create a shufflebaord tab for the drivers to see all teleop info
-    ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
-    //Create a shufflebaord tab for the drivers to see all autonomous info
-    ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
     .withSize(2, 4);
 
@@ -199,9 +203,13 @@ public class RobotContainer {
 
     //Activates an Instant Command to reset field direction when button is pressed down
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
-    .onTrue(new ZeroRobotHeading(swerveSubsystem))
-    .debounce(IOConstants.kZeroHeadingDebounceTime);  
+    .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
+    new JoystickButton(driverJoystick, IOConstants.kRaiseClimberBtnID)
+    .onTrue(new RaiseClimber(climberSubsystem));
+
+    new JoystickButton(driverJoystick, IOConstants.kLowerClimberBtnID)
+    .onTrue(new LowerClimber(climberSubsystem));
   }
 
   /**
