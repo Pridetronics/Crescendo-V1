@@ -7,7 +7,10 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
@@ -17,12 +20,20 @@ public class ClimberSubsystem extends SubsystemBase {
     kLowering,
     kStopped,
     kHoming,
-    kNone
+    kNonFunctional
   }
+
   private final Climber climberLeft = new Climber(ClimberConstants.kClimberLeftMotorID, ClimberConstants.kClimberLeftLimitSwitchID, false); // this creates a new left climber object ;
   private final Climber climberRight = new Climber(ClimberConstants.kClimberRightMotorID, ClimberConstants.kClimberRightLimitSwitchID, true); // this creates a new right climber object; 
+
   private final Supplier<Double> getRollFunction;
-  private climberState state = climberState.kNone;
+  private climberState state = climberState.kNonFunctional;
+
+  private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
+  private final GenericEntry climberStateEntry = teleOpTab.add("Shooter Enabled", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
+  
   /** Creates a new ClimberSubsystem. */ 
   public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {
     this.getRollFunction = swerveSubsystem::getGyroRoll;
@@ -30,6 +41,8 @@ public class ClimberSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
+    climberStateEntry.setString(state.toString().substring(1));
+
     if (state == climberState.kHoming) {  
       boolean leftClimberHomed = climberLeft.updateHomingState();
       boolean rightClimberHomed = climberRight.updateHomingState();
@@ -59,7 +72,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void beginClimberHoming() {
     //If the climbers have been homed OR if we are currently in the proccess of homing, we cancel the hmoming sequence
-    if (state != climberState.kNone) return;
+    if (state != climberState.kNonFunctional) return;
     //Stores in the subsystem a state to tell us that we a re homing
     state = climberState.kHoming;
     //Sets the motors for each climber at a percent speed
@@ -69,7 +82,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void raiseClimbers() {
     //If the climbers have not been homed, we not raise the climbers
-    if (state == climberState.kHoming || state == climberState.kNone) return;
+    if (state == climberState.kHoming || state == climberState.kNonFunctional) return;
     state = climberState.kRaising;
     //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
@@ -81,7 +94,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void lowerClimbers() {
     //If the climbers have not been homed, we not raise the climbers
-    if (state == climberState.kHoming || state == climberState.kNone) return;
+    if (state == climberState.kHoming || state == climberState.kNonFunctional) return;
     state = climberState.kLowering;
     //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
@@ -93,7 +106,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void stopClimbers() {
     //If the climbers have not been homed, we not stop the climbers
-    if (state == climberState.kHoming || state == climberState.kNone) return;
+    if (state == climberState.kHoming || state == climberState.kNonFunctional) return;
     state = climberState.kStopped;
     //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);

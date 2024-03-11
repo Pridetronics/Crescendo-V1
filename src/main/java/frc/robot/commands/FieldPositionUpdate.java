@@ -8,6 +8,10 @@ import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,11 +24,19 @@ public class FieldPositionUpdate extends Command {
   SwerveSubsystem m_SwerveSubsystem;
   private Field2d m_field = new Field2d();
 
+  private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
+  private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
+  private final GenericEntry lookingAtAprilTag = teleOpTab.add("Looking at april Tag", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
+
   public FieldPositionUpdate(VisionSubsystem visionSubsystem, SwerveSubsystem swerveSubsystem) {
     m_VisionSubsystem = visionSubsystem;
     m_SwerveSubsystem = swerveSubsystem;
 
     SmartDashboard.putData("Field Position Visual", m_field);
+    teleOpTab.add(m_field);
+    autoTab.add(m_field);
 
     addRequirements(m_VisionSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -45,6 +57,8 @@ public class FieldPositionUpdate extends Command {
       //Update the swerve drive odometry to work with this position
       m_SwerveSubsystem.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds);
     }
+
+    lookingAtAprilTag.setBoolean(robotPose.isPresent());
     
     m_field.setRobotPose(m_SwerveSubsystem.getPose());
   }

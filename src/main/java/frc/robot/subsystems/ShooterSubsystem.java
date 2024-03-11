@@ -10,6 +10,10 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -18,6 +22,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkPIDController shooterPIDController = shooterMotor.getPIDController();
   private RelativeEncoder encoder = shooterMotor.getEncoder();
   private boolean isEnabled;
+
+  private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
+  private final GenericEntry shooterEntry = teleOpTab.add("Shooter Enabled", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
+    .getEntry();
 //End of Class
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -53,5 +62,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    shooterEntry.setBoolean(isEnabled);
   }
 } //End of Class

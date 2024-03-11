@@ -34,8 +34,11 @@ import frc.robot.utils.NoteDepositPosition.DepositLocation;
  */
 public final class Constants {
   public static class CameraConstants {
+    //The name of the domain to view the webpage when tethered
     public static final String kHostName = "robotcamera";
+    //The name of the camera for the robot to find and use
     public static final String kCameraName = "Camera_Module_v1";
+    //3d offset from the robot's position to the camera
     public static final Transform3d kRobotToCamera = new Transform3d(
       new Translation3d(
         Units.inchesToMeters(14.5), 
@@ -48,31 +51,45 @@ public final class Constants {
   }
 
   public static class ClimberConstants {
+    //CANID of the left climber motor
     public static final int kClimberLeftMotorID = 15;
+    //CANID of the right climber motor
     public static final int kClimberRightMotorID = 16;
+    //DIO ID of the left climber limit switch
     public static final int kClimberLeftLimitSwitchID = 2;
+    //DIO ID of the right climber limit switch
     public static final int kClimberRightLimitSwitchID = 1;
 
+    //Proportional, INtegral, and Derivitive values for the climber controllers
     public static final double kClimberPValue = 0.0002;
     public static final double kClimberIValue = 0.000001;
     public static final double kClimberDValue = 0.0004;
 
+    //Circumfrence of the winch for the climbers
     public static final double kWinchCircumfrenceMeters = Units.inchesToMeters(0.75*Math.PI);
+    //Converstion factor from rotations of the motor to rotations of the winch (Because of the gearbox)
     public static final double kClimberGearRatio = 1.0/16.0;
+    //The maximum height of the climbers
     public static final double kMaxHeightMeters = Units.inchesToMeters(11.5);
+    //The height of the climbers when detected by the magnets
     public static final double kHomingHeightMeters = Units.inchesToMeters(0);
 
+    //Velocities of the climber when moving
     public static final double kMaxVelocityWhenRaisingMetersPerSecond = 10;
     public static final double kMaxVelocityWhenLoweringMetersPerSecond = 3;
 
+    //Used for balancing robot when climbing onto chain
     public static final double kProportionalVelocityChangePerDegreeOfRoll = 0.03;
   }
 
   public static class ShooterConstants {
+    //CAN bus ID of the shooter Spark Max
     public static final int kShooterMotorCANID = 13; //Our Motor ID
+    //Proportional, INtegral, and Derivitive values for the velocity PID controller
     public static final double kShooterPValue = 0.0002;
     public static final double kShooterIValue = 0.0000005;
     public static final double kShooterDValue = 0.0029;
+
     public static final int kShooterRPM = 5800; //Our shooter RPM
     public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
     public static final int kMinRPMForIntake = 5000; //Minimum RPM needed for putting a note into the shooter
@@ -81,12 +98,14 @@ public final class Constants {
   } //End of Class
 
   public static class IntakeConstants {
-    public static final int kIntakeMotorCANID = 14; //Our Motor ID
+    //CAN bus ID of the intake Spark Max
+    public static final int kIntakeMotorCANID = 14;
+    //Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kIntakePValue = 0.0001;
     public static final double kIntakeIValue = 0.000001;
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
-    public static final int lowerSensorChannelID =3; //Which sensor is the lower sensor
+    public static final int lowerSensorChannelID = 3; //Which sensor is the lower sensor
     public static final int kIntakeRPM = 7500; //Setting our intake RPM
     public static final int kReverseIntakeRPM = -7500; //Creating a reverse value for exceptions
   } //End of Class
@@ -95,11 +114,13 @@ public final class Constants {
   public static class IOConstants {
     //Deadband for the joysticks (for driving inputs so the robot doesnt move when not touching controller)
     public static final double kDeadband = 0.1;
-    //Identifier for the controller
+    //Identifier for the driver's controller
     public static final int kDriveJoystickID = 0;
+    //Identifier for the manipulator's controller
+    public static final int kManipulatorJoystickID = 1;
     
-    public static final int kRaiseClimberBtnID = 7;
-    public static final int kLowerClimberBtnID = 8;
+    //Button ID for reseting the orientation of the robot to the forward direction of the robot
+    public static final int kZeroHeadingBtnID = 2;
 
     //Axis for right/left movement
     public static final int kDriveJoystickXAxis = 1;
@@ -109,18 +130,41 @@ public final class Constants {
     public static final int kDriveJoystickTurningAxis = 4;
     //Button ID for robot oriented drive (when holding)
     public static final int kDriveFieldOrientedDriveBtnID = 0;
-    //Button ID for reseting the orientation of the robot to the forward direction of the robot
-    public static final int kZeroHeadingBtnID = 2;
     //Time it takes before you can press the zero heading button again (seconds)
     public static final double kZeroHeadingDebounceTime = 2;
-    //Sets our intake ID
-    public static final int kIntakeButtonID = 4;
-    //Sets our shooter ID
-    public static final int KShooterButtonID = 2;
-    //Setting button ID for our amp
-    public static final int kAmplifierShooterButtonID = 6;
-    //Setting our button ID for reversing our intake
-    public static final int kReverseIntakeButtonID = 3;
+
+    //Button IDs when using the joystick controller
+    public static class joystickButtonIDs {
+      //Button ID for extending climbers
+      public static final int kRaiseClimberBtnID = 7;
+      //Button ID for lowering climbers
+      public static final int kLowerClimberBtnID = 8;
+
+      //Button ID for using Intake
+      public static final int kIntakeButtonID = 2;
+      //Button ID for using Shooter
+      public static final int kShooterButtonID = 3;
+      //Button ID for using the amplifier shooter
+      public static final int kAmplifierShooterButtonID = 4;
+      //Button ID for reversing Intake
+      public static final int kReverseIntakeButtonID = 6;
+    }
+    //Button IDs when using the button board
+    public static class buttonBoardButtonIDs {
+      //Button ID for extending climbers
+      public static final int kRaiseClimberBtnID = 7;
+      //Button ID for lowering climbers
+      public static final int kLowerClimberBtnID = 8;
+
+      //Button ID for using Intake
+      public static final int kIntakeButtonID = 4;
+      //Button ID for using Shooter
+      public static final int kShooterButtonID = 2;
+      //Button ID for using the amplifier shooter
+      public static final int kAmplifierShooterButtonID = 6;
+      //Button ID for reversing Intake
+      public static final int kReverseIntakeButtonID = 3;
+    }
   }
 
   //Constants for data related to the wheels of each module (not the module itself)

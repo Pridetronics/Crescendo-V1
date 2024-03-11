@@ -12,13 +12,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakeCommand extends Command {
+public class IntakeCommandAuto extends Command {
   private IntakeSubsystem m_IntakeSubsystem; //Telling the system how to identify our intake subystem
   private boolean hasNoteNotBeenDetected; //Telling the system how to see our upper sensor (checking)
   private int intakeRPM;
   //end of methods
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, int RPMForIntake) { //storing subsystem
+  public IntakeCommandAuto(IntakeSubsystem intakeSubsystem, int RPMForIntake) { //storing subsystem
     m_IntakeSubsystem = intakeSubsystem;
     intakeRPM = RPMForIntake;
     // Use addRequirements() here to declare subsystem dependencies.

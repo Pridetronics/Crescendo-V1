@@ -43,7 +43,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Uses the positions of each module to perdict where the robot is on the field (Mainly for autonomous)
   private final SwerveDrivePoseEstimator odometer;
-  
+
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
     //gets the constants for each module

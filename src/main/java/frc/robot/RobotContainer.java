@@ -5,15 +5,13 @@
 package frc.robot;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -23,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -39,14 +38,15 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeCommandAuto;
 import frc.robot.commands.LowerClimber;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.SetOdometerWithCamera;
 import frc.robot.commands.ShootForSeconds;
 import frc.robot.commands.StopShooter;
 import frc.robot.commands.FieldPositionUpdate;
+import frc.robot.commands.HomeClimber;
 import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.commands.WaitForLowerIntakeSensor;
 import frc.robot.commands.WindUpShooter;
 import frc.robot.commands.ZeroRobotHeading;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -54,6 +54,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.utils.ButtonBoardButtonIDs;
+import frc.robot.utils.JoystickButtonIDs;
+import frc.robot.utils.ManipulatorButtons;
 import frc.robot.utils.NoteDepositPosition;
 import frc.robot.utils.NotePosition;
 import frc.robot.utils.TrajectoryHelper;
@@ -72,46 +75,69 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public final ClimberSubsystem climberSubsystem = new ClimberSubsystem(swerveSubsystem);
+
+  //Joysticks used by the drivers
   private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
+  private final Joystick manipulatorJoystick = new Joystick(IOConstants.kManipulatorJoystickID);
+
+  //Button configurations based on what the drivers want
+  private final JoystickButtonIDs kJoystickButtons = new JoystickButtonIDs();
+  private final ButtonBoardButtonIDs kButtonBoardButtons = new ButtonBoardButtonIDs();
+
+  //Choosers sent to Shuffleboard later
+  private SendableChooser<ManipulatorButtons> joystickModeChooser = new SendableChooser<ManipulatorButtons>();
   private SendableChooser<Pose2d> emergencyStartingPose = new SendableChooser<Pose2d>();
-      //Create a shufflebaord tab for the drivers to see all teleop info
+
+  //Create a shuffleboard tab for the drivers to see all teleop info
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   /*
-   Includes:
-    - Joystick mode (Joystick or button board)
-    - Max robot speed percent (Slider)
-    - Looking at april tag
-    - Shooter enabled
-    - Intake enabled
-    - Shooter mode (Shooter, amp, or none)
-    - Climber state
-    - Reverse field direction (emergency only button)
-    - Robot field position
+   Includes: DONE
+    - Joystick mode (Joystick or button board) DONE
+    - Max robot speed percent (Slider) DONE
+    - Looking at april tag DONE
+    - Shooter enabled DONE
+    - Intake enabled DONE
+    - Shooter mode (Shooter, amp, or none) DONE
+    - Climber state DONE
+    - Reverse field direction (emergency only button) DONE
+    - Robot field position DONE
    */
-    //Create a shufflebaord tab for the drivers to see all autonomous info
+  
+   //Some shufflebaord information such as the shooter mode (either amplifier, speaker, or disabled) and a setting for reversing the field direction (as an emergency)
+  private final GenericEntry shooterModeEntry = teleOpTab.add("Shooter Mode", "Disabled")
+  .withWidget(BuiltInWidgets.kBooleanBox)
+  .getEntry();
+  private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
+  .withWidget(BuiltInWidgets.kToggleSwitch)
+  .getEntry();
+
+  //Create a shufflebaord tab for the drivers to see all autonomous info
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
   /*
-   Includes:
-    - Note Selection
-    - Note Deposit Location
-    - Emergency Start Position
-    - Robot location of field
-    - Looking at april tag
+   Includes: DONE
+    - Note Selection DONE
+    - Note Deposit Location DONE
+    - Emergency Start Position DONE
+    - Robot location of field DONE
+    - Looking at april tag DONE
    */
-    //Create a shufflebaord tab for the drivers to see all test info
-  private final ShuffleboardTab testingTab = Shuffleboard.getTab("Testing");
 
+  //Create a shufflebaord tab for the drivers to see all test info
+  private final ShuffleboardTab testingTab = Shuffleboard.getTab("Testing");
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    Optional<EstimatedRobotPose> startingRobotPose = visionSubsystem.getEstimatedPose();
-    if (startingRobotPose.isPresent()) {
-      swerveSubsystem.resetOdometry(startingRobotPose.get().estimatedPose.toPose2d());
-    }
+    //puts the chooser for the joystick mode on the shufflebaord
+    joystickModeChooser.setDefaultOption("Button Board", kButtonBoardButtons);
+    joystickModeChooser.addOption("Joystick", kJoystickButtons);
+    teleOpTab.add(joystickModeChooser);
 
+    //List for autonomous that will let the drivers choose what notes to grab in what order
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
     .withSize(2, 4);
 
+    //Populates the list above with dropdown options
     for (int i = 0; i < AutoConstants.kMaxNumberOfNotesToPickInShuffleboard; i++) {
       SendableChooser<NotePosition> createdChooser = NotePosition.getNewNotePositionChooser();
       notePositionLayout.add("Note number: " + (i+1), createdChooser)
@@ -119,8 +145,10 @@ public class RobotContainer {
       
     }
 
+    //List for autonomous to let the drivers pick where to deposit each note chosen above
     ShuffleboardLayout notDepositLayout = autoTab.getLayout("Note Deposit Order", BuiltInLayouts.kList);
 
+    //Populates the above list with options
     for (int i = 0; i < AutoConstants.kMaxNumberOfNotesToPickInShuffleboard; i++) {
       SendableChooser<NoteDepositPosition> createdChooser = NoteDepositPosition.getNewNoteDepositChooser();
       notDepositLayout.add("Note number: " + (i+1), createdChooser)
@@ -128,25 +156,27 @@ public class RobotContainer {
       
     }
 
+    //Adds optinos for the chooser that lets the drivers pick where the robot is suppose to start
     emergencyStartingPose.setDefaultOption("Speaker Center-Side", NoteDepositConstants.speakerCenterSide.getPosition());
     emergencyStartingPose.addOption("Speaker Amp-Side", NoteDepositConstants.speakerAmpSide.getPosition());
     emergencyStartingPose.addOption("Speaker Source-Side", NoteDepositConstants.speakerSourceSide.getPosition());
     emergencyStartingPose.addOption("Amplifier", NoteDepositConstants.amplifier.getPosition());
+    //Adds the chooser to shuffleboard
     autoTab.add("Emergency Starting Pose", emergencyStartingPose);
 
+    //Multiplier for joystick axis (for simulation purposes)
     int simulatedXAxisMult = RobotBase.isReal() ? 1 : -1;
 
     //Command set to run periodicly to register joystick inputs
     //It uses suppliers/mini methods to give up to date info easily
-    swerveSubsystem.setDefaultCommand(
-      new SwerveJoystickCmd(
+    swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
         swerveSubsystem, 
-        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis) * simulatedXAxisMult, 
-        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis), 
+        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis) * simulatedXAxisMult * (forwardDirectionEntry.getBoolean(false) ? -1 : 1), 
+        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis) * (forwardDirectionEntry.getBoolean(false) ? -1 : 1), 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> !driverJoystick.getRawButton(IOConstants.kDriveFieldOrientedDriveBtnID)
-      )
-    );
+    )
+  );
 
     //Runs the command when other vision commands are not being used
     visionSubsystem.setDefaultCommand(
@@ -173,30 +203,40 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    new JoystickButton(driverJoystick, IOConstants.KShooterButtonID) //Setting our button to toggle the shooter
-    .toggleOnTrue(
-      new ShootForSeconds(
-        shooterSubsystem, 
-        ShooterConstants.TimeToShootSeconds, 
-        ShooterConstants.kShooterRPM,
-        ShooterConstants.kMinRPMForIntake
+    //SHOOTER BUTTON
+    new Trigger(
+      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kShooterButtonID)
+    ).toggleOnTrue(
+      new ParallelCommandGroup(
+        new ShootForSeconds(
+          shooterSubsystem, 
+          ShooterConstants.TimeToShootSeconds, 
+          ShooterConstants.kShooterRPM,
+          ShooterConstants.kMinRPMForIntake
+        ).finallyDo(() -> shooterModeEntry.setString("None")),
+        new InstantCommand(() -> shooterModeEntry.setString("Speaker"))
       )
     );
 
-
-
-    new JoystickButton(driverJoystick, IOConstants.kAmplifierShooterButtonID) //Setting our button to toggle the shooter
-    .toggleOnTrue(
-      new ShootForSeconds(
-        shooterSubsystem, 
-        ShooterConstants.TimeToShootSeconds, 
-        ShooterConstants.kShootForAmpRPM,
-        ShooterConstants.kMinForAmpRPM
+    //AMPLIFIER SHOOTER
+    new Trigger(
+      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kAmplifierShooterButtonID)
+    ).toggleOnTrue(
+      new ParallelCommandGroup(
+        new ShootForSeconds(
+          shooterSubsystem, 
+          ShooterConstants.TimeToShootSeconds, 
+          ShooterConstants.kShootForAmpRPM,
+          ShooterConstants.kMinForAmpRPM
+        ).finallyDo(() -> shooterModeEntry.setString("None")),
+        new InstantCommand(() -> shooterModeEntry.setString("Amplifier"))
       )
     );
 
-    new JoystickButton(driverJoystick, IOConstants.kIntakeButtonID) //Setting our button to activate the intake while held
-    .whileTrue(
+    //INTAKE BUTTON
+    new Trigger(
+      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID)
+    ).whileTrue(
       //Runs these commandws sequentially when holding button
       new SequentialCommandGroup(
         //Wait for shooter to be disabled or for velocity to be beyond a threshold before we use the intake
@@ -213,24 +253,41 @@ public class RobotContainer {
       )
     );
 
-    new JoystickButton(driverJoystick, IOConstants.kReverseIntakeButtonID) //Setting our button to activate the intake while held
-    .whileTrue(
+    //REVERSE INTAKE
+    new Trigger(
+      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kReverseIntakeButtonID)
+    ).whileTrue(
       new IntakeCommand(
         intakeSubsystem, 
         IntakeConstants.kReverseIntakeRPM
       )
     );
 
-    //Activates an Instant Command to reset field direction when button is pressed down
+    //ZERO HEADING BUTTON
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
-    new JoystickButton(driverJoystick, IOConstants.kRaiseClimberBtnID)
-    .onTrue(new RaiseClimber(climberSubsystem));
+    //RAISE CLIMBER BUTTON
+    new Trigger(
+      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kRaiseClimberBtnID)
+    ).onTrue(new RaiseClimber(climberSubsystem));
 
-    new JoystickButton(driverJoystick, IOConstants.kLowerClimberBtnID)
-    .onTrue(new LowerClimber(climberSubsystem));
+    //LOWER CLIMBER BUTTON
+    new Trigger(
+      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kLowerClimberBtnID)
+    ).onTrue(new LowerClimber(climberSubsystem));
   }
+
+  /**
+   * Use this to pass the test command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getTestModeCommand() {
+    return new SequentialCommandGroup(
+    );
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -333,7 +390,7 @@ public class RobotContainer {
             swerveSubsystem
           ),
           //If the lower sensor in activated then cut off this sequence early
-          new WaitForLowerIntakeSensor(intakeSubsystem)
+          new WaitUntilCommand(intakeSubsystem::hasNoEnteredIntake)
         )
       );
       //Adds a sequence of commands to the overall command sequence that will be returned
@@ -353,7 +410,7 @@ public class RobotContainer {
           //Run both the intake and driving in parallel
           new ParallelCommandGroup(
             //Runs intake
-            new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM),
+            new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(
               //Manuvers intake into note and collects it
@@ -375,8 +432,11 @@ public class RobotContainer {
                 new WindUpShooter(shooterSubsystem)
               ),
               new SequentialCommandGroup(
-                //Intake note into shooter
-                new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM),
+                //Intake note into shooter and stop the intake if the note was not detected leaving the intake as a backup measure
+                new ParallelRaceGroup(
+                  new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
+                  new WaitCommand(1)
+                ),
                 //Once intake is off, stop shooter
                 new StopShooter(shooterSubsystem)
               )
@@ -388,6 +448,10 @@ public class RobotContainer {
       previousOrderDepositPosition = currentDepositPosition;
     }
 
-    return totalCommandSequence;
+    //Wraps the whole autonomous sequence to run in parallel with the homing of the climber
+    return new ParallelCommandGroup(
+      totalCommandSequence,
+      new HomeClimber(climberSubsystem)
+    );
   }
 }
