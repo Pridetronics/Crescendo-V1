@@ -28,7 +28,7 @@ public class Climber {
 		climbController.setP(ClimberConstants.kClimberPValue);
 		climbController.setI(ClimberConstants.kClimberIValue);
 		climbController.setD(ClimberConstants.kClimberDValue);
-		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters*ClimberConstants.kClimberGearRatio);
+		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters*ClimberConstants.kClimberGearRatio/60.0);
 		setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
 		climberMotor.setInverted(reversed);
 	}
@@ -63,8 +63,8 @@ public class Climber {
 	//Sets the maximum velocity
 	public void setMaxVelocity(double velocityMetersPerSecond) {
 		//Sets the velocity and accleration by converting the units from meters to RPM
-		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor()*60, 0);
-		climbController.setSmartMotionMaxAccel(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor()*60, 0);
+		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor(), 0);
+		climbController.setSmartMotionMaxAccel(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor(), 0);
 	}
 
 	//Used by subsystem to automaticly handle the homing sequence for ths climber.  Returns if the homing phase has finished
