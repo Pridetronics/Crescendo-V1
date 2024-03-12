@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  public static enum climberState {
+  private static enum climberState {
     kRaising,
     kLowering,
     kStopped,

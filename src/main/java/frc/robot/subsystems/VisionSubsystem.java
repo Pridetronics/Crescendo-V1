@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
 
 public class VisionSubsystem extends SubsystemBase {
-  SwerveSubsystem m_SwerveSybsystem;
   private PhotonCamera camera = new PhotonCamera(CameraConstants.kCameraName);
   private AprilTagFieldLayout fieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   private PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(
@@ -27,12 +26,11 @@ public class VisionSubsystem extends SubsystemBase {
     camera, 
     CameraConstants.kRobotToCamera
   );
-  Optional<EstimatedRobotPose> currentRobotPose = Optional.empty();
+  private Optional<EstimatedRobotPose> currentRobotPose = Optional.empty();
   private boolean currentlyLookingAtAprilTag = false;
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem(SwerveSubsystem swerveSubsystem) {
-    m_SwerveSybsystem = swerveSubsystem;
     //Done so the camera and camera settings can be viewed at "<HOSTNAME>.local:5800" on google when tethered
     //            ^^^replace <HOSTNAME> with the constants variable for the hostname
     PortForwarder.add(5800, CameraConstants.kHostName + ".local", 5800);

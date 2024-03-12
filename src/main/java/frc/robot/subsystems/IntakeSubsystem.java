@@ -22,8 +22,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorCANID, MotorType.kBrushless); //This is setting our intake motor
   private SparkPIDController intakePIDController = intakeMotor.getPIDController();
 
-  public DigitalInput upperSensor = new DigitalInput(IntakeConstants.upperSensorChannelID);
-  public DigitalInput lowerSensor = new DigitalInput(IntakeConstants.lowerSensorChannelID);
+  private DigitalInput upperSensor = new DigitalInput(IntakeConstants.upperSensorChannelID);
+  private DigitalInput lowerSensor = new DigitalInput(IntakeConstants.lowerSensorChannelID);
 
   private boolean enabledState;
 
