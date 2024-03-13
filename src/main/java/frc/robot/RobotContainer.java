@@ -89,7 +89,7 @@ public class RobotContainer {
   private SendableChooser<Pose2d> emergencyStartingPose = new SendableChooser<Pose2d>();
 
   //Create a shuffleboard tab for the drivers to see all teleop info
-  private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
+  private static final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   /*
    Includes: DONE
     - Joystick mode (Joystick or button board) DONE
@@ -104,9 +104,9 @@ public class RobotContainer {
    */
   
    //Some shufflebaord information such as the shooter mode (either amplifier, speaker, or disabled) and a setting for reversing the field direction (as an emergency)
-  private final GenericEntry shooterModeEntry = teleOpTab.add("Shooter Mode", "Disabled")
-  .withWidget(BuiltInWidgets.kBooleanBox)
-  .getEntry();
+  // private final GenericEntry shooterModeEntry = teleOpTab.add("Shooter Mode", "Disabled")
+  // .withWidget(BuiltInWidgets.kBooleanBox)
+  // .getEntry();
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
   .withWidget(BuiltInWidgets.kToggleSwitch)
   .getEntry();
@@ -213,8 +213,8 @@ public class RobotContainer {
           ShooterConstants.TimeToShootSeconds, 
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
-        ).finallyDo(() -> shooterModeEntry.setString("None")),
-        new InstantCommand(() -> shooterModeEntry.setString("Speaker"))
+        )//.finallyDo(() -> shooterModeEntry.setValue("None")),
+        //new InstantCommand(() -> shooterModeEntry.setValue("Speaker"))
       )
     );
 
@@ -228,8 +228,8 @@ public class RobotContainer {
           ShooterConstants.TimeToShootSeconds, 
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
-        ).finallyDo(() -> shooterModeEntry.setString("None")),
-        new InstantCommand(() -> shooterModeEntry.setString("Amplifier"))
+        )//.finallyDo(() -> shooterModeEntry.setValue("None")),
+        //new InstantCommand(() -> shooterModeEntry.setValue("Amplifier"))
       )
     );
 

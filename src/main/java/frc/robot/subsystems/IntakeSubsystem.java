@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private boolean enabledState;
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
-  private final GenericEntry intakeEntry = teleOpTab.add("Shooter Enabled", false)
+  private final GenericEntry intakeEntry = teleOpTab.add("Intake Enabled", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
 

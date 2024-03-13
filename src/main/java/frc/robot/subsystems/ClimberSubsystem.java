@@ -30,7 +30,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private climberState state = climberState.kNonFunctional;
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
-  private final GenericEntry climberStateEntry = teleOpTab.add("Shooter Enabled", false)
+  private final GenericEntry climberStateEntry = teleOpTab.add("Climber Enabled", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
   

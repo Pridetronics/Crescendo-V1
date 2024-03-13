@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     SmartDashboard.putString("Code", "Matthew");
-    SmartDashboard.putString("Version", "1");
+    SmartDashboard.putString("Version", "3");
   }
 
   /**
