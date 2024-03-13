@@ -28,4 +28,9 @@ public class ShooterWrapperCommand extends WrapperCommand {
         m_command.end(interrupted);
         endFunc.accept(interrupted);
     }
+
+    @Override
+    public InterruptionBehavior getInterruptionBehavior() {
+      return InterruptionBehavior.kCancelIncoming;
+    }
 }

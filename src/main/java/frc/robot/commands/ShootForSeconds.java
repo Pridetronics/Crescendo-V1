@@ -29,14 +29,14 @@ public class ShootForSeconds extends Command {
     return shootRPM;
   }
 
-  public double getMinimumRPM() {
+  public int getMinimumRPM() {
     return shooterMinimumRPM;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_ShooterSubsystem.setMotorAtRPM(shootRPM); //Setting our shooter rpm
+    m_ShooterSubsystem.setMotorAtRPM(shootRPM, getMinimumRPM()); //Setting our shooter rpm
     ShooterTimer.start();
     ShooterTimer.reset();  //This starts our timer for the shooter running, then resets it (Line above this is included)
   } //End of Class

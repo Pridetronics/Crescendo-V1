@@ -22,6 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkPIDController shooterPIDController = shooterMotor.getPIDController();
   private RelativeEncoder encoder = shooterMotor.getEncoder();
   private boolean isEnabled;
+  private int minimumRPM;
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   private final GenericEntry shooterEntry = teleOpTab.add("Shooter Enabled", false)
@@ -35,11 +36,16 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterPIDController.setD(ShooterConstants.kShooterDValue);
     shooterMotor.setInverted(true);
   } //End of Class
+
+  public boolean isRPMOverMinimum() {
+    return encoder.getVelocity() >= minimumRPM;
+  }
   
   //Sets the motor RPM
-  public void setMotorAtRPM(double targetRPM) {
+  public void setMotorAtRPM(int targetRPM, int newMinimumRPM) {
     shooterPIDController.setReference(targetRPM, ControlType.kVelocity);
     isEnabled = true;
+    minimumRPM = newMinimumRPM;
   } //End of Class
 //Stops the shooter
   public void stopMotorSpeed() {

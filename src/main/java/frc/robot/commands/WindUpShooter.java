@@ -21,6 +21,6 @@ public class WindUpShooter extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_ShooterSubsystem.setMotorAtRPM(ShooterConstants.kShooterRPM);
+    m_ShooterSubsystem.setMotorAtRPM(ShooterConstants.kShooterRPM, 0);
   }
 }

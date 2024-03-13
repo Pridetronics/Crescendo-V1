@@ -22,12 +22,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -222,14 +224,6 @@ public class RobotContainer {
       )
     );
 
-    new Trigger(
-      () -> {
-        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kShooterButtonID);
-      }
-    ).toggleOnTrue(
-      new InstantCommand(() -> shooterModeEntry.setValue("Speaker"))
-    );
-
     //AMPLIFIER SHOOTER
     new Trigger(
       () -> {
@@ -247,14 +241,6 @@ public class RobotContainer {
       )
     );
 
-    new Trigger(
-      () -> {
-        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
-      }
-    ).toggleOnTrue(
-      new InstantCommand(() -> shooterModeEntry.setValue("Amplifier"))
-    );
-
     //INTAKE BUTTON
     new Trigger(
       () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID)
@@ -265,24 +251,30 @@ public class RobotContainer {
         new ParallelRaceGroup(
           new WaitUntilCommand(shooterSubsystem::isDisabled),
           new WaitUntilCommand(
-            () -> {
-              return shooterSubsystem.getCurrentCommand() != null && shooterSubsystem.getVelocity() >= ((ShootForSeconds) (( (ShooterWrapperCommand) shooterSubsystem.getCurrentCommand() ).getCommand())).getMinimumRPM();
-            }
+            () -> shooterSubsystem.isRPMOverMinimum()
           )
         ),
         //Run intake after previous command
         new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM)
-      )
+      ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
     );
 
     //REVERSE INTAKE
     new Trigger(
       () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kReverseIntakeButtonID)
     ).whileTrue(
-      new IntakeCommand(
-        intakeSubsystem, 
-        IntakeConstants.kReverseIntakeRPM
-      )
+      new ParallelCommandGroup(
+        new IntakeCommand(
+          intakeSubsystem, 
+          IntakeConstants.kReverseIntakeRPM
+        ),
+        new ShootForSeconds(
+          shooterSubsystem, 
+          ShooterConstants.TimeToShootSeconds, 
+          -ShooterConstants.kShooterRPM,
+          ShooterConstants.kMinRPMForIntake
+        )
+      ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
     );
 
     //ZERO HEADING BUTTON
@@ -318,7 +310,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
     //This will have commands added to it later to build the whole autonous phase
     SequentialCommandGroup totalCommandSequence = new SequentialCommandGroup();
     //To track where the robot it at when caculating paths
@@ -416,9 +407,11 @@ public class RobotContainer {
           new WaitUntilCommand(intakeSubsystem::hasNoEnteredIntake)
         )
       );
+      System.out.println("RUNNING ITERATION dsfsfsfd " + i);
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
-        new SequentialCommandGroup(
+        
+          new InstantCommand(() -> System.out.println("RUNNING ITERATION dsfsfsfd ")),
           //Move robot from the deposit it's currently at to the target note's closest attack position
           new SwerveControllerCommand(
             depositToNoteAttackPos, 
@@ -461,20 +454,24 @@ public class RobotContainer {
                   new WaitCommand(1)
                 ),
                 //Once intake is off, stop shooter
-                new StopShooter(shooterSubsystem)
+                new StopShooter(shooterSubsystem),
+                new InstantCommand(swerveSubsystem::stopModules)
               )
             )
           )
-        )
+        
       ); //END OF COMMAND SEQUENCE FOR THIS NOTE
 
       previousOrderDepositPosition = currentDepositPosition;
     }
-
+    totalCommandSequence.addCommands(
+      new InstantCommand()
+    );
     //Wraps the whole autonomous sequence to run in parallel with the homing of the climber
-    return new ParallelCommandGroup(
+    ParallelCommandGroup finalCommand = new ParallelCommandGroup(
       totalCommandSequence,
       new HomeClimber(climberSubsystem)
     );
+    return finalCommand;
   }
 }
