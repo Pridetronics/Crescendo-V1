@@ -70,7 +70,7 @@ public final class Constants {
     //Converstion factor from rotations of the motor to rotations of the winch (Because of the gearbox)
     public static final double kClimberGearRatio = 1.0/16.0;
     //The maximum height of the climbers
-    public static final double kMaxHeightMeters = Units.inchesToMeters(11.5);
+    public static final double kMaxHeightMeters = Units.inchesToMeters(12);
     //The height of the climbers when detected by the magnets
     public static final double kHomingHeightMeters = Units.inchesToMeters(0);
 
@@ -129,7 +129,7 @@ public final class Constants {
     //Axis for turning
     public static final int kDriveJoystickTurningAxis = 4;
     //Button ID for robot oriented drive (when holding)
-    public static final int kDriveFieldOrientedDriveBtnID = 0;
+    public static final int kDriveFieldOrientedDriveBtnID = 16;
     //Time it takes before you can press the zero heading button again (seconds)
     public static final double kZeroHeadingDebounceTime = 2;
 

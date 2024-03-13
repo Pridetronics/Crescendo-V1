@@ -10,6 +10,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.ClimberConstants;
 
@@ -28,13 +30,18 @@ public class Climber {
 		climbController.setP(ClimberConstants.kClimberPValue);
 		climbController.setI(ClimberConstants.kClimberIValue);
 		climbController.setD(ClimberConstants.kClimberDValue);
-		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters*ClimberConstants.kClimberGearRatio/60.0);
+		climbEncoder.setPositionConversionFactor(ClimberConstants.kWinchCircumfrenceMeters*ClimberConstants.kClimberGearRatio);
 		setMaxVelocity(ClimberConstants.kMaxVelocityWhenRaisingMetersPerSecond);
 		climberMotor.setInverted(reversed);
 	}
+
+	public static double convertMetersToWinchMeters(double meters) {
+		return Units.inchesToMeters(-Math.sqrt((Units.metersToInches(meters)-13.7966)/-0.0799851)+13.1);
+	}
+
 	//Sets the target point for the PID controller
 	public void setTarget(double position) {
-		climbController.setReference(position, ControlType.kSmartMotion, 0);
+		climbController.setReference(position < Units.inchesToMeters(.3) ? 0 : convertMetersToWinchMeters(position), ControlType.kSmartMotion, 0);
 	}
 	//Tells the climbres to stop where they currently are
 	public void stopClimber() {
@@ -63,8 +70,8 @@ public class Climber {
 	//Sets the maximum velocity
 	public void setMaxVelocity(double velocityMetersPerSecond) {
 		//Sets the velocity and accleration by converting the units from meters to RPM
-		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor(), 0);
-		climbController.setSmartMotionMaxAccel(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor(), 0);
+		climbController.setSmartMotionMaxVelocity(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor()*60.0, 0);
+		climbController.setSmartMotionMaxAccel(velocityMetersPerSecond/climbEncoder.getPositionConversionFactor()*60.0, 0);
 	}
 
 	//Used by subsystem to automaticly handle the homing sequence for ths climber.  Returns if the homing phase has finished

@@ -16,7 +16,6 @@ public class WindUpShooter extends InstantCommand {
   public WindUpShooter(ShooterSubsystem shooterSubsystem) {
     m_ShooterSubsystem = shooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_ShooterSubsystem);
   }
 
   // Called when the command is initially scheduled.

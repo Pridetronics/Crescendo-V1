@@ -76,8 +76,8 @@ public class ClimberSubsystem extends SubsystemBase {
     //Stores in the subsystem a state to tell us that we a re homing
     state = climberState.kHoming;
     //Sets the motors for each climber at a percent speed
-    climberLeft.moveAtPercentSpeed(-0.1d);
-    climberRight.moveAtPercentSpeed(-0.1d);
+    climberLeft.moveAtPercentSpeed(-0.05d);
+    climberRight.moveAtPercentSpeed(-0.05d);
   }
 
   public void raiseClimbers() {

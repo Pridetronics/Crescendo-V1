@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -43,6 +44,7 @@ import frc.robot.commands.LowerClimber;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.SetOdometerWithCamera;
 import frc.robot.commands.ShootForSeconds;
+import frc.robot.commands.ShooterWrapperCommand;
 import frc.robot.commands.StopShooter;
 import frc.robot.commands.FieldPositionUpdate;
 import frc.robot.commands.HomeClimber;
@@ -77,7 +79,7 @@ public class RobotContainer {
   public final ClimberSubsystem climberSubsystem = new ClimberSubsystem(swerveSubsystem);
 
   //Joysticks used by the drivers
-  private final Joystick driverJoystick = new Joystick(IOConstants.kDriveJoystickID);
+  private final XboxController driverJoystick = new XboxController(IOConstants.kDriveJoystickID);
   private final Joystick manipulatorJoystick = new Joystick(IOConstants.kManipulatorJoystickID);
 
   //Button configurations based on what the drivers want
@@ -104,9 +106,9 @@ public class RobotContainer {
    */
   
    //Some shufflebaord information such as the shooter mode (either amplifier, speaker, or disabled) and a setting for reversing the field direction (as an emergency)
-  // private final GenericEntry shooterModeEntry = teleOpTab.add("Shooter Mode", "Disabled")
-  // .withWidget(BuiltInWidgets.kBooleanBox)
-  // .getEntry();
+  private final GenericEntry shooterModeEntry = teleOpTab.add("Shooter Mode", "Disabled")
+  .withWidget(BuiltInWidgets.kBooleanBox)
+  .getEntry();
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
   .withWidget(BuiltInWidgets.kToggleSwitch)
   .getEntry();
@@ -131,7 +133,7 @@ public class RobotContainer {
     //puts the chooser for the joystick mode on the shufflebaord
     joystickModeChooser.setDefaultOption("Button Board", kButtonBoardButtons);
     joystickModeChooser.addOption("Joystick", kJoystickButtons);
-    teleOpTab.add(joystickModeChooser);
+    teleOpTab.add("Manipulator Joystick Mode", joystickModeChooser);
 
     //List for autonomous that will let the drivers choose what notes to grab in what order
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
@@ -174,7 +176,7 @@ public class RobotContainer {
         () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis) * simulatedXAxisMult * (forwardDirectionEntry.getBoolean(false) ? -1 : 1), 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis) * (forwardDirectionEntry.getBoolean(false) ? -1 : 1), 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
-        () -> !driverJoystick.getRawButton(IOConstants.kDriveFieldOrientedDriveBtnID)
+        () -> true
     )
   );
 
@@ -205,32 +207,52 @@ public class RobotContainer {
 
     //SHOOTER BUTTON
     new Trigger(
-      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kShooterButtonID)
+      () -> {
+        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kShooterButtonID);
+      }
     ).toggleOnTrue(
-      new ParallelCommandGroup(
+      new ShooterWrapperCommand(
         new ShootForSeconds(
           shooterSubsystem, 
           ShooterConstants.TimeToShootSeconds, 
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
-        )//.finallyDo(() -> shooterModeEntry.setValue("None")),
-        //new InstantCommand(() -> shooterModeEntry.setValue("Speaker"))
+        ),
+        (boolean interrupted) -> shooterModeEntry.setValue("None")
       )
+    );
+
+    new Trigger(
+      () -> {
+        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kShooterButtonID);
+      }
+    ).toggleOnTrue(
+      new InstantCommand(() -> shooterModeEntry.setValue("Speaker"))
     );
 
     //AMPLIFIER SHOOTER
     new Trigger(
-      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kAmplifierShooterButtonID)
+      () -> {
+        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
+      }
     ).toggleOnTrue(
-      new ParallelCommandGroup(
+      new ShooterWrapperCommand(
         new ShootForSeconds(
           shooterSubsystem, 
           ShooterConstants.TimeToShootSeconds, 
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
-        )//.finallyDo(() -> shooterModeEntry.setValue("None")),
-        //new InstantCommand(() -> shooterModeEntry.setValue("Amplifier"))
+        ),
+        (boolean interrupted) -> shooterModeEntry.setValue("None")
       )
+    );
+
+    new Trigger(
+      () -> {
+        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
+      }
+    ).toggleOnTrue(
+      new InstantCommand(() -> shooterModeEntry.setValue("Amplifier"))
     );
 
     //INTAKE BUTTON
@@ -244,7 +266,7 @@ public class RobotContainer {
           new WaitUntilCommand(shooterSubsystem::isDisabled),
           new WaitUntilCommand(
             () -> {
-              return shooterSubsystem.getCurrentCommand() != null && shooterSubsystem.getVelocity() >= ((ShootForSeconds) shooterSubsystem.getCurrentCommand()).getMinimumRPM();
+              return shooterSubsystem.getCurrentCommand() != null && shooterSubsystem.getVelocity() >= ((ShootForSeconds) (( (ShooterWrapperCommand) shooterSubsystem.getCurrentCommand() ).getCommand())).getMinimumRPM();
             }
           )
         ),

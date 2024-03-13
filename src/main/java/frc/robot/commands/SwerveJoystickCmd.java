@@ -93,8 +93,8 @@ private final Timer deltaTime = new Timer();
     turningSpeed = Math.abs(turningSpeed) > IOConstants.kDeadband ? turningSpeed : 0.0;
 
     //Makes the joystick inputs change over time so the robot doesnt speed up too fast
-    xSpeed = xLimiter.calculate(xSpeed) * robotSpeedPercent.getDouble(DriveConstants.kTeleMaxDriveSpeedMetersPerSecond);
-    ySpeed = yLimiter.calculate(ySpeed) * robotSpeedPercent.getDouble(DriveConstants.kTeleMaxDriveSpeedMetersPerSecond);
+    xSpeed = xLimiter.calculate(xSpeed) * robotSpeedPercent.getDouble(1)*DriveConstants.kTeleMaxDriveSpeedMetersPerSecond;
+    ySpeed = yLimiter.calculate(ySpeed) * robotSpeedPercent.getDouble(1)*DriveConstants.kTeleMaxDriveSpeedMetersPerSecond;
     turningSpeed = turningLimiter.calculate(turningSpeed) * DriveConstants.kTeleMaxTurningSpeedRadiansPerSecond;
 
     SmartDashboard.putBoolean("Field Oriented Drive", fieldOrientedFunction.get());

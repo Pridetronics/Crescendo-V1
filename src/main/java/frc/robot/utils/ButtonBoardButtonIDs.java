@@ -8,15 +8,19 @@ import frc.robot.Constants.IOConstants;
 
 /** Add your docs here. */
 public class ButtonBoardButtonIDs extends ManipulatorButtons {
-    public final int kRaiseClimberBtnID = IOConstants.buttonBoardButtonIDs.kRaiseClimberBtnID;
-    public final int kLowerClimberBtnID = IOConstants.buttonBoardButtonIDs.kLowerClimberBtnID;
 
-    //Sets our intake ID
-    public final int kIntakeButtonID = IOConstants.buttonBoardButtonIDs.kIntakeButtonID;
-    //Sets our shooter ID
-    public final int kShooterButtonID = IOConstants.buttonBoardButtonIDs.kShooterButtonID;
-    //Setting button ID for our amp
-    public final int kAmplifierShooterButtonID = IOConstants.buttonBoardButtonIDs.kAmplifierShooterButtonID;
-    //Setting our button ID for reversing our intake
-    public final int kReverseIntakeButtonID = IOConstants.buttonBoardButtonIDs.kReverseIntakeButtonID;
+
+    public ButtonBoardButtonIDs() {
+        kRaiseClimberBtnID = IOConstants.buttonBoardButtonIDs.kRaiseClimberBtnID;
+        kLowerClimberBtnID = IOConstants.buttonBoardButtonIDs.kLowerClimberBtnID;
+
+        //Sets our intake ID
+        kIntakeButtonID = IOConstants.buttonBoardButtonIDs.kIntakeButtonID;
+        //Sets our shooter ID
+        kShooterButtonID = IOConstants.buttonBoardButtonIDs.kShooterButtonID;
+        //Setting button ID for our amp
+        kAmplifierShooterButtonID = IOConstants.buttonBoardButtonIDs.kAmplifierShooterButtonID;
+        //Setting our button ID for reversing our intake
+        kReverseIntakeButtonID = IOConstants.buttonBoardButtonIDs.kReverseIntakeButtonID;
+    }
 }

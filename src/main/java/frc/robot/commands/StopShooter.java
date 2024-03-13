@@ -15,7 +15,6 @@ public class StopShooter extends InstantCommand {
   public StopShooter(ShooterSubsystem shooterSubsystem) {
     m_ShooterSubsystem = shooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_ShooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
