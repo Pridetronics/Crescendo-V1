@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -22,7 +24,9 @@ public class FieldPositionUpdate extends Command {
   /** Creates a new FieldPositionUpdate. */
   VisionSubsystem m_VisionSubsystem;
   SwerveSubsystem m_SwerveSubsystem;
-  private Field2d m_field = new Field2d();
+  private Field2d m_fieldTele = new Field2d();
+  private Field2d m_fieldAuto = new Field2d();
+  private Field2d m_fieldSmart = new Field2d();
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
@@ -34,9 +38,9 @@ public class FieldPositionUpdate extends Command {
     m_VisionSubsystem = visionSubsystem;
     m_SwerveSubsystem = swerveSubsystem;
 
-    SmartDashboard.putData("Field Position Visual", m_field);
-    teleOpTab.add(m_field);
-    autoTab.add(m_field);
+    SmartDashboard.putData("Field Position Visual", m_fieldSmart);
+    teleOpTab.add(m_fieldTele);
+    autoTab.add(m_fieldAuto);
 
     addRequirements(m_VisionSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -60,7 +64,10 @@ public class FieldPositionUpdate extends Command {
 
     lookingAtAprilTag.setBoolean(robotPose.isPresent());
     
-    m_field.setRobotPose(m_SwerveSubsystem.getPose());
+    m_fieldAuto.setRobotPose(m_SwerveSubsystem.getPose());
+    m_fieldSmart.setRobotPose(m_SwerveSubsystem.getPose());
+    m_fieldTele.setRobotPose(m_SwerveSubsystem.getPose());
+
   }
 
   // Called once the command ends or is interrupted.
