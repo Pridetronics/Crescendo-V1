@@ -32,8 +32,8 @@ public class VisionSubsystem extends SubsystemBase {
       new AprilTag( //DONE
         1, 
         new Pose3d(
-          Units.inchesToMeters(593.68 + CameraConstants.aprilTagXShiftInches), 
-          Units.inchesToMeters(9.68 + CameraConstants.aprilTagYShiftInches), 
+          Units.inchesToMeters(593.68 + CameraConstants.aprilTagXShiftInches - 24), 
+          Units.inchesToMeters(9.68 + CameraConstants.aprilTagYShiftInches + 12), 
           Units.inchesToMeters(53.38), 
           new Rotation3d(
             0,
@@ -45,8 +45,8 @@ public class VisionSubsystem extends SubsystemBase {
       new AprilTag( //DONE
         2, 
         new Pose3d(
-          Units.inchesToMeters(637.21 + CameraConstants.aprilTagXShiftInches), 
-          Units.inchesToMeters(34.79 + CameraConstants.aprilTagYShiftInches - 12), 
+          Units.inchesToMeters(637.21 + CameraConstants.aprilTagXShiftInches - 24), 
+          Units.inchesToMeters(34.79 + CameraConstants.aprilTagYShiftInches + 12), 
           Units.inchesToMeters(53.38) , 
           new Rotation3d(
             0,
@@ -58,7 +58,7 @@ public class VisionSubsystem extends SubsystemBase {
       new AprilTag(//DONE
         3, 
         new Pose3d(
-          Units.inchesToMeters(652.73), 
+          Units.inchesToMeters(652.73 + CameraConstants.aprilTagXShiftInches - 48), 
           Units.inchesToMeters(196.17 + CameraConstants.aprilTagYShiftInches), 
           Units.inchesToMeters(57.13), 
           new Rotation3d(
@@ -71,7 +71,7 @@ public class VisionSubsystem extends SubsystemBase {
       new AprilTag(//DONE
         4, 
         new Pose3d(
-          Units.inchesToMeters(652.73), 
+          Units.inchesToMeters(652.73 + CameraConstants.aprilTagXShiftInches - 48), 
           Units.inchesToMeters(218.42 + CameraConstants.aprilTagYShiftInches), 
           Units.inchesToMeters(57.13), 
           new Rotation3d(
@@ -162,7 +162,7 @@ public class VisionSubsystem extends SubsystemBase {
       new AprilTag(//DONE
         11, 
         new Pose3d(
-          Units.inchesToMeters(468.69 + CameraConstants.aprilTagXShiftInches - 36), 
+          Units.inchesToMeters(468.69 + CameraConstants.aprilTagXShiftInches - 24), 
           Units.inchesToMeters(146.19 + CameraConstants.aprilTagYShiftInches), 
           Units.inchesToMeters(52.00), 
           new Rotation3d(
@@ -175,7 +175,7 @@ public class VisionSubsystem extends SubsystemBase {
       new AprilTag(//DONE
         12, 
         new Pose3d(
-          Units.inchesToMeters(468.69 + CameraConstants.aprilTagXShiftInches - 12), 
+          Units.inchesToMeters(468.69 + CameraConstants.aprilTagXShiftInches - 36), 
           Units.inchesToMeters(177.10 + CameraConstants.aprilTagYShiftInches), 
           Units.inchesToMeters(52.00), 
           new Rotation3d(
@@ -188,8 +188,8 @@ public class VisionSubsystem extends SubsystemBase {
       new AprilTag(//DONE
         13, 
         new Pose3d(
-          Units.inchesToMeters(441.74 + CameraConstants.aprilTagXShiftInches), 
-          Units.inchesToMeters(161.62 + CameraConstants.aprilTagYShiftInches), 
+          Units.inchesToMeters(441.74 + CameraConstants.aprilTagXShiftInches - 12), 
+          Units.inchesToMeters(161.62 + CameraConstants.aprilTagYShiftInches + 12), 
           Units.inchesToMeters(52.00), 
           new Rotation3d(
             0,
