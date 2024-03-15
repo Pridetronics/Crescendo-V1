@@ -31,6 +31,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Autonomous/Emergency Starting Pose": "String Chooser",
+      "/Shuffleboard/Autonomous/Field": "Field2d",
       "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 1": "String Chooser",
       "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 2": "String Chooser",
       "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 3": "String Chooser",
@@ -44,11 +45,18 @@
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 5": "String Chooser",
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 6": "String Chooser",
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 7": "String Chooser",
+      "/Shuffleboard/Teleoperation/Field": "Field2d",
+      "/Shuffleboard/Teleoperation/Manipulator Joystick Mode": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Field Position Visual": "Field2d",
       "/SmartDashboard/Field Visual": "Field2d"
     },
     "windows": {
+      "/Shuffleboard/Autonomous/Emergency Starting Pose": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 1": {
         "window": {
           "visible": true

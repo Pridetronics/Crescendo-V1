@@ -321,6 +321,18 @@ public class RobotContainer {
     ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
+    totalCommandSequence.addCommands(
+      new SequentialCommandGroup(
+        new WindUpShooter(shooterSubsystem),
+        new WaitCommand(2),
+        new ParallelRaceGroup(
+          new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
+          new WaitCommand(1)
+        ),
+        new StopShooter(shooterSubsystem)
+      )
+    );
+
     //Go through all of the note dropdowns in the shuffleboard interface
     for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
       //get the note selected for the current ordered position
@@ -407,7 +419,7 @@ public class RobotContainer {
           new WaitUntilCommand(intakeSubsystem::hasNoEnteredIntake)
         )
       );
-      System.out.println("RUNNING ITERATION dsfsfsfd " + i);
+      System.out.println("BUILDING ITERATION dsfsfsfd " + i);
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
         
@@ -423,10 +435,14 @@ public class RobotContainer {
             swerveSubsystem::setModuleStates,
             swerveSubsystem
           ),
+          new InstantCommand(() -> System.out.println("FINISHED INDEX")),
           //Run both the intake and driving in parallel
           new ParallelCommandGroup(
             //Runs intake
-            new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
+            new ParallelRaceGroup(
+              new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM)
+              //new WaitCommand(10) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
+            ),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(
               //Manuvers intake into note and collects it
@@ -459,7 +475,6 @@ public class RobotContainer {
               )
             )
           )
-        
       ); //END OF COMMAND SEQUENCE FOR THIS NOTE
 
       previousOrderDepositPosition = currentDepositPosition;

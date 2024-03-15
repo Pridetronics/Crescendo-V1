@@ -29,6 +29,9 @@ public class FieldPositionUpdate extends Command {
   private final GenericEntry lookingAtAprilTag = teleOpTab.add("Looking at april Tag", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
+    private final GenericEntry useFieldUpdating  = teleOpTab.add("Disable Limelight", false)
+    .withWidget(BuiltInWidgets.kToggleSwitch)
+    .getEntry();
 
   public FieldPositionUpdate(VisionSubsystem visionSubsystem, SwerveSubsystem swerveSubsystem) {
     m_VisionSubsystem = visionSubsystem;
@@ -50,6 +53,7 @@ public class FieldPositionUpdate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (useFieldUpdating.getBoolean(false)) return;
     //Get the caculated robot position on the field from the last camera rendering cycle
     Optional<EstimatedRobotPose> robotPose = m_VisionSubsystem.getEstimatedPose();
     //Check if a field position was caculated last cycle

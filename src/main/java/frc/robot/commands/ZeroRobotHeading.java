@@ -26,7 +26,7 @@ public class ZeroRobotHeading extends InstantCommand {
   @Override
   public void initialize() {
     //Runs when button is pressed
-    
+    System.out.println("ZEROING HEADING HERE");
     //resets heading
     swerveSubsystem.zeroHeading();
   }

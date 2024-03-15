@@ -41,13 +41,14 @@ public final class Constants {
     //3d offset from the robot's position to the camera
     public static final Transform3d kRobotToCamera = new Transform3d(
       new Translation3d(
-        Units.inchesToMeters(14.5), 
+        Units.inchesToMeters(8.75), 
         0, 
-        Units.inchesToMeters(5.5)
+        Units.inchesToMeters(12)
       ), 
-      new Rotation3d(0, Units.degreesToRadians(-20), 0)
+      new Rotation3d(0, Units.degreesToRadians(-54), 0)
     );
-
+    public static final double aprilTagXShiftInches = 48;
+    public static final double aprilTagYShiftInches = 0;
   }
 
   public static class ClimberConstants {
@@ -90,11 +91,11 @@ public final class Constants {
     public static final double kShooterIValue = 0.0000005;
     public static final double kShooterDValue = 0.0029;
 
-    public static final int kShooterRPM = 5800; //Our shooter RPM
+    public static final int kShooterRPM = 4800; //Our shooter RPM
     public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
-    public static final int kMinRPMForIntake = 5000; //Minimum RPM needed for putting a note into the shooter
-    public static final int kShootForAmpRPM = 1025; //Setting an initial value for our AMP shooting
-    public static final int kMinForAmpRPM = 900; //Setting our minimum AMP shooting value
+    public static final int kMinRPMForIntake = 4000; //Minimum RPM needed for putting a note into the shooter
+    public static final int kShootForAmpRPM = 925; //Setting an initial value for our AMP shooting
+    public static final int kMinForAmpRPM = 800; //Setting our minimum AMP shooting value
   } //End of Class
 
   public static class IntakeConstants {
@@ -106,7 +107,7 @@ public final class Constants {
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID = 3; //Which sensor is the lower sensor
-    public static final int kIntakeRPM = 7500; //Setting our intake RPM
+    public static final int kIntakeRPM = 8500; //Setting our intake RPM
     public static final int kReverseIntakeRPM = -7500; //Creating a reverse value for exceptions
   } //End of Class
 
@@ -225,7 +226,7 @@ public final class Constants {
     public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 5;
 
     //Max speed of the robot itself
-    public static final double kTeleMaxDriveSpeedMetersPerSecond = 4;
+    public static final double kTeleMaxDriveSpeedMetersPerSecond = 5;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 225 * (Math.PI/180);
 
@@ -296,19 +297,19 @@ public final class Constants {
     //Locations for depositing notes
     public static class NoteDepositConstants {
       public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(
-        new Pose2d(1.46, 5.54, Rotation2d.fromDegrees(180)),
+        new Pose2d(1.46+.5, 5.54, Rotation2d.fromDegrees(180)),
         DepositLocation.kSpeakerCenterSide
       );
       public static final NoteDepositPosition speakerAmpSide = new NoteDepositPosition(
-        new Pose2d(0.94, 6.75, Rotation2d.fromDegrees(226)),
+        new Pose2d(0.94+.5, 6.75+.5, Rotation2d.fromDegrees(226)),
         DepositLocation.kSpeakerAmpSide
       );
       public static final NoteDepositPosition speakerSourceSide = new NoteDepositPosition(
-        new Pose2d(0.94, 4.31, Rotation2d.fromDegrees(135)),
+        new Pose2d(0.94+.5, 4.31-.5, Rotation2d.fromDegrees(135)),
         DepositLocation.kSpeakerSourceSide
       );
       public static final NoteDepositPosition amplifier = new NoteDepositPosition(
-        new Pose2d(1.85, 7.66, Rotation2d.fromDegrees(90)),
+        new Pose2d(1.85, 7.66-.5, Rotation2d.fromDegrees(90)),
         DepositLocation.kAmplifier
       );
     }

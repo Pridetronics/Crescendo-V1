@@ -98,7 +98,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     gyro.reset();
     
-    resetOdometry(getPose());
+    resetOdometry(new Pose2d());
   }
 
   //Sets the robot heading to be what it currently is on the field, useful if the robot is not aligned with the forward direction of the field at the start of the match
@@ -141,6 +141,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Resets the odometry to the robots current position and orientation (does NOT reset the gyro, just the odometer)
   public void resetOdometry(Pose2d pose) {
+    System.out.println("PRESSED ZERO");
     odometer.resetPosition(getGyroRotation2d(), new SwerveModulePosition[] {
       frontLeft.getSwervePosition(),
       frontRight.getSwervePosition(),
