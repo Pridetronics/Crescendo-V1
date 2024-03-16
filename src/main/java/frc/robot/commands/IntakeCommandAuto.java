@@ -35,7 +35,6 @@ public class IntakeCommandAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_IntakeSubsystem.isNoteInsideIntake();
     if (m_IntakeSubsystem.isNoteInsideIntake() == false) { //telling the command how to use our digital inputs
       hasNoteNotBeenDetected = true;
     } //end of class
@@ -58,12 +57,6 @@ public class IntakeCommandAuto extends Command {
       return true;
     }
     return false; //Shorthand for else
-  }
-
-  //Makes it so other commands do not cancel this command
-  @Override
-  public InterruptionBehavior getInterruptionBehavior() {
-    return InterruptionBehavior.kCancelIncoming;
   }
 
 } //End of Class

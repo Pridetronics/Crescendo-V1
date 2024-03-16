@@ -494,6 +494,11 @@ public class RobotContainer {
       totalCommandSequence,
       new HomeClimber(climberSubsystem)
     );
-    return finalCommand;
+    return finalCommand.finallyDo(
+      (boolean interrupted) -> {
+        shooterSubsystem.stopMotorSpeed();
+        intakeSubsystem.stopMotorSpeed();
+      }
+    );
   }
 }
