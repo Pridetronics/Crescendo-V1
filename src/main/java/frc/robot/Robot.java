@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,6 +21,7 @@ public class Robot extends TimedRobot {
   private Command m_testCommand;
 
   private RobotContainer m_robotContainer;
+  private Field2d m_fieldSmart = new Field2d();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -30,7 +32,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
+    SmartDashboard.putData("Field Position Visual", m_fieldSmart);
     SmartDashboard.putString("Code", "Matthew");
     SmartDashboard.putString("Version", "3");
   }
@@ -44,7 +46,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
+    m_fieldSmart.setRobotPose(m_robotContainer.swerveSubsystem.getPose());
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,

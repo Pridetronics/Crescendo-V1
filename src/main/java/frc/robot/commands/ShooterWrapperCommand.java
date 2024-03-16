@@ -26,7 +26,9 @@ public class ShooterWrapperCommand extends WrapperCommand {
     @Override
     public void end(boolean interrupted) {
         m_command.end(interrupted);
-        endFunc.accept(interrupted);
+        if (endFunc != null) {
+            endFunc.accept(interrupted);
+        }
     }
 
     @Override

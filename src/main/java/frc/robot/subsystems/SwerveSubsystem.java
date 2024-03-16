@@ -74,7 +74,6 @@ public class SwerveSubsystem extends SubsystemBase {
       VecBuilder.fill(0.1, 0.1, 0.1),
       VecBuilder.fill(2,2, 2)
     );
-
     //Waits one second to let the gyro calibrate and then resets the forward direction
     //Non-yielding code
     new Thread(() -> {
