@@ -44,7 +44,6 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandAuto;
 import frc.robot.commands.LowerClimber;
 import frc.robot.commands.RaiseClimber;
-import frc.robot.commands.SetOdometerWithCamera;
 import frc.robot.commands.ShootForSeconds;
 import frc.robot.commands.ShooterWrapperCommand;
 import frc.robot.commands.StopShooter;
@@ -91,6 +90,11 @@ public class RobotContainer {
   //Choosers sent to Shuffleboard later
   private SendableChooser<ManipulatorButtons> joystickModeChooser = new SendableChooser<ManipulatorButtons>();
   private SendableChooser<Pose2d> emergencyStartingPose = new SendableChooser<Pose2d>();
+
+  private FieldPositionUpdate fieldUpdateCmd = new FieldPositionUpdate(
+    visionSubsystem, 
+    swerveSubsystem
+  );
 
   //Create a shuffleboard tab for the drivers to see all teleop info
   private static final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
@@ -184,16 +188,19 @@ public class RobotContainer {
 
     //Runs the command when other vision commands are not being used
     visionSubsystem.setDefaultCommand(
-      new FieldPositionUpdate(
-        visionSubsystem, 
-        swerveSubsystem
-      )
+      fieldUpdateCmd
     );
-    //Schedule this command so that it will update the odometer, and then allow the default command to run once it it done
-    new SetOdometerWithCamera(swerveSubsystem, visionSubsystem).schedule();
 
     // Configure the trigger bindings
     configureBindings();
+  }
+
+  public void disableCameraUpdating() {
+    visionSubsystem.removeDefaultCommand();
+  }
+
+  public void enableCameraUpdating() {
+    visionSubsystem.setDefaultCommand(fieldUpdateCmd);
   }
 
   /**
