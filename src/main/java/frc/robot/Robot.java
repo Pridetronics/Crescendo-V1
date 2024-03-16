@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.HomeClimber;
+import frc.robot.subsystems.ClimberSubsystem;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -67,7 +69,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.enableCameraUpdating();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //m_autonomousCommand = new HomeClimber(m_robotContainer.climberSubsystem);
     Shuffleboard.selectTab("Autonomous");
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -81,6 +85,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.disableCameraUpdating();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

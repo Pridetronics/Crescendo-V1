@@ -38,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
   } //End of Class
 
   public boolean isRPMOverMinimum() {
-    return encoder.getVelocity() >= minimumRPM;
+    return minimumRPM == 0 || encoder.getVelocity() >= minimumRPM;
   }
   
   //Sets the motor RPM
