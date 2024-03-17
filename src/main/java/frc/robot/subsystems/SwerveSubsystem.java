@@ -48,7 +48,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public SwerveSubsystem() {
     //gets the constants for each module
     final SwerveModuleClasses SwerveModuleSettings = new SwerveModuleClasses();
-
     if (RobotBase.isReal()) {
       frontLeft = new SwerveModule(SwerveModuleSettings.frontLeft);
       frontRight = new SwerveModule(SwerveModuleSettings.frontRight);
@@ -60,7 +59,6 @@ public class SwerveSubsystem extends SubsystemBase {
       backLeft = new SimulatedSwerveModule(SwerveModuleSettings.backLeft);
       backRight = new SimulatedSwerveModule(SwerveModuleSettings.backRight);
     }    
-
     this.odometer = new SwerveDrivePoseEstimator(
       WheelConstants.kDriveKinematics,
       new Rotation2d(0), 
@@ -97,7 +95,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
     gyro.reset();
     
-    resetOdometry(new Pose2d());
+    resetOdometry(
+      new Pose2d(
+        getPose().getTranslation(), 
+        new Rotation2d()
+      )
+    );
   }
 
   //Sets the robot heading to be what it currently is on the field, useful if the robot is not aligned with the forward direction of the field at the start of the match
@@ -111,7 +114,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (RobotBase.isSimulation()) {
       return simulatedGyroAngle % 360;
     }
-    return gyro.getAngle() % 360;
+    return (-gyro.getAngle()) % 360;
   }
 
   //Used in climber subsystem

@@ -62,27 +62,7 @@
           "visible": true
         }
       },
-      "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 3": {
-        "window": {
-          "visible": true
-        }
-      },
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 1": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 3": {
         "window": {
           "visible": true
         }

@@ -445,9 +445,9 @@ public final class Constants {
     }
 
     //Max speed during autonomous
-    public static final double kMaxSpeedMetersPerSecond = 5;
+    public static final double kMaxSpeedMetersPerSecond = 0.2;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 6;
+    public static final double kMaxAccelerationMetersPerSecond = 1;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);

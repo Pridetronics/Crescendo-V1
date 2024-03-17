@@ -423,7 +423,6 @@ public class RobotContainer {
           new WaitUntilCommand(intakeSubsystem::hasNoEnteredIntake)
         )
       );
-      System.out.println("BUILDING ITERATION dsfsfsfd " + i);
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
         
