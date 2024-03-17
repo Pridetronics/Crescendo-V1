@@ -297,19 +297,19 @@ public final class Constants {
     //Locations for depositing notes
     public static class NoteDepositConstants {
       public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(
-        new Pose2d(1.46+.5, 5.54, Rotation2d.fromDegrees(180)),
+        new Pose2d(1.55, 5.56, Rotation2d.fromDegrees(180)),
         DepositLocation.kSpeakerCenterSide
       );
       public static final NoteDepositPosition speakerAmpSide = new NoteDepositPosition(
-        new Pose2d(0.94+.5, 6.75+.5, Rotation2d.fromDegrees(226)),
+        new Pose2d(1.03, 6.90, Rotation2d.fromDegrees(228)),
         DepositLocation.kSpeakerAmpSide
       );
       public static final NoteDepositPosition speakerSourceSide = new NoteDepositPosition(
-        new Pose2d(0.94+.5, 4.31-.5, Rotation2d.fromDegrees(135)),
+        new Pose2d(0.86, 4.07, Rotation2d.fromDegrees(114)),
         DepositLocation.kSpeakerSourceSide
       );
       public static final NoteDepositPosition amplifier = new NoteDepositPosition(
-        new Pose2d(1.85, 7.66-.5, Rotation2d.fromDegrees(90)),
+        new Pose2d(1.86, 7.73, Rotation2d.fromDegrees(90)),
         DepositLocation.kAmplifier
       );
     }
@@ -445,9 +445,9 @@ public final class Constants {
     }
 
     //Max speed during autonomous
-    public static final double kMaxSpeedMetersPerSecond = 0.2;
+    public static final double kMaxSpeedMetersPerSecond = 5;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 1;
+    public static final double kMaxAccelerationMetersPerSecond = 3;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
