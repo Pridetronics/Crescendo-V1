@@ -13,14 +13,24 @@ import edu.wpi.first.wpilibj2.command.WrapperCommand;
 /** Add your docs here. */
 public class ShooterWrapperCommand extends WrapperCommand {
     BooleanConsumer endFunc;
+    Runnable beginFunc;
 
-    public ShooterWrapperCommand(Command command, BooleanConsumer endRunnable) {
+    public ShooterWrapperCommand(Command command, Runnable beginRunnable, BooleanConsumer endRunnable) {
         super(command);
         endFunc = endRunnable;
+        beginFunc = beginRunnable;
     }
 
     public Command getCommand() {
         return m_command;
+    }
+
+    @Override
+    public void initialize() {
+        if (beginFunc != null) {
+            beginFunc.run();
+        }
+        m_command.initialize();
     }
 
     @Override

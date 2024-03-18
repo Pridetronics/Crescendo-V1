@@ -184,17 +184,13 @@ public class RobotContainer {
     )
   );
 
-    //Runs the command when other vision commands are not being used
-    visionSubsystem.setDefaultCommand(
-      fieldUpdateCmd
-    );
-
     // Configure the trigger bindings
     configureBindings();
   }
 
   public void disableCameraUpdating() {
     visionSubsystem.removeDefaultCommand();
+    fieldUpdateCmd.cancel();
   }
 
   public void enableCameraUpdating() {
@@ -225,6 +221,7 @@ public class RobotContainer {
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
         ),
+        () -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "Speaker"),
         (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
       )
     );
@@ -242,6 +239,7 @@ public class RobotContainer {
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
         ),
+        () -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "Amplifier"),
         (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
       )
     );
@@ -307,7 +305,6 @@ public class RobotContainer {
 
     );
   }
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -426,8 +423,6 @@ public class RobotContainer {
       );
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
-        
-          new InstantCommand(() -> System.out.println("RUNNING ITERATION dsfsfsfd ")),
           //Move robot from the deposit it's currently at to the target note's closest attack position
           new SwerveControllerCommand(
             depositToNoteAttackPos, 
@@ -439,7 +434,6 @@ public class RobotContainer {
             swerveSubsystem::setModuleStates,
             swerveSubsystem
           ),
-          new InstantCommand(() -> System.out.println("FINISHED INDEX")),
           //Run both the intake and driving in parallel
           new ParallelCommandGroup(
             //Runs intake

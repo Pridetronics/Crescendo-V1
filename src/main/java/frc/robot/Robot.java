@@ -64,15 +64,22 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.enableCameraUpdating();
+  }
 
   @Override
   public void disabledPeriodic() {}
 
+  @Override
+  public void disabledExit() {
+    m_robotContainer.disableCameraUpdating();
+  }
+
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_robotContainer.enableCameraUpdating();
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     //m_autonomousCommand = new HomeClimber(m_robotContainer.climberSubsystem);
     Shuffleboard.selectTab("Autonomous");
@@ -88,7 +95,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.disableCameraUpdating();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
