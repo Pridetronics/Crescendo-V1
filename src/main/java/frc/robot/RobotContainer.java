@@ -113,9 +113,9 @@ public class RobotContainer {
    */
   
    //Some shufflebaord information such as the shooter mode (either amplifier, speaker, or disabled) and a setting for reversing the field direction (as an emergency)
-  // private final GenericEntry shooterModeEntry = teleOpTab.add("Current Shooter Mode", "Disabled")
-  // .withWidget(BuiltInWidgets.kBooleanBox)
-  // .getEntry();
+   private final GenericEntry shooterModeEntry = teleOpTab.add("Current Shooter Mode", "Disabled")
+   .withWidget(BuiltInWidgets.kBooleanBox)
+   .getEntry();
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
   .withWidget(BuiltInWidgets.kToggleSwitch)
   .getEntry();
