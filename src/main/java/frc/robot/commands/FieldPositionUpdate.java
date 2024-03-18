@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.utils.ShuffleboardRateLimiter;
 
 public class FieldPositionUpdate extends Command {
   /** Creates a new FieldPositionUpdate. */
@@ -62,7 +63,7 @@ public class FieldPositionUpdate extends Command {
       m_SwerveSubsystem.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds);
     }
 
-    lookingAtAprilTag.setBoolean(robotPose.isPresent());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());
     
     m_fieldAuto.setRobotPose(m_SwerveSubsystem.getPose());
     m_fieldSmart.setRobotPose(m_SwerveSubsystem.getPose());

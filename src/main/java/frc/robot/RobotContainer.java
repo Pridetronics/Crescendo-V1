@@ -44,7 +44,6 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandAuto;
 import frc.robot.commands.LowerClimber;
 import frc.robot.commands.RaiseClimber;
-import frc.robot.commands.SetOdometerWithCamera;
 import frc.robot.commands.ShootForSeconds;
 import frc.robot.commands.ShooterWrapperCommand;
 import frc.robot.commands.StopShooter;
@@ -63,6 +62,7 @@ import frc.robot.utils.JoystickButtonIDs;
 import frc.robot.utils.ManipulatorButtons;
 import frc.robot.utils.NoteDepositPosition;
 import frc.robot.utils.NotePosition;
+import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.utils.TrajectoryHelper;
 import frc.robot.utils.WaitingNotePosition;
 
@@ -190,7 +190,7 @@ public class RobotContainer {
       )
     );
     //Schedule this command so that it will update the odometer, and then allow the default command to run once it it done
-    new SetOdometerWithCamera(swerveSubsystem, visionSubsystem).schedule();
+    //new SetOdometerWithCamera(swerveSubsystem, visionSubsystem).schedule();
 
     // Configure the trigger bindings
     configureBindings();
@@ -220,7 +220,7 @@ public class RobotContainer {
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
         ),
-        (boolean interrupted) -> shooterModeEntry.setValue("None")
+        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
       )
     );
 
@@ -237,7 +237,7 @@ public class RobotContainer {
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
         ),
-        (boolean interrupted) -> shooterModeEntry.setValue("None")
+        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
       )
     );
 
@@ -407,7 +407,6 @@ public class RobotContainer {
           new WaitUntilCommand(intakeSubsystem::hasNoEnteredIntake)
         )
       );
-      System.out.println("RUNNING ITERATION dsfsfsfd " + i);
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
         
@@ -464,9 +463,6 @@ public class RobotContainer {
 
       previousOrderDepositPosition = currentDepositPosition;
     }
-    totalCommandSequence.addCommands(
-      new InstantCommand()
-    );
     //Wraps the whole autonomous sequence to run in parallel with the homing of the climber
     ParallelCommandGroup finalCommand = new ParallelCommandGroup(
       totalCommandSequence,

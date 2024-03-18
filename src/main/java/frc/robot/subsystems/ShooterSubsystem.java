@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.utils.ShuffleboardRateLimiter;
 
 public class ShooterSubsystem extends SubsystemBase {
   private CANSparkMax shooterMotor = new CANSparkMax(ShooterConstants.kShooterMotorCANID, MotorType.kBrushless); //This is setting our Motor
@@ -68,7 +69,6 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    shooterEntry.setBoolean(isEnabled);
+    ShuffleboardRateLimiter.queueDataForShuffleboard(shooterEntry, isEnabled);
   }
 } //End of Class

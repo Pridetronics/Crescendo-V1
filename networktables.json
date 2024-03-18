@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "name": "/Shuffleboard/Teleoperation/Robot Speed Percent",
+    "type": "double",
+    "value": 0.8,
+    "properties": {
+      "persistent": true
+    }
+  }
+]

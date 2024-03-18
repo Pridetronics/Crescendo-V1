@@ -33,6 +33,11 @@ import frc.robot.utils.NoteDepositPosition.DepositLocation;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static class shuffleboardConstants {
+    public static final double kRateLimitTime = 0.2;
+  }
+
   public static class CameraConstants {
     //The name of the domain to view the webpage when tethered
     public static final String kHostName = "robotcamera";
