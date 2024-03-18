@@ -5,12 +5,15 @@
 package frc.robot.commands;
 
 import java.util.Optional;
+import java.util.Timer;
 
 import org.photonvision.EstimatedRobotPose;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.Time;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -26,20 +29,23 @@ public class FieldPositionUpdate extends Command {
   VisionSubsystem m_VisionSubsystem;
   SwerveSubsystem m_SwerveSubsystem;
   private Field2d m_fieldTele = new Field2d();
+
   private Field2d m_fieldAuto = new Field2d();
-  private Field2d m_fieldSmart = new Field2d();
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
   private final GenericEntry lookingAtAprilTag = teleOpTab.add("Looking at april Tag", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
-
+    private final GenericEntry useFieldUpdating  = teleOpTab.add("Disable Limelight", false)
+    .withWidget(BuiltInWidgets.kToggleSwitch)
+    .getEntry();
+  public Timer timer = new Timer();
   public FieldPositionUpdate(VisionSubsystem visionSubsystem, SwerveSubsystem swerveSubsystem) {
     m_VisionSubsystem = visionSubsystem;
     m_SwerveSubsystem = swerveSubsystem;
 
-    SmartDashboard.putData("Field Position Visual", m_fieldSmart);
+
     teleOpTab.add(m_fieldTele);
     autoTab.add(m_fieldAuto);
 
@@ -55,6 +61,7 @@ public class FieldPositionUpdate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (useFieldUpdating.getBoolean(false)) return;
     //Get the caculated robot position on the field from the last camera rendering cycle
     Optional<EstimatedRobotPose> robotPose = m_VisionSubsystem.getEstimatedPose();
     //Check if a field position was caculated last cycle
@@ -65,10 +72,8 @@ public class FieldPositionUpdate extends Command {
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());
     
-    m_fieldAuto.setRobotPose(m_SwerveSubsystem.getPose());
-    m_fieldSmart.setRobotPose(m_SwerveSubsystem.getPose());
     m_fieldTele.setRobotPose(m_SwerveSubsystem.getPose());
-
+    m_fieldAuto.setRobotPose(m_SwerveSubsystem.getPose());
   }
 
   // Called once the command ends or is interrupted.

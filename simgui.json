@@ -62,27 +62,7 @@
           "visible": true
         }
       },
-      "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Autonomous/Note Deposit Order/Note number: 3": {
-        "window": {
-          "visible": true
-        }
-      },
       "/Shuffleboard/Autonomous/Note Selection Order/Note number: 1": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Autonomous/Note Selection Order/Note number: 3": {
         "window": {
           "visible": true
         }
@@ -93,10 +73,7 @@
         "left": 150,
         "right": 2961,
         "top": 79,
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "width": 16.541748046875
       },
       "/SmartDashboard/Field Position Visual": {
         "bottom": 1476,

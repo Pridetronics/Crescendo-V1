@@ -2,7 +2,7 @@
   {
     "name": "/Shuffleboard/Teleoperation/Robot Speed Percent",
     "type": "double",
-    "value": 0.8,
+    "value": 1.0,
     "properties": {
       "persistent": true
     }

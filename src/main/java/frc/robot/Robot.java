@@ -6,9 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.HomeClimber;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.utils.ShuffleboardRateLimiter;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,6 +24,7 @@ public class Robot extends TimedRobot {
   private Command m_testCommand;
 
   private RobotContainer m_robotContainer;
+  private Field2d m_fieldSmart = new Field2d();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -31,7 +35,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
+    SmartDashboard.putData("Field Position Visual", m_fieldSmart);
     SmartDashboard.putString("Code", "Matthew");
     SmartDashboard.putString("Version", "3");
   }
@@ -45,7 +49,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
+    m_fieldSmart.setRobotPose(m_robotContainer.swerveSubsystem.getPose());
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -68,7 +72,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.enableCameraUpdating();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //m_autonomousCommand = new HomeClimber(m_robotContainer.climberSubsystem);
     Shuffleboard.selectTab("Autonomous");
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -82,6 +88,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.disableCameraUpdating();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
