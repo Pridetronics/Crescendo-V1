@@ -213,7 +213,7 @@ public final class Constants {
     public static final double kFieldWidthMeters = Units.inchesToMeters(653.2);
 
     //The literal max speed each wheel is allowed to go
-    public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
+    public static final double kPhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1);
 
     /*
     When talking about these acceleration values, 
@@ -231,7 +231,7 @@ public final class Constants {
     public static final double kTeleMaxTurningAccelerationUnitsPerSecond = 5;
 
     //Max speed of the robot itself
-    public static final double kTeleMaxDriveSpeedMetersPerSecond = 5;
+    public static final double kTeleMaxDriveSpeedMetersPerSecond = 4.5;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
     public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
 
@@ -452,7 +452,7 @@ public final class Constants {
     //Max speed during autonomous
     public static final double kMaxSpeedMetersPerSecond = 5;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 3;
+    public static final double kMaxAccelerationMetersPerSecond = 2;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
