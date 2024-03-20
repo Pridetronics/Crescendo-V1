@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -30,6 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private boolean enabledState;
 
   private final DigitalOutput robotLights = new DigitalOutput(IntakeConstants.kRobotLightsOutputID);
+  private double lastIntakeActivationTime = 0;
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   private final GenericEntry intakeEntry = teleOpTab.add("Intake Enabled", false)
@@ -61,7 +63,7 @@ public class IntakeSubsystem extends SubsystemBase {
      return !upperSensor.get();
   } //End of Class
 
-  public boolean hasNoEnteredIntake() { //Checking if the note has entered the intake yet (Using Lower Sensor)
+  public boolean hasNoteEnteredIntake() { //Checking if the note has entered the intake yet (Using Lower Sensor)
     return !lowerSensor.get();
   } //End of Method
 
@@ -69,7 +71,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     ShuffleboardRateLimiter.queueDataForShuffleboard(intakeEntry, enabledState);
-    robotLights.set(isNoteInsideIntake());
+    if (isNoteInsideIntake()) {
+      lastIntakeActivationTime = RobotController.getFPGATime() / 1000000.0;;
+    }
+    double currentTime = RobotController.getFPGATime() / 1000000.0;
+    robotLights.set(currentTime - lastIntakeActivationTime <= 1);
   }
 }
 //End of Method

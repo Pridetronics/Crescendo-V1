@@ -53,9 +53,7 @@ public class IntakeCommand extends Command {
   public boolean isFinished() {
     //For autonomous simulation
     if (RobotBase.isSimulation()) return true;
-      System.out.println(m_IntakeSubsystem.isNoteInsideIntake());
-      System.out.println(hasNoteNotBeenDetected);
-      System.out.println("----------------------");
+
     if (m_IntakeSubsystem.isNoteInsideIntake() && hasNoteNotBeenDetected == true) { //end if the sensor(digital input) has previously been false and currently true, if not then continue running
 
       return true;

@@ -143,7 +143,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Resets the odometry to the robots current position and orientation (does NOT reset the gyro, just the odometer)
   public void resetOdometry(Pose2d pose) {
-    System.out.println("PRESSED ZERO");
     odometer.resetPosition(getGyroRotation2d(), new SwerveModulePosition[] {
       frontLeft.getSwervePosition(),
       frontRight.getSwervePosition(),

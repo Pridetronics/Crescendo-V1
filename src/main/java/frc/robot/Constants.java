@@ -462,8 +462,8 @@ public final class Constants {
     public static final double kMaxTurningAccelerationRadiansPerSecond = 360 * (Math.PI / 180);
 
     //Power Controllers for the robot to keep it on course
-    public static final double kPXController = 1;
-    public static final double kPYController = 1;
+    public static final double kPXController = 1.5;
+    public static final double kPYController = 1.5;
     public static final double kPThetaController = 3;
 
     //This is for the Profiled PID Controller that controls the robot direction

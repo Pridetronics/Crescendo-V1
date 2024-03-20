@@ -419,31 +419,28 @@ public class RobotContainer {
             swerveSubsystem
           ),
           //If the lower sensor in activated then cut off this sequence early
-          new WaitUntilCommand(intakeSubsystem::hasNoEnteredIntake)
+          new WaitUntilCommand(intakeSubsystem::hasNoteEnteredIntake)
         )
       );
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
           //Move robot from the deposit it's currently at to the target note's closest attack position
-          new SequentialCommandGroup(
-            new SwerveControllerCommand(
-              depositToNoteAttackPos, 
-              swerveSubsystem::getPose, 
-              WheelConstants.kDriveKinematics, 
-              xController,
-              yController,
-              thetaController,
-              swerveSubsystem::setModuleStates,
-              swerveSubsystem
-            ),
-            new InstantCommand(swerveSubsystem::stopModules)
+          new SwerveControllerCommand(
+            depositToNoteAttackPos, 
+            swerveSubsystem::getPose, 
+            WheelConstants.kDriveKinematics, 
+            xController,
+            yController,
+            thetaController,
+            swerveSubsystem::setModuleStates,
+            swerveSubsystem
           ),
           //Run both the intake and driving in parallel
           new ParallelCommandGroup(
             //Runs intake
             new ParallelRaceGroup(
-              new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM)
-              //new WaitCommand(1) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
+              new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
+              new WaitCommand(1) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
             ),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(
@@ -452,18 +449,15 @@ public class RobotContainer {
               //Does the following all at once:
               new ParallelCommandGroup(
                 //Move robot to the chosen deposit area
-                new SequentialCommandGroup(
-                  new SwerveControllerCommand(
-                    depositToNoteAttackPos, 
-                    swerveSubsystem::getPose, 
-                    WheelConstants.kDriveKinematics, 
-                    xController,
-                    yController,
-                    thetaController,
-                    swerveSubsystem::setModuleStates,
-                    swerveSubsystem
-                  ),
-                  new InstantCommand(swerveSubsystem::stopModules)
+                new SwerveControllerCommand(
+                  notePositionToNewDeposit, 
+                  swerveSubsystem::getPose, 
+                  WheelConstants.kDriveKinematics, 
+                  xController,
+                  yController,
+                  thetaController,
+                  swerveSubsystem::setModuleStates,
+                  swerveSubsystem
                 ),
                 //Wind up the shooter to target RPM
                 new WindUpShooter(shooterSubsystem)
