@@ -18,6 +18,7 @@ public class ShuffleboardRateLimiter {
     private static HashMap<String, Runnable> shuffleboardUpdates = new HashMap<String, Runnable>();
 
     public static void periodic() {
+        rateLimitTimer.start();
         //only updates the shuffleboard if the specified period has passed
         if (rateLimitTimer.advanceIfElapsed(shuffleboardConstants.kRateLimitTime)) {
             //Go through all the updates to be made in the hash map, and run a runnable method that is set to update the specified entry
@@ -36,6 +37,7 @@ public class ShuffleboardRateLimiter {
         shuffleboardUpdates.put(
             entry.getTopic().getName(), 
             () -> {
+
                 entry.setValue(value);
             }
         );

@@ -4,25 +4,33 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SwerveModuleClasses;
 import frc.robot.Constants.WheelConstants;
+import frc.robot.utils.ShuffleboardRateLimiter;
 
 public class SwerveSubsystem extends SubsystemBase {
   //Creates an object for each module
@@ -43,6 +51,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //Uses the positions of each module to perdict where the robot is on the field (Mainly for autonomous)
   private final SwerveDrivePoseEstimator odometer;
+
+  private final ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve Drive");
+  private final GenericEntry robotRotationEntry = swerveTab.add("Robot Heading", 0.0)
+    .withWidget(BuiltInWidgets.kGyro)
+    .getEntry();
+  private final GenericEntry robotPositionEntry = swerveTab.add("Robot Location", "N/A")
+    .getEntry();
 
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
@@ -162,9 +177,9 @@ public class SwerveSubsystem extends SubsystemBase {
       backLeft.getSwervePosition(),
       backRight.getSwervePosition()
     });
-    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    SmartDashboard.putNumber("Robot Heading", getHeading());
-    SmartDashboard.putNumber("Odometer Heading", getPose().getRotation().getDegrees());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(robotPositionEntry, getPose().getTranslation().toString());
+    ShuffleboardRateLimiter.queueDataForShuffleboard(robotRotationEntry, -getPose().getRotation().getDegrees());
+
     SmartDashboard.putString("Copy paste pose2d", 
       String.format("%.2f, %.2f, Rotation2d.fromDegrees(%d)",
         getPose().getTranslation().getX(),

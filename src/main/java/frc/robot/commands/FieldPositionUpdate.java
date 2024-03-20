@@ -28,8 +28,8 @@ public class FieldPositionUpdate extends Command {
   private final GenericEntry lookingAtAprilTag = teleOpTab.add("Looking at april Tag", false)
     .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
-    private final GenericEntry useFieldUpdating  = teleOpTab.add("Disable Limelight", false)
-    .withWidget(BuiltInWidgets.kToggleSwitch)
+  private final GenericEntry lookingAtAprilTagAuto = autoTab.add("Looking at april Tag", false)
+    .withWidget(BuiltInWidgets.kBooleanBox)
     .getEntry();
   public Timer timer = new Timer();
   public FieldPositionUpdate(VisionSubsystem visionSubsystem, SwerveSubsystem swerveSubsystem) {
@@ -48,7 +48,6 @@ public class FieldPositionUpdate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (useFieldUpdating.getBoolean(false)) return;
     //Get the caculated robot position on the field from the last camera rendering cycle
     Optional<EstimatedRobotPose> robotPose = m_VisionSubsystem.getEstimatedPose();
     //Check if a field position was caculated last cycle
@@ -58,7 +57,7 @@ public class FieldPositionUpdate extends Command {
     }
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());
-    
+    ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTagAuto, robotPose.isPresent());
   }
 
   // Called once the command ends or is interrupted.
