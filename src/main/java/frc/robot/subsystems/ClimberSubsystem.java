@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
@@ -26,8 +24,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final Supplier<Double> getRollFunction;
   private climberState state = climberState.kNonFunctional;
-
-  private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   
   /** Creates a new ClimberSubsystem. */ 
   public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {

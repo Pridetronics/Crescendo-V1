@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import java.util.function.Consumer;
-
 import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;

@@ -4,11 +4,9 @@
 
 package frc.robot.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.shuffleboardConstants;
 
