@@ -28,9 +28,6 @@ public class FieldPositionUpdate extends Command {
   /** Creates a new FieldPositionUpdate. */
   VisionSubsystem m_VisionSubsystem;
   SwerveSubsystem m_SwerveSubsystem;
-  private Field2d m_fieldTele = new Field2d();
-
-  private Field2d m_fieldAuto = new Field2d();
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
@@ -44,10 +41,6 @@ public class FieldPositionUpdate extends Command {
   public FieldPositionUpdate(VisionSubsystem visionSubsystem, SwerveSubsystem swerveSubsystem) {
     m_VisionSubsystem = visionSubsystem;
     m_SwerveSubsystem = swerveSubsystem;
-
-
-    teleOpTab.add(m_fieldTele);
-    autoTab.add(m_fieldAuto);
 
     addRequirements(m_VisionSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -72,8 +65,6 @@ public class FieldPositionUpdate extends Command {
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());
     
-    m_fieldTele.setRobotPose(m_SwerveSubsystem.getPose());
-    m_fieldAuto.setRobotPose(m_SwerveSubsystem.getPose());
   }
 
   // Called once the command ends or is interrupted.

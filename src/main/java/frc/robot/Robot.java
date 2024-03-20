@@ -25,7 +25,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private Field2d m_fieldSmart = new Field2d();
-
+  private Field2d m_fieldTele = new Field2d();
+  private Field2d m_fieldAuto = new Field2d();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,6 +37,9 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData("Field Position Visual", m_fieldSmart);
+    Shuffleboard.getTab("Teleoperation").add(m_fieldTele);
+    Shuffleboard.getTab("Autonomous").add(m_fieldAuto);
+
     SmartDashboard.putString("Code", "Matthew");
     SmartDashboard.putString("Version", "3");
   }
@@ -50,6 +54,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     m_fieldSmart.setRobotPose(m_robotContainer.swerveSubsystem.getPose());
+    m_fieldAuto.setRobotPose(m_robotContainer.swerveSubsystem.getPose());
+    m_fieldTele.setRobotPose(m_robotContainer.swerveSubsystem.getPose());
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,

@@ -46,11 +46,11 @@ public final class Constants {
     //3d offset from the robot's position to the camera
     public static final Transform3d kRobotToCamera = new Transform3d(
       new Translation3d(
-        Units.inchesToMeters(8.75), 
+        Units.inchesToMeters(3.25), 
         0, 
-        Units.inchesToMeters(12)
+        Units.inchesToMeters(23)
       ), 
-      new Rotation3d(0, Units.degreesToRadians(-54), 0)
+      new Rotation3d(0, Units.degreesToRadians(-153), 0)
     );
     public static final double aprilTagXShiftInches = 48;
     public static final double aprilTagYShiftInches = 0;
