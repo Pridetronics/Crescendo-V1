@@ -35,7 +35,7 @@ import frc.robot.utils.NoteDepositPosition.DepositLocation;
 public final class Constants {
 
   public static class shuffleboardConstants {
-    public static final double kRateLimitTime = 0.2;
+    public static final double kRateLimitTime = 1;
   }
 
   public static class CameraConstants {
@@ -104,6 +104,8 @@ public final class Constants {
   } //End of Class
 
   public static class IntakeConstants {
+    public static final int kRobotLightsOutputID = 4;
+
     //CAN bus ID of the intake Spark Max
     public static final int kIntakeMotorCANID = 14;
     //Proportional, Integral, and Derivitive values for the velocity PID controller
@@ -112,7 +114,7 @@ public final class Constants {
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID = 3; //Which sensor is the lower sensor
-    public static final int kIntakeRPM = 8500; //Setting our intake RPM
+    public static final int kIntakeRPM = 7500; //Setting our intake RPM
     public static final int kReverseIntakeRPM = -7500; //Creating a reverse value for exceptions
   } //End of Class
 
@@ -295,7 +297,7 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
-    public static final double kNoteGrabDistanceOvershootMeters = 1;
+    public static final double kNoteGrabDistanceOvershootMeters = 2;
 
     //Max number of notes the driver can allow the robot to grab
     public static final int kMaxNumberOfNotesToPickInShuffleboard = 6;
@@ -450,9 +452,9 @@ public final class Constants {
     }
 
     //Max speed during autonomous
-    public static final double kMaxSpeedMetersPerSecond = 5;
+    public static final double kMaxSpeedMetersPerSecond = 4;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 2;
+    public static final double kMaxAccelerationMetersPerSecond = 4;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
@@ -460,8 +462,8 @@ public final class Constants {
     public static final double kMaxTurningAccelerationRadiansPerSecond = 360 * (Math.PI / 180);
 
     //Power Controllers for the robot to keep it on course
-    public static final double kPXController = 1.5;
-    public static final double kPYController = 1.5;
+    public static final double kPXController = 1;
+    public static final double kPYController = 1;
     public static final double kPThetaController = 3;
 
     //This is for the Profiled PID Controller that controls the robot direction

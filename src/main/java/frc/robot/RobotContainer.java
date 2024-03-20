@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -326,10 +327,10 @@ public class RobotContainer {
     totalCommandSequence.addCommands(
       new SequentialCommandGroup(
         new WindUpShooter(shooterSubsystem),
-        new WaitCommand(2),
+        new WaitCommand(1),
         new ParallelRaceGroup(
           new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
-          new WaitCommand(1)
+          new WaitCommand(0.5)
         ),
         new StopShooter(shooterSubsystem)
       )
@@ -424,22 +425,25 @@ public class RobotContainer {
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
           //Move robot from the deposit it's currently at to the target note's closest attack position
-          new SwerveControllerCommand(
-            depositToNoteAttackPos, 
-            swerveSubsystem::getPose, 
-            WheelConstants.kDriveKinematics, 
-            xController,
-            yController,
-            thetaController,
-            swerveSubsystem::setModuleStates,
-            swerveSubsystem
+          new SequentialCommandGroup(
+            new SwerveControllerCommand(
+              depositToNoteAttackPos, 
+              swerveSubsystem::getPose, 
+              WheelConstants.kDriveKinematics, 
+              xController,
+              yController,
+              thetaController,
+              swerveSubsystem::setModuleStates,
+              swerveSubsystem
+            ),
+            new InstantCommand(swerveSubsystem::stopModules)
           ),
           //Run both the intake and driving in parallel
           new ParallelCommandGroup(
             //Runs intake
             new ParallelRaceGroup(
               new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM)
-              //new WaitCommand(10) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
+              //new WaitCommand(1) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
             ),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(
@@ -448,24 +452,27 @@ public class RobotContainer {
               //Does the following all at once:
               new ParallelCommandGroup(
                 //Move robot to the chosen deposit area
-                new SwerveControllerCommand(
-                  notePositionToNewDeposit, 
-                  swerveSubsystem::getPose, 
-                  WheelConstants.kDriveKinematics, 
-                  xController,
-                  yController,
-                  thetaController,
-                  swerveSubsystem::setModuleStates,
-                  swerveSubsystem
+                new SequentialCommandGroup(
+                  new SwerveControllerCommand(
+                    depositToNoteAttackPos, 
+                    swerveSubsystem::getPose, 
+                    WheelConstants.kDriveKinematics, 
+                    xController,
+                    yController,
+                    thetaController,
+                    swerveSubsystem::setModuleStates,
+                    swerveSubsystem
+                  ),
+                  new InstantCommand(swerveSubsystem::stopModules)
                 ),
                 //Wind up the shooter to target RPM
                 new WindUpShooter(shooterSubsystem)
               ),
               new SequentialCommandGroup(
-                //Intake note into shooter and stop the intake if the note was not detected leaving the intake as a backup measure
+                //Intake note into shooter and timeout after a certain period of time
                 new ParallelRaceGroup(
                   new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
-                  new WaitCommand(1)
+                  new WaitCommand(0.5)
                 ),
                 //Once intake is off, stop shooter
                 new StopShooter(shooterSubsystem),

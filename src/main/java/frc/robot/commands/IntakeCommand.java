@@ -36,7 +36,6 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_IntakeSubsystem.isNoteInsideIntake();
     if (m_IntakeSubsystem.isNoteInsideIntake() == false) { //telling the command how to use our digital inputs
       hasNoteNotBeenDetected = true;
     } //end of class
@@ -54,8 +53,11 @@ public class IntakeCommand extends Command {
   public boolean isFinished() {
     //For autonomous simulation
     if (RobotBase.isSimulation()) return true;
-
+      System.out.println(m_IntakeSubsystem.isNoteInsideIntake());
+      System.out.println(hasNoteNotBeenDetected);
+      System.out.println("----------------------");
     if (m_IntakeSubsystem.isNoteInsideIntake() && hasNoteNotBeenDetected == true) { //end if the sensor(digital input) has previously been false and currently true, if not then continue running
+
       return true;
     }
     return false; //Shorthand for else

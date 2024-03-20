@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -27,6 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput lowerSensor = new DigitalInput(IntakeConstants.lowerSensorChannelID);
 
   private boolean enabledState;
+
+  private final DigitalOutput robotLights = new DigitalOutput(IntakeConstants.kRobotLightsOutputID);
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   private final GenericEntry intakeEntry = teleOpTab.add("Intake Enabled", false)
@@ -66,6 +69,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     ShuffleboardRateLimiter.queueDataForShuffleboard(intakeEntry, enabledState);
+    robotLights.set(isNoteInsideIntake());
   }
 }
 //End of Method
