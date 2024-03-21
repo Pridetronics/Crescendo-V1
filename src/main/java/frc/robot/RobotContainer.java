@@ -437,7 +437,7 @@ public class RobotContainer {
             //Runs intake
             new ParallelRaceGroup(
               new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
-              new WaitCommand(1) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
+              new WaitCommand(2) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
             ),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(

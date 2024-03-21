@@ -304,7 +304,7 @@ public final class Constants {
     //Locations for depositing notes
     public static class NoteDepositConstants {
       public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(
-        new Pose2d(1.55, 5.56, Rotation2d.fromDegrees(180)),
+        new Pose2d(1.39, 5.60, Rotation2d.fromDegrees(180)),
         DepositLocation.kSpeakerCenterSide
       );
       public static final NoteDepositPosition speakerAmpSide = new NoteDepositPosition(
