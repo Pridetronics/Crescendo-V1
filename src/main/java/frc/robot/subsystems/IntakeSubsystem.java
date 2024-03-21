@@ -72,7 +72,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     ShuffleboardRateLimiter.queueDataForShuffleboard(intakeEntry, enabledState);
     if (isNoteInsideIntake()) {
-      lastIntakeActivationTime = RobotController.getFPGATime() / 1000000.0;;
+      lastIntakeActivationTime = RobotController.getFPGATime() / 1000000.0;
     }
     double currentTime = RobotController.getFPGATime() / 1000000.0;
     robotLights.set(currentTime - lastIntakeActivationTime <= 1);

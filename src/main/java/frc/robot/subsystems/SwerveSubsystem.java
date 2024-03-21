@@ -129,7 +129,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (RobotBase.isSimulation()) {
       return simulatedGyroAngle % 360;
     }
-    return (-gyro.getAngle()) % 360;
+    return (gyro.getAngle()) % 360;
   }
 
   //Used in climber subsystem

@@ -9,6 +9,9 @@ import java.util.Timer;
 
 import org.photonvision.EstimatedRobotPose;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -50,10 +53,14 @@ public class FieldPositionUpdate extends Command {
   public void execute() {
     //Get the caculated robot position on the field from the last camera rendering cycle
     Optional<EstimatedRobotPose> robotPose = m_VisionSubsystem.getEstimatedPose();
+    System.out.println(m_VisionSubsystem.lookingAtAprilTag());
     //Check if a field position was caculated last cycle
     if (robotPose.isPresent()) {
       //Update the swerve drive odometry to work with this position
-      m_SwerveSubsystem.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds);
+      m_SwerveSubsystem.addVisionMeasurement(
+        robotPose.get().estimatedPose.toPose2d().plus(new Transform2d(new Translation2d(), Rotation2d.fromDegrees(180))), 
+        robotPose.get().timestampSeconds
+      );
     }
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());
