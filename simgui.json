@@ -124,6 +124,9 @@
           },
           "open": true
         },
+        "Swerve Drive": {
+          "open": true
+        },
         "Teleoperation": {
           "Field": {
             "double[]##v_/Shuffleboard/Teleoperation/Field/Robot": {
@@ -159,8 +162,5 @@
       "open": true
     },
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }

@@ -46,7 +46,7 @@ public final class Constants {
     //3d offset from the robot's position to the camera
     public static final Transform3d kRobotToCamera = new Transform3d(
       new Translation3d(
-        Units.inchesToMeters(3.25), 
+        Units.inchesToMeters(3.25+20), 
         0, 
         Units.inchesToMeters(23)
       ), 
@@ -323,7 +323,7 @@ public final class Constants {
     public static class NotePositionConstants {
 
       public static final NotePosition StageClose = new NotePosition(
-        new Translation2d(2.74, 4.11), 
+        new Translation2d(3.10, 4.11), 
         List.of(
           new Translation2d(2.18, 4.12),
           new Translation2d(2.53, 4.78),
@@ -339,7 +339,7 @@ public final class Constants {
         ) 
       );
       public static final NotePosition CenterClose = new NotePosition(
-        new Translation2d(2.90, 5.54), 
+        new Translation2d(3.10, 5.54), 
         List.of(
           new Translation2d(2.12, 5.58),
           new Translation2d(2.48, 6.07),
@@ -355,7 +355,7 @@ public final class Constants {
         ) 
       );
       public static final NotePosition AmpClose = new NotePosition(
-        new Translation2d(2.90, 6.99), 
+        new Translation2d(3.10, 6.99), 
         List.of(
           new Translation2d(2.24, 7.04),
           new Translation2d(2.41, 6.55),

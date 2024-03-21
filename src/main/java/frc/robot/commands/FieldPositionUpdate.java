@@ -58,7 +58,7 @@ public class FieldPositionUpdate extends Command {
     if (robotPose.isPresent()) {
       //Update the swerve drive odometry to work with this position
       m_SwerveSubsystem.addVisionMeasurement(
-        robotPose.get().estimatedPose.toPose2d().plus(new Transform2d(new Translation2d(), Rotation2d.fromDegrees(180))), 
+        robotPose.get().estimatedPose.toPose2d().plus(new Transform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(180))), 
         robotPose.get().timestampSeconds
       );
     }

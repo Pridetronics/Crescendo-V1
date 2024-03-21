@@ -324,10 +324,10 @@ public class RobotContainer {
     totalCommandSequence.addCommands(
       new SequentialCommandGroup(
         new WindUpShooter(shooterSubsystem),
-        new WaitCommand(1),
+        new WaitCommand(1.5),
         new ParallelRaceGroup(
           new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
-          new WaitCommand(0.5)
+          new WaitCommand(0.75)
         ),
         new StopShooter(shooterSubsystem)
       )

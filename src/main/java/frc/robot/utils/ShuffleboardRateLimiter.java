@@ -37,7 +37,6 @@ public class ShuffleboardRateLimiter {
         shuffleboardUpdates.put(
             entry.getTopic().getName(), 
             () -> {
-
                 entry.setValue(value);
             }
         );
