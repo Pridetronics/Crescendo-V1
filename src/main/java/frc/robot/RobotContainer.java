@@ -484,6 +484,7 @@ public class RobotContainer {
       (boolean interrupted) -> {
         shooterSubsystem.stopMotorSpeed();
         intakeSubsystem.stopMotorSpeed();
+        swerveSubsystem.stopModules();
       }
     );
   }

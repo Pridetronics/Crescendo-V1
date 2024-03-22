@@ -47,7 +47,7 @@ public final class Constants {
     public static final Transform3d kRobotToCamera = new Transform3d(
       new Translation3d(
         Units.inchesToMeters(3.25+20), 
-        0, 
+        0,
         Units.inchesToMeters(23)
       ), 
       new Rotation3d(0, Units.degreesToRadians(-153), 0)
@@ -312,7 +312,7 @@ public final class Constants {
         DepositLocation.kSpeakerAmpSide
       );
       public static final NoteDepositPosition speakerSourceSide = new NoteDepositPosition(
-        new Pose2d(0.86, 4.07, Rotation2d.fromDegrees(114)),
+        new Pose2d(0.951, 4.34, Rotation2d.fromDegrees(114)),
         DepositLocation.kSpeakerSourceSide
       );
       public static final NoteDepositPosition amplifier = new NoteDepositPosition(
