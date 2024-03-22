@@ -40,6 +40,7 @@ import frc.robot.Constants.WheelConstants;
 import frc.robot.Constants.AutoConstants.NoteDepositConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandAuto;
+import frc.robot.commands.IntakeCommandAutoNoSensor;
 import frc.robot.commands.LowerClimber;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.ShootForSeconds;
@@ -326,7 +327,7 @@ public class RobotContainer {
         new WindUpShooter(shooterSubsystem),
         new WaitCommand(1.5),
         new ParallelRaceGroup(
-          new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
+          new IntakeCommandAutoNoSensor(intakeSubsystem, IntakeConstants.kIntakeRPM),
           new WaitCommand(0.75)
         ),
         new StopShooter(shooterSubsystem)
@@ -462,7 +463,7 @@ public class RobotContainer {
               new SequentialCommandGroup(
                 //Intake note into shooter and timeout after a certain period of time
                 new ParallelRaceGroup(
-                  new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
+                  new IntakeCommandAutoNoSensor(intakeSubsystem, IntakeConstants.kIntakeRPM),
                   new WaitCommand(0.5)
                 ),
                 //Once intake is off, stop shooter

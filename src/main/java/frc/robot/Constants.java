@@ -355,7 +355,7 @@ public final class Constants {
         ) 
       );
       public static final NotePosition AmpClose = new NotePosition(
-        new Translation2d(3.10, 6.99), 
+        new Translation2d(3.00, 6.99), 
         List.of(
           new Translation2d(2.24, 7.04),
           new Translation2d(2.41, 6.55),
