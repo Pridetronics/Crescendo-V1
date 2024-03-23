@@ -297,6 +297,8 @@ public final class Constants {
 
   //Constants related to the autonomous period
   public static class AutoConstants {
+    public static double centerlineXShiftMeters = 0.5;
+
     public static final double kNoteGrabDistanceOvershootMeters = 2;
 
     //Max number of notes the driver can allow the robot to grab
@@ -372,10 +374,10 @@ public final class Constants {
       );
 
       public static final NotePosition SourceFirstFieldCenter = new NotePosition(
-        new Translation2d(8.29, 0.74), 
+        new Translation2d(8.29+0.25, 0.74), 
         List.of(
-          new Translation2d(7.54, 0.74),
-          new Translation2d(7.73, 1.24)
+          new Translation2d(7.54+0.125, 0.74),
+          new Translation2d(7.73+0.125, 1.24)
         ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
@@ -387,11 +389,11 @@ public final class Constants {
         ) 
       );
       public static final NotePosition SourceSecondFieldCenter = new NotePosition(
-        new Translation2d(8.26, 2.42), 
+        new Translation2d(8.26 + centerlineXShiftMeters, 2.42 + 0.5), 
         List.of(
-          new Translation2d(7.59, 1.93),
-          new Translation2d(7.53, 2.40),
-          new Translation2d(7.58, 2.81)
+          new Translation2d(7.59 + centerlineXShiftMeters, 1.93 + 0.5),
+          new Translation2d(7.53 + centerlineXShiftMeters, 2.40 + 0.5),
+          new Translation2d(7.58 + centerlineXShiftMeters, 2.81 + 0.5)
         ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
@@ -403,11 +405,11 @@ public final class Constants {
         ) 
       );
       public static final NotePosition CenterFieldCenter = new NotePosition(
-        new Translation2d(8.27, 4.11), 
+        new Translation2d(8.27 + centerlineXShiftMeters, 4.11), 
         List.of(
-          new Translation2d(7.65, 3.51),
-          new Translation2d(7.54, 4.13),
-          new Translation2d(7.66, 4.51)
+          new Translation2d(7.65 + centerlineXShiftMeters, 3.51),
+          new Translation2d(7.54 + centerlineXShiftMeters, 4.13),
+          new Translation2d(7.66 + centerlineXShiftMeters, 4.51)
         ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
@@ -419,11 +421,11 @@ public final class Constants {
         ) 
       );
       public static final NotePosition AmpSecondFieldCenter = new NotePosition(
-        new Translation2d(8.28, 5.80), 
+        new Translation2d(8.28 + centerlineXShiftMeters, 5.80), 
           List.of(
-            new Translation2d(7.70, 5.12),
-            new Translation2d(7.50, 5.73),
-            new Translation2d(7.60, 6.25)
+            new Translation2d(7.70 + centerlineXShiftMeters, 5.12),
+            new Translation2d(7.50 + centerlineXShiftMeters, 5.73),
+            new Translation2d(7.60 + centerlineXShiftMeters, 6.25)
           ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
@@ -435,10 +437,10 @@ public final class Constants {
         ) 
       );
       public static final NotePosition AmpFirstFieldCenter = new NotePosition(
-        new Translation2d(8.28, 7.47), 
+        new Translation2d(8.28 + centerlineXShiftMeters, 7.47), 
         List.of(
-          new Translation2d(7.71, 6.81),
-          new Translation2d(7.55, 7.44)
+          new Translation2d(7.71 + centerlineXShiftMeters, 6.81),
+          new Translation2d(7.55 + centerlineXShiftMeters, 7.44)
         ),
         new HashMap<DepositLocation, List<Translation2d>>(
           Map.of(
