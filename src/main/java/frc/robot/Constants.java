@@ -81,8 +81,8 @@ public final class Constants {
     public static final double kHomingHeightMeters = Units.inchesToMeters(0);
 
     //Velocities of the climber when moving
-    public static final double kMaxVelocityWhenRaisingMetersPerSecond = 7;
-    public static final double kMaxVelocityWhenLoweringMetersPerSecond = 3;
+    public static final double kMaxVelocityWhenRaisingMetersPerSecond = 14;
+    public static final double kMaxVelocityWhenLoweringMetersPerSecond = 6;
 
     //Used for balancing robot when climbing onto chain
     public static final double kProportionalVelocityChangePerDegreeOfRoll = 0.03;
