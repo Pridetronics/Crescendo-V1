@@ -210,7 +210,11 @@ public class RobotContainer {
     //SHOOTER BUTTON
     new Trigger(
       () -> {
-        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kShooterButtonID);
+        if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
+          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kShooterButtonID);
+        } else {
+          return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kShooterButtonID);
+        }
       }
     ).toggleOnTrue(
       new ShooterWrapperCommand(
@@ -228,7 +232,11 @@ public class RobotContainer {
     //AMPLIFIER SHOOTER
     new Trigger(
       () -> {
-        return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
+        if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
+          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
+        } else {
+          return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
+        }
       }
     ).toggleOnTrue(
       new ShooterWrapperCommand(
@@ -245,7 +253,13 @@ public class RobotContainer {
 
     //INTAKE BUTTON
     new Trigger(
-      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID)
+          () -> {
+        if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
+          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID);
+        } else {
+          return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID);
+        }
+      }
     ).whileTrue(
       //Runs these commandws sequentially when holding button
       new SequentialCommandGroup(
@@ -263,7 +277,13 @@ public class RobotContainer {
 
     //REVERSE INTAKE
     new Trigger(
-      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kReverseIntakeButtonID)
+      () -> {
+        if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
+          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kReverseIntakeButtonID);
+        } else {
+          return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kReverseIntakeButtonID);
+        }
+      }
     ).whileTrue(
       new ParallelCommandGroup(
         new IntakeCommand(
@@ -279,18 +299,32 @@ public class RobotContainer {
       ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
     );
 
+    
+
     //ZERO HEADING BUTTON
     new JoystickButton(driverJoystick, IOConstants.kZeroHeadingBtnID)
     .onTrue(new ZeroRobotHeading(swerveSubsystem));
 
     //RAISE CLIMBER BUTTON
     new Trigger(
-      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kRaiseClimberBtnID)
+      () -> {
+        if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
+          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kRaiseClimberBtnID);
+        } else {
+          return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kRaiseClimberBtnID);
+        }
+      }
     ).onTrue(new RaiseClimber(climberSubsystem));
 
     //LOWER CLIMBER BUTTON
     new Trigger(
-      () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kLowerClimberBtnID)
+      () -> {
+        if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
+          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kLowerClimberBtnID);
+        } else {
+          return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kLowerClimberBtnID);
+        }
+      }
     ).onTrue(new LowerClimber(climberSubsystem));
   }
 
