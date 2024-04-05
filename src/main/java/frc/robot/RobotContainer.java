@@ -211,7 +211,7 @@ public class RobotContainer {
     new Trigger(
       () -> {
         if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
-          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kShooterButtonID);
+          return driverJoystick.getRawAxis(joystickModeChooser.getSelected().kShooterButtonID) >= 0.75;
         } else {
           return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kShooterButtonID);
         }
@@ -255,7 +255,7 @@ public class RobotContainer {
     new Trigger(
           () -> {
         if (joystickModeChooser.getSelected() instanceof JoystickButtonIDs) {
-          return driverJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID);
+          return driverJoystick.getRawAxis(joystickModeChooser.getSelected().kIntakeButtonID) >= 0.75;
         } else {
           return manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID);
         }

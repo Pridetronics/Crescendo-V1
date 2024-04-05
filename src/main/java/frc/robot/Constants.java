@@ -144,18 +144,18 @@ public final class Constants {
     //Button IDs when using the joystick controller
     public static class joystickButtonIDs {
       //Button ID for extending climbers
-      public static final int kRaiseClimberBtnID = 7;
+      public static final int kRaiseClimberBtnID = 4;
       //Button ID for lowering climbers
-      public static final int kLowerClimberBtnID = 8;
+      public static final int kLowerClimberBtnID = 3;
 
       //Button ID for using Intake
       public static final int kIntakeButtonID = 2;
       //Button ID for using Shooter
       public static final int kShooterButtonID = 3;
       //Button ID for using the amplifier shooter
-      public static final int kAmplifierShooterButtonID = 4;
+      public static final int kAmplifierShooterButtonID = 6;
       //Button ID for reversing Intake
-      public static final int kReverseIntakeButtonID = 6;
+      public static final int kReverseIntakeButtonID = 5;
     }
     //Button IDs when using the button board
     public static class buttonBoardButtonIDs {
