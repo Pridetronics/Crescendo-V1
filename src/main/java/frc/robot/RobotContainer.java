@@ -62,6 +62,7 @@ import frc.robot.utils.JoystickButtonIDs;
 import frc.robot.utils.ManipulatorButtons;
 import frc.robot.utils.NoteDepositPosition;
 import frc.robot.utils.NotePosition;
+import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.utils.TrajectoryHelper;
 import frc.robot.utils.WaitingNotePosition;
 
@@ -73,7 +74,7 @@ import frc.robot.utils.WaitingNotePosition;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
@@ -112,9 +113,9 @@ public class RobotContainer {
    */
   
    //Some shufflebaord information such as the shooter mode (either amplifier, speaker, or disabled) and a setting for reversing the field direction (as an emergency)
-  private final GenericEntry shooterModeEntry = teleOpTab.add("Shooter Mode", "Disabled")
-  .withWidget(BuiltInWidgets.kBooleanBox)
-  .getEntry();
+   private final GenericEntry shooterModeEntry = teleOpTab.add("Current Shooter Mode", "Disabled")
+   .withWidget(BuiltInWidgets.kBooleanBox)
+   .getEntry();
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
   .withWidget(BuiltInWidgets.kToggleSwitch)
   .getEntry();
@@ -172,14 +173,11 @@ public class RobotContainer {
     //Adds the chooser to shuffleboard
     autoTab.add("Emergency Starting Pose", emergencyStartingPose);
 
-    //Multiplier for joystick axis (for simulation purposes)
-    int simulatedXAxisMult = RobotBase.isReal() ? 1 : -1;
-
     //Command set to run periodicly to register joystick inputs
     //It uses suppliers/mini methods to give up to date info easily
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
         swerveSubsystem, 
-        () -> driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis) * simulatedXAxisMult * (forwardDirectionEntry.getBoolean(false) ? -1 : 1), 
+        () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickXAxis) * (forwardDirectionEntry.getBoolean(false) ? -1 : 1), 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickYAxis) * (forwardDirectionEntry.getBoolean(false) ? -1 : 1), 
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> true
@@ -227,7 +225,7 @@ public class RobotContainer {
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
         ),
-        (boolean interrupted) -> shooterModeEntry.setValue("None")
+        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
       )
     );
 
@@ -244,7 +242,7 @@ public class RobotContainer {
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
         ),
-        (boolean interrupted) -> shooterModeEntry.setValue("None")
+        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
       )
     );
 
@@ -426,7 +424,6 @@ public class RobotContainer {
           new WaitUntilCommand(intakeSubsystem::hasNoEnteredIntake)
         )
       );
-      System.out.println("BUILDING ITERATION dsfsfsfd " + i);
       //Adds a sequence of commands to the overall command sequence that will be returned
       totalCommandSequence.addCommands(
         
@@ -486,9 +483,6 @@ public class RobotContainer {
 
       previousOrderDepositPosition = currentDepositPosition;
     }
-    totalCommandSequence.addCommands(
-      new InstantCommand()
-    );
     //Wraps the whole autonomous sequence to run in parallel with the homing of the climber
     ParallelCommandGroup finalCommand = new ParallelCommandGroup(
       totalCommandSequence,

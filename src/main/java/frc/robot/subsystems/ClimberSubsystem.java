@@ -30,9 +30,6 @@ public class ClimberSubsystem extends SubsystemBase {
   private climberState state = climberState.kNonFunctional;
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
-  private final GenericEntry climberStateEntry = teleOpTab.add("Climber Enabled", false)
-    .withWidget(BuiltInWidgets.kBooleanBox)
-    .getEntry();
   
   /** Creates a new ClimberSubsystem. */ 
   public ClimberSubsystem(SwerveSubsystem swerveSubsystem) {
@@ -41,7 +38,6 @@ public class ClimberSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    climberStateEntry.setString(state.toString().substring(1));
 
     if (state == climberState.kHoming) {  
       boolean leftClimberHomed = climberLeft.updateHomingState();

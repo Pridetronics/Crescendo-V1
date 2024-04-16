@@ -33,6 +33,11 @@ import frc.robot.utils.NoteDepositPosition.DepositLocation;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static class shuffleboardConstants {
+    public static final double kRateLimitTime = 0.2;
+  }
+
   public static class CameraConstants {
     //The name of the domain to view the webpage when tethered
     public static final String kHostName = "robotcamera";
@@ -195,10 +200,10 @@ public final class Constants {
 
     //Kinematics system that solves for each wheel's direction based on the given target direction ahd turn velocity
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-      new Translation2d(kWheelBaseLength/2, -kTrackWidth/2), //Front Left
-      new Translation2d(kWheelBaseLength/2, kTrackWidth/2), //Front Right
-      new Translation2d(-kWheelBaseLength/2, -kTrackWidth/2), //Back Left
-      new Translation2d(-kWheelBaseLength/2, kTrackWidth/2) //Beck Right
+      new Translation2d(kWheelBaseLength/2, kTrackWidth/2), //Front Left
+      new Translation2d(kWheelBaseLength/2, -kTrackWidth/2), //Front Right
+      new Translation2d(-kWheelBaseLength/2, kTrackWidth/2), //Back Left
+      new Translation2d(-kWheelBaseLength/2, -kTrackWidth/2) //Beck Right
     );
 
   }
@@ -228,7 +233,7 @@ public final class Constants {
     //Max speed of the robot itself
     public static final double kTeleMaxDriveSpeedMetersPerSecond = 5;
     //Max turning speed of the robot specified in degrees but converted to radians (with the "(Math.PI/180)")
-    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 225 * (Math.PI/180);
+    public static final double kTeleMaxTurningSpeedRadiansPerSecond = 360 * (Math.PI/180);
 
 
 
@@ -237,14 +242,14 @@ public final class Constants {
     //ID of the Can Spark Max that turns the swerve module wheel
     public static final int kFrontLeftTurningMotorCANID = 6;
     //Whether the turning direction of the wheel is reversed
-    public static final boolean kFrontLeftTurningEncoderReversed = true;
+    public static final boolean kFrontLeftTurningEncoderReversed = false;
     //Whether the propultion direction of the wheel is reversed
-    public static final boolean kFrontLeftDriveEncoderReversed = false;
+    public static final boolean kFrontLeftDriveEncoderReversed = true;
     //ID of the CTRE CANCoder for getting the absolute position of the wheel 
       //(the encoder is the silly little device on top of the module that is wedged bwtween the two motors)
     public static final int kFrontLeftDriveAbsoluteEncoderCANID = 1;
     //Whether the CANCoder direction is reversed
-    public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
+    public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = true;
     /* Offset of the absolute encoder relative to the forward direction of the wheel
           My advice for setting this value to prevent a headache experience:
             1. Face all wheels in the forward direction of the robot, being as close to perfect as you can
@@ -264,28 +269,28 @@ public final class Constants {
     
     public static final int kFrontRightDriveMotorCANID = 7;
     public static final int kFrontRightTurningMotorCANID = 8;
-    public static final boolean kFrontRightTurningEncoderReversed = true;
-    public static final boolean kFrontRightDriveEncoderReversed = true;
+    public static final boolean kFrontRightTurningEncoderReversed = false;
+    public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final int kFrontRightDriveAbsoluteEncoderCANID = 2;
-    public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
+    public static final boolean kFrontRightDriveAbsoluteEncoderReversed = true;
     public static final double kFrontRightDriveAbsoluteEncoderOffsetDeg = 72.24;
 
 
     public static final int kBackRightDriveMotorCANID = 9;
     public static final int kBackRightTurningMotorCANID = 10;
-    public static final boolean kBackRightTurningEncoderReversed = true;
+    public static final boolean kBackRightTurningEncoderReversed = false;
     public static final boolean kBackRightDriveEncoderReversed = true;
     public static final int kBackRightDriveAbsoluteEncoderCANID = 3;
-    public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
-    public static final double kBackRightDriveAbsoluteEncoderOffsetDeg = 101.25;
+    public static final boolean kBackRightDriveAbsoluteEncoderReversed = true;
+    public static final double kBackRightDriveAbsoluteEncoderOffsetDeg = 101.25+180.0;
 
     public static final int kBackLeftDriveMotorCANID = 11;
     public static final int kBackLeftTurningMotorCANID = 12;
-    public static final boolean kBackLeftTurningEncoderReversed = true;
+    public static final boolean kBackLeftTurningEncoderReversed = false;
     public static final boolean kBackLeftDriveEncoderReversed = false;
     public static final int kBackLeftDriveAbsoluteEncoderCANID = 4;
-    public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
-    public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 121.72; 
+    public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;
+    public static final double kBackLeftDriveAbsoluteEncoderOffsetDeg = 121.72+180.0; 
   }
 
   //Constants related to the autonomous period
@@ -297,19 +302,19 @@ public final class Constants {
     //Locations for depositing notes
     public static class NoteDepositConstants {
       public static final NoteDepositPosition speakerCenterSide = new NoteDepositPosition(
-        new Pose2d(1.46+.5, 5.54, Rotation2d.fromDegrees(180)),
+        new Pose2d(1.55, 5.56, Rotation2d.fromDegrees(180)),
         DepositLocation.kSpeakerCenterSide
       );
       public static final NoteDepositPosition speakerAmpSide = new NoteDepositPosition(
-        new Pose2d(0.94+.5, 6.75+.5, Rotation2d.fromDegrees(226)),
+        new Pose2d(1.03, 6.90, Rotation2d.fromDegrees(228)),
         DepositLocation.kSpeakerAmpSide
       );
       public static final NoteDepositPosition speakerSourceSide = new NoteDepositPosition(
-        new Pose2d(0.94+.5, 4.31-.5, Rotation2d.fromDegrees(135)),
+        new Pose2d(0.86, 4.07, Rotation2d.fromDegrees(114)),
         DepositLocation.kSpeakerSourceSide
       );
       public static final NoteDepositPosition amplifier = new NoteDepositPosition(
-        new Pose2d(1.85, 7.66-.5, Rotation2d.fromDegrees(90)),
+        new Pose2d(1.86, 7.73, Rotation2d.fromDegrees(90)),
         DepositLocation.kAmplifier
       );
     }
@@ -447,7 +452,7 @@ public final class Constants {
     //Max speed during autonomous
     public static final double kMaxSpeedMetersPerSecond = 5;
     //Acceleration during autonomous (note its in meters, not units)
-    public static final double kMaxAccelerationMetersPerSecond = 6;
+    public static final double kMaxAccelerationMetersPerSecond = 3;
 
     //Max turning speed during autonomous
     public static final double kMaxTurningSpeedRadiansPerSecond = 270 * (Math.PI / 180);
