@@ -9,8 +9,13 @@ import java.util.Timer;
 
 import org.photonvision.EstimatedRobotPose;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.Time;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -35,6 +40,9 @@ public class FieldPositionUpdate extends Command {
     private final GenericEntry useFieldUpdating  = teleOpTab.add("Disable Limelight", false)
     .withWidget(BuiltInWidgets.kToggleSwitch)
     .getEntry();
+
+  StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose3d.struct).publish();
+
   public Timer timer = new Timer();
   public FieldPositionUpdate(VisionSubsystem visionSubsystem, SwerveSubsystem swerveSubsystem) {
     m_VisionSubsystem = visionSubsystem;
@@ -63,10 +71,10 @@ public class FieldPositionUpdate extends Command {
     if (robotPose.isPresent()) {
       //Update the swerve drive odometry to work with this position
       m_SwerveSubsystem.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds);
+      publisher.set(robotPose.get().estimatedPose);
     }
 
     lookingAtAprilTag.setBoolean(robotPose.isPresent());
-    
     m_field.setRobotPose(m_SwerveSubsystem.getPose());
   }
 
