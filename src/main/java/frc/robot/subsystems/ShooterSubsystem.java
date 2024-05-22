@@ -44,7 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   //Sets the motor RPM
   public void setMotorAtRPM(int targetRPM, int newMinimumRPM) {
-    shooterPIDController.setReference(0, ControlType.kVelocity);
+    shooterPIDController.setReference(targetRPM, ControlType.kVelocity);
     isEnabled = true;
     minimumRPM = newMinimumRPM;
   } //End of Class

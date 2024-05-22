@@ -104,6 +104,8 @@ public final class Constants {
   } //End of Class
 
   public static class IntakeConstants {
+    public static final int kRobotLightsOutputID = 4;
+    
     //CAN bus ID of the intake Spark Max
     public static final int kIntakeMotorCANID = 14;
     //Proportional, Integral, and Derivitive values for the velocity PID controller
