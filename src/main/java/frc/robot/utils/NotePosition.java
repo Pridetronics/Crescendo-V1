@@ -48,7 +48,7 @@ public class NotePosition {
         List<Translation2d> attackPositions, 
         HashMap<DepositLocation, List<Translation2d>> pathsToDepositories
     ) {
-        kNotePosition = notePosition;
+        kNotePosition = notePosition.plus(new Translation2d(0.35, 0));
         List<Pose2d> attackPoses = new ArrayList<Pose2d>();
         kPathsToDepositories = pathsToDepositories;
         for (int i = 0; i < attackPositions.size(); i++) {
@@ -61,7 +61,7 @@ public class NotePosition {
             Pose2d poseToSet = new Pose2d(
                 currentAttackPosition, 
                 new Rotation2d(
-                    positionChangeFromNotePositionToAttackPosition.getX(),
+                    positionChangeFromNotePositionToAttackPosition.getX()+0.35,
                     positionChangeFromNotePositionToAttackPosition.getY()
                 )
             );

@@ -10,6 +10,7 @@ import java.util.Timer;
 import org.photonvision.EstimatedRobotPose;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -35,6 +36,8 @@ public class FieldPositionUpdate extends Command {
   private Field2d m_fieldTele = new Field2d();
 
   private Field2d m_fieldAuto = new Field2d();
+
+  StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose3d.struct).publish();
 
   private final ShuffleboardTab teleOpTab = Shuffleboard.getTab("Teleoperation");
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
@@ -73,6 +76,8 @@ public class FieldPositionUpdate extends Command {
     if (robotPose.isPresent()) {
       //Update the swerve drive odometry to work with this position
       m_SwerveSubsystem.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds);
+
+      publisher.set(robotPose.get().estimatedPose);
     }
 
     ShuffleboardRateLimiter.queueDataForShuffleboard(lookingAtAprilTag, robotPose.isPresent());

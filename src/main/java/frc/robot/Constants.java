@@ -182,7 +182,7 @@ public final class Constants {
     public static final double kSwerveWheelDiameterMeters = Units.inchesToMeters(4);
 
     //Gear ratio of the propultion motor (number of wheel rotations per motor rotation)
-    public static final double kDriveMotorGearRatio = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
+    public static final double kDriveMotorGearRatio = (16.0 / 48.0) * (28.0 / 16.0) * (15.0 / 45.0);
     //Gear ratio of the turning motor (number of wheel rotations per motor rotation)
     public static final double kTurningMotorGearRatio = 1 / 12.8;
 
