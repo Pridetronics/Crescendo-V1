@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -66,6 +67,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean hasNoEnteredIntake() { //Checking if the note has entered the intake yet (Using Lower Sensor)
     return !lowerSensor.get();
   } //End of Method
+
+//  public boolean changeRobotSpeed() { //Changing robot speed temporarily when the intake is being used fernando was here (Not finished)
+//    SwerveDriveKinematics.set();
+//  } //End of Method
 
   @Override
   public void periodic() {

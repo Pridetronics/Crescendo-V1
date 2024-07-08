@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+// import java.io.Console;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -12,8 +13,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
+// import edu.wpi.first.networktables.NetworkTable;
+// import edu.wpi.first.networktables.NetworkTableEntry;
+// import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotBase;
+// import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -22,7 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+// import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -65,6 +69,7 @@ import frc.robot.utils.NotePosition;
 import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.utils.TrajectoryHelper;
 import frc.robot.utils.WaitingNotePosition;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -130,12 +135,13 @@ public class RobotContainer {
     - Robot location of field DONE
     - Looking at april tag DONE
    */
-
   //Create a shufflebaord tab for the drivers to see all test info
   private final ShuffleboardTab testingTab = Shuffleboard.getTab("Testing");
   
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+      
 
     //puts the chooser for the joystick mode on the shufflebaord
     joystickModeChooser.setDefaultOption("Button Board", kButtonBoardButtons);
