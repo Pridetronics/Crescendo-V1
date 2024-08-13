@@ -22,7 +22,8 @@ import frc.robot.commands.SwerveAutoPaths;
 import frc.robot.utils.NoteDepositPosition;
 import frc.robot.utils.NotePosition;
 import frc.robot.utils.NoteDepositPosition.DepositLocation;
-
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -90,9 +91,10 @@ public final class Constants {
 
   public static class ShooterConstants {
     //CAN bus ID of the shooter Spark Max
-    public static final int kShooterMotorCANID = 13; //Our Motor ID
-    //Proportional, INtegral, and Derivitive values for the velocity PID controller
-    public static final double kShooterPValue = 0.0002;
+    public static final int kShooterMotorCANID = 13; //Our Motor ID;
+
+    //Proportional, Integral, and Derivitive values for the velocity PID controller
+    public static final double kShooterPValue = 0.02;
     public static final double kShooterIValue = 0.0000005;
     public static final double kShooterDValue = 0.0029;
 

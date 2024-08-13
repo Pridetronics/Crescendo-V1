@@ -14,6 +14,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.utils.ShuffleboardRateLimiter;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,17 +37,18 @@ public class Robot extends TimedRobot {
   private Field2d m_fieldSmart = new Field2d();
 
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is run when the robot is first started up and xshould be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData("Field Position Visual", m_fieldSmart);
-    SmartDashboard.putString("Code", "Matthew");
-    SmartDashboard.putString("Version", "3");
+    SmartDashboard.putString("Code", "Matthew (AND GADGEY)");
+    SmartDashboard.putString("Version", "4");
   
   }
 

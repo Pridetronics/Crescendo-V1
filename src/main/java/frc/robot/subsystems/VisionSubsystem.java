@@ -22,8 +22,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.net.PortForwarder;
 // import edu.wpi.first.networktables.GenericEntry;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+//import edu.wpi.first.networktables.NetworkTableEntry;
+//import edu.wpi.first.networktables.NetworkTableInstance;
 // import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;

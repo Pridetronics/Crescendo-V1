@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.io.Console;
 // import java.io.Console;
 import java.util.List;
 
@@ -69,7 +70,12 @@ import frc.robot.utils.NotePosition;
 import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.utils.TrajectoryHelper;
 import frc.robot.utils.WaitingNotePosition;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.controls.MusicTone;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+;;// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -88,7 +94,7 @@ public class RobotContainer {
   //Joysticks used by the drivers
   private final XboxController driverJoystick = new XboxController(IOConstants.kDriveJoystickID);
   private final Joystick manipulatorJoystick = new Joystick(IOConstants.kManipulatorJoystickID);
-
+  
   //Button configurations based on what the drivers want
   private final JoystickButtonIDs kJoystickButtons = new JoystickButtonIDs();
   private final ButtonBoardButtonIDs kButtonBoardButtons = new ButtonBoardButtonIDs();
@@ -226,8 +232,8 @@ public class RobotContainer {
     ).toggleOnTrue(
       new ShooterWrapperCommand(
         new ShootForSeconds(
-          shooterSubsystem, 
-          ShooterConstants.TimeToShootSeconds, 
+          shooterSubsystem,
+          ShooterConstants.TimeToShootSeconds,
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
         ),
@@ -235,7 +241,7 @@ public class RobotContainer {
       )
     );
 
-    //AMPLIFIER SHOOTER
+    // AMPLIFIER SHOOTER
     new Trigger(
       () -> {
         return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
@@ -243,8 +249,8 @@ public class RobotContainer {
     ).toggleOnTrue(
       new ShooterWrapperCommand(
         new ShootForSeconds(
-          shooterSubsystem, 
-          ShooterConstants.TimeToShootSeconds, 
+          shooterSubsystem,
+          ShooterConstants.TimeToShootSeconds,
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
         ),
@@ -451,7 +457,7 @@ public class RobotContainer {
             //Runs intake
             new ParallelRaceGroup(
               new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM)
-              //new WaitCommand(2) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
+            //  new WaitCommand(2) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
             ),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(
