@@ -44,9 +44,8 @@ public class ShooterSubsystem extends SubsystemBase {
   
   public void setMotorAtRPM(int targetRPM, int newMinimumRPM) {
     isEnabled = true;
-    Shooter.setControl(velocity.withVelocity(targetRPM));
-    getVelocity();
     minimumRPM = newMinimumRPM;
+    Shooter.setControl(velocity.withVelocity(targetRPM));
   }
   
   public void stopMotorSpeed() {
