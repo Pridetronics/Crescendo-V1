@@ -98,15 +98,15 @@ public final class Constants {
     public static final double kShooterIValue = 0.0000005;
     public static final double kShooterDValue = 0.0029;
 
-    public static final int kShooterRPM = 4800; //Our shooter RPM
-    public static final int TimeToShootSeconds = 3; //This tells us when we want to stop shooting
-    public static final int kMinRPMForIntake = 4000; //Minimum RPM needed for putting a note into the shooter
-    public static final int kShootForAmpRPM = 360; //Setting an initial value for our AMP shooting
-    public static final int kMinForAmpRPM = 300; //Setting our minimum AMP shooting value
+    public static final int kShooterRPM = 4800; //Our shooter RPM (NOTE FOR GADGET: adjusted rpm ~1379)
+    public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
+    public static final int kMinRPMForIntake = 4000; //Minimum RPM needed for putting a note into the shooter (NOTE FOD GADGET: adjusted rpm ~893)
+    public static final int kShootForAmpRPM = 248; //Setting an initial value for our AMP shooting
+    public static final int kMinForAmpRPM = 210; //Setting our minimum AMP shooting value
   } //End of Class
 
   public static class IntakeConstants {
-    public static final int kRobotLightsOutputID = 4;
+    public static final int kRobotLightsOutputID = 4;   
     
     //CAN bus ID of the intake Spark Max
     public static final int kIntakeMotorCANID = 14;

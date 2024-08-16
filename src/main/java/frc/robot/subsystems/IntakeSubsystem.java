@@ -52,7 +52,7 @@ public class IntakeSubsystem extends SubsystemBase {
   } //End of Method
 
   public void stopMotorSpeed() {
-    intakeMotor.set(0); //Stopping our motor
+    intakeMotor.set(0); //Stopping our motor  
     enabledState = false;
   } //End of Method
   

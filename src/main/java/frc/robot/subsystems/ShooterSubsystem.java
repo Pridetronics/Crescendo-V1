@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public boolean isRPMOverMinimum() {
     return minimumRPM == 0 || velocity.Velocity >= minimumRPM;
-  }
+  } 
   
   public void setMotorAtRPM(int targetRPM, int newMinimumRPM) {
     isEnabled = true;

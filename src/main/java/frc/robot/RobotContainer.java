@@ -72,7 +72,6 @@ import frc.robot.utils.TrajectoryHelper;
 import frc.robot.utils.WaitingNotePosition;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.controls.MusicTone;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 ;;// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -163,7 +162,6 @@ public class RobotContainer {
       SendableChooser<NotePosition> createdChooser = NotePosition.getNewNotePositionChooser();
       notePositionLayout.add("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
-      
     }
 
     //List for autonomous to let the drivers pick where to deposit each note chosen above
