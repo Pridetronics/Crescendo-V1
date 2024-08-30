@@ -260,7 +260,7 @@ public class RobotContainer {
     new Trigger(
       () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID)
     ).whileTrue(
-      //Runs these commandws sequentially when holding button
+      //Runs these commands sequentially when holding button
       new SequentialCommandGroup(
         //Wait for shooter to be disabled or for velocity to be beyond a threshold before we use the intake
         new ParallelRaceGroup(
@@ -347,7 +347,15 @@ public class RobotContainer {
         new StopShooter(shooterSubsystem)
       )
     );
-
+       //If the camera is not looking at an april tag, the robot will guess its starting pose
+      //if (!visionSubsystem.lookingAtAprilTag()) {
+      swerveSubsystem.resetOdometry(
+        TrajectoryHelper.toAllianceRelativePosition(
+          emergencyStartingPose.getSelected()
+        )
+  
+       );
+      //}
     //Go through all of the note dropdowns in the shuffleboard interface
     for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
       //get the note selected for the current ordered position
@@ -370,16 +378,10 @@ public class RobotContainer {
 
       //Get the note deposition location in the corresponding note order selected
       NoteDepositPosition currentDepositPosition = NoteDepositPosition.noteDepositList.get(i).getSelected();
+
       //If a previous note deposit location does not exist yet, we will set it to the closest deposit location to the robot
       if (previousOrderDepositPosition == null) {
-        //If the camera is not looking at an april tag, the robot will guess its starting pose
-        if (!visionSubsystem.lookingAtAprilTag()) {
-          swerveSubsystem.resetOdometry(
-            TrajectoryHelper.toAllianceRelativePosition(
-              emergencyStartingPose.getSelected()
-            )
-          );
-        }
+        
         //Update the previous deposit location variable
         previousOrderDepositPosition = NoteDepositPosition.getClosestDepositLocationFromPoint(
           //Converts the robots current position to a blue alliance relative position
