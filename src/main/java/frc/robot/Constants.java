@@ -116,7 +116,7 @@ public final class Constants {
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID = 3; //Which sensor is the lower sensor
-    public static final int kIntakeRPM = 8500; //Setting our intake RPM
+    public static final int kIntakeRPM = 8350; //Setting our intake RPM
     public static final int kReverseIntakeRPM = -7500; //Creating a reverse value for exceptions
   } //End of Class
 
@@ -226,7 +226,7 @@ public final class Constants {
     100% speed, and -1 mean -100% speed
       -A value of 1 means the 0 to max time is 1 second
       -A value of 3 means the 0 to max time is 0.333333 seconds
-      -A value of 0.5 means the 0 to max time is 2 seconds
+      -A value of 0.5 means the +0 to max time is 2 seconds
       -A value 0f 0.2 means the 0 to max time is 5 seconds
     You get the idea, the number is the max change in velocity, as a percent of the robot's full speed
     That means that the number is inversley related t0 the 0 to max time

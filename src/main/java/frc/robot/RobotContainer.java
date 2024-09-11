@@ -74,6 +74,10 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 ;;// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -89,7 +93,8 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public final ClimberSubsystem climberSubsystem = new ClimberSubsystem(swerveSubsystem);
-
+  public final NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-note");
+  
   //Joysticks used by the drivers
   private final XboxController driverJoystick = new XboxController(IOConstants.kDriveJoystickID);
   private final Joystick manipulatorJoystick = new Joystick(IOConstants.kManipulatorJoystickID);
@@ -201,7 +206,7 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
-  }
+   }
 
   public void disableCameraUpdating() {
     visionSubsystem.removeDefaultCommand();
@@ -347,15 +352,20 @@ public class RobotContainer {
         new StopShooter(shooterSubsystem)
       )
     );
-       //If the camera is not looking at an april tag, the robot will guess its starting pose
-      //if (!visionSubsystem.lookingAtAprilTag()) {
+      //If the camera is not looking at an april tag, the robot will guess its starting pose
+    if (visionSubsystem.lookingAtAprilTag()) {
+        limelight.getEntry("ledMode").setNumber(3);
+    }
+    else{
+      limelight.getEntry("ledMode").setNumber(2);
+      new WaitCommand(2);
+      limelight.getEntry("ledMode").setNumber(0);
       swerveSubsystem.resetOdometry(
-        TrajectoryHelper.toAllianceRelativePosition(
-          emergencyStartingPose.getSelected()
+      TrajectoryHelper.toAllianceRelativePosition(
+      emergencyStartingPose.getSelected()
         )
-  
-       );
-      //}
+      );
+    }
     //Go through all of the note dropdowns in the shuffleboard interface
     for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
       //get the note selected for the current ordered position
@@ -482,8 +492,8 @@ public class RobotContainer {
               new SequentialCommandGroup(
                 //Intake note into shooter and stop the intake if the note was not detected leaving the intake as a backup measure
                 new ParallelRaceGroup(
-                  new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
-                  new WaitCommand(1)
+                  new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM)
+                  //new WaitCommand(1)
                 ),
                 //Once intake is off, stop shooter
                 new StopShooter(shooterSubsystem),
