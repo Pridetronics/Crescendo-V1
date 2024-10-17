@@ -7,10 +7,6 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.util.Units;
-//import edu.wpi.first.networktables.GenericEntry;
-//import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-//import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
@@ -72,8 +68,8 @@ public class ClimberSubsystem extends SubsystemBase {
     //Stores in the subsystem a state to tell us that we a re homing
     state = climberState.kHoming;
     //Sets the motors for each climber at a percent speed
-    climberLeft.moveAtPercentSpeed(-0.05d);
-    climberRight.moveAtPercentSpeed(-0.05d);
+    climberLeft.moveAtPercentSpeed(-0.1d);
+    climberRight.moveAtPercentSpeed(-0.1d);
   }
 
   public void raiseClimbers() {
@@ -94,10 +90,10 @@ public class ClimberSubsystem extends SubsystemBase {
     state = climberState.kLowering;
     //Sets the max velocity and target height for the climbers
     climberLeft.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
-    climberLeft.setTarget(Units.inchesToMeters(0.3));
+    climberLeft.setTarget(Units.inchesToMeters(0.6));
     
     climberRight.setMaxVelocity(ClimberConstants.kMaxVelocityWhenLoweringMetersPerSecond);
-    climberRight.setTarget(Units.inchesToMeters(0.3));
+    climberRight.setTarget(Units.inchesToMeters(0.6));
   }
 
   public void stopClimbers() {

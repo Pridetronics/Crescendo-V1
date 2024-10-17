@@ -101,8 +101,8 @@ public final class Constants {
     public static final int kShooterRPM = 4800; //Our shooter RPM
     public static final int TimeToShootSeconds = 10; //This tells us when we want to stop shooting
     public static final int kMinRPMForIntake = 4000; //Minimum RPM needed for putting a note into the shooter
-    public static final int kShootForAmpRPM = 248; //Setting an initial value for our AMP shooting
-    public static final int kMinForAmpRPM = 210; //Setting our minimum AMP shooting value
+    public static final int kShootForAmpRPM = 248; //Setting an initial value for our AMP shooting 248
+    public static final int kMinForAmpRPM = 210; //Setting our minimum AMP shooting value 210
   } //End of Class
 
   public static class IntakeConstants {
@@ -112,12 +112,12 @@ public final class Constants {
     public static final int kIntakeMotorCANID = 14;
     //Proportional, Integral, and Derivitive values for the velocity PID controller
     public static final double kIntakePValue = 0.0001;
-    public static final double kIntakeIValue = 0.000001;
+    public static final double kIntakeIValue = 0.000001; 
     public static final double kIntakeDValue = 0.002;
     public static final int upperSensorChannelID = 0; //Which sensor is the upper sensor
     public static final int lowerSensorChannelID = 3; //Which sensor is the lower sensor
     public static final int kIntakeRPM = 8350; //Setting our intake RPM
-    public static final int kReverseIntakeRPM = -7500; //Creating a reverse value for exceptions
+    public static final int kReverseIntakeRPM = -7500; //Creating a reverse value for exceptions 7500
   } //End of Class
 
   //Constants for features related to user controller input
@@ -129,7 +129,7 @@ public final class Constants {
     //Identifier for the manipulator's controller
     public static final int kManipulatorJoystickID = 1;
     
-    //Button ID for reseting the orientation of the robot to the forward direction of the robot
+    //Button ID for reseting the orientation of the robot to the forward direction of the ro     bot
     public static final int kZeroHeadingBtnID = 2;
 
     //Axis for right/left movement

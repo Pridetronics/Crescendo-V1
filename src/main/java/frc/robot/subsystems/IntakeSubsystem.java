@@ -43,12 +43,16 @@ public class IntakeSubsystem extends SubsystemBase {
     intakePIDController.setI(IntakeConstants.kIntakeIValue); //V
     intakePIDController.setD(IntakeConstants.kIntakeDValue); //Calling our intake constants (values we stated as well)
     intakeMotor.setIdleMode(IdleMode.kBrake); //Sets our idle mode on our controller to brake mode
-  }//End of Method
+  }//End of Method 
 
   public void setMotorAtRPM(double targetRPM) {
     intakePIDController.setReference(targetRPM, ControlType.kVelocity); //Setting our motor RPM
     enabledState = true;
   } //End of Method
+
+  //public double getCurrentRPM() {
+  //  return intakeRPMEntry.getDouble(IntakeConstants.kIntakeRPM);
+  //}
 
   public void stopMotorSpeed() {
     intakeMotor.set(0); //Stopping our motor  

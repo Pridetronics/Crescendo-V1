@@ -7,6 +7,7 @@ package frc.robot;
 import java.io.Console;
 // import java.io.Console;
 import java.util.List;
+import java.util.Map;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -128,12 +129,11 @@ public class RobotContainer {
    */
   
    //Some shufflebaord information such as the shooter mode (either amplifier, speaker, or disabled) and a setting for reversing the field direction (as an emergency)
-   private final GenericEntry shooterModeEntry = teleOpTab.add("Current Shooter Mode", "Disabled")
-   .withWidget(BuiltInWidgets.kBooleanBox)
-   .getEntry();
+
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
   .withWidget(BuiltInWidgets.kToggleSwitch)
   .getEntry();
+                                                                                                                                                                     
 
   //Create a shufflebaord tab for the drivers to see all autonomous info
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
@@ -151,12 +151,12 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-      
-
     //puts the chooser for the joystick mode on the shufflebaord
     joystickModeChooser.setDefaultOption("Button Board", kButtonBoardButtons);
     joystickModeChooser.addOption("Joystick", kJoystickButtons);
     teleOpTab.add("Manipulator Joystick Mode", joystickModeChooser);
+
+    //ShuffleboardRateLimiter.queueDataForShuffleboard(intakeRPMTab, "None");
 
     //List for autonomous that will let the drivers choose what notes to grab in what order
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
@@ -197,6 +197,7 @@ public class RobotContainer {
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> true
     )
+    
   );
 
     //Runs the command when other vision commands are not being used
@@ -240,7 +241,7 @@ public class RobotContainer {
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
         ),
-        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
+        (boolean interrupted) -> System.out.print("shooter")
       )
     );
 
@@ -257,7 +258,7 @@ public class RobotContainer {
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
         ),
-        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
+        (boolean interrupted) -> System.out.print("amp")
       )
     );
 
@@ -276,7 +277,7 @@ public class RobotContainer {
         ),
         //Run intake after previous command
         new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM)
-      ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+        ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
     );
 
     //REVERSE INTAKE
@@ -344,7 +345,7 @@ public class RobotContainer {
     totalCommandSequence.addCommands(
       new SequentialCommandGroup(
         new WindUpShooter(shooterSubsystem),
-        new WaitCommand(2),
+       new WaitCommand(2),
         new ParallelRaceGroup(
           new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
           new WaitCommand(1)
@@ -352,20 +353,10 @@ public class RobotContainer {
         new StopShooter(shooterSubsystem)
       )
     );
-      //If the camera is not looking at an april tag, the robot will guess its starting pose
-    if (visionSubsystem.lookingAtAprilTag()) {
-        limelight.getEntry("ledMode").setNumber(3);
-    }
-    else{
-      limelight.getEntry("ledMode").setNumber(2);
-      new WaitCommand(2);
-      limelight.getEntry("ledMode").setNumber(0);
-      swerveSubsystem.resetOdometry(
-      TrajectoryHelper.toAllianceRelativePosition(
-      emergencyStartingPose.getSelected()
-        )
+      //Runs the command when other vision commands are not being used
+      visionSubsystem.setDefaultCommand(
+        fieldUpdateCmd
       );
-    }
     //Go through all of the note dropdowns in the shuffleboard interface
     for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
       //get the note selected for the current ordered position
