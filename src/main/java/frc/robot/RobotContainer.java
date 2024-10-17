@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import java.io.Console;
 // import java.io.Console;
 import java.util.List;
+import java.util.Map;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -69,7 +71,15 @@ import frc.robot.utils.NotePosition;
 import frc.robot.utils.ShuffleboardRateLimiter;
 import frc.robot.utils.TrajectoryHelper;
 import frc.robot.utils.WaitingNotePosition;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+;;// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -84,11 +94,12 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public final ClimberSubsystem climberSubsystem = new ClimberSubsystem(swerveSubsystem);
-
+  public final NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-note");
+  
   //Joysticks used by the drivers
   private final XboxController driverJoystick = new XboxController(IOConstants.kDriveJoystickID);
   private final Joystick manipulatorJoystick = new Joystick(IOConstants.kManipulatorJoystickID);
-
+  
   //Button configurations based on what the drivers want
   private final JoystickButtonIDs kJoystickButtons = new JoystickButtonIDs();
   private final ButtonBoardButtonIDs kButtonBoardButtons = new ButtonBoardButtonIDs();
@@ -118,12 +129,11 @@ public class RobotContainer {
    */
   
    //Some shufflebaord information such as the shooter mode (either amplifier, speaker, or disabled) and a setting for reversing the field direction (as an emergency)
-   private final GenericEntry shooterModeEntry = teleOpTab.add("Current Shooter Mode", "Disabled")
-   .withWidget(BuiltInWidgets.kBooleanBox)
-   .getEntry();
+
   private final GenericEntry forwardDirectionEntry = teleOpTab.add("Reverse Field Forward", false)
   .withWidget(BuiltInWidgets.kToggleSwitch)
   .getEntry();
+                                                                                                                                                                     
 
   //Create a shufflebaord tab for the drivers to see all autonomous info
   private final ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
@@ -141,12 +151,12 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-      
-
     //puts the chooser for the joystick mode on the shufflebaord
     joystickModeChooser.setDefaultOption("Button Board", kButtonBoardButtons);
     joystickModeChooser.addOption("Joystick", kJoystickButtons);
     teleOpTab.add("Manipulator Joystick Mode", joystickModeChooser);
+
+    //ShuffleboardRateLimiter.queueDataForShuffleboard(intakeRPMTab, "None");
 
     //List for autonomous that will let the drivers choose what notes to grab in what order
     ShuffleboardLayout notePositionLayout = autoTab.getLayout("Note Selection Order", BuiltInLayouts.kList)
@@ -157,7 +167,6 @@ public class RobotContainer {
       SendableChooser<NotePosition> createdChooser = NotePosition.getNewNotePositionChooser();
       notePositionLayout.add("Note number: " + (i+1), createdChooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
-      
     }
 
     //List for autonomous to let the drivers pick where to deposit each note chosen above
@@ -188,6 +197,7 @@ public class RobotContainer {
         () -> -driverJoystick.getRawAxis(IOConstants.kDriveJoystickTurningAxis),
         () -> true
     )
+    
   );
 
     //Runs the command when other vision commands are not being used
@@ -197,7 +207,7 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
-  }
+   }
 
   public void disableCameraUpdating() {
     visionSubsystem.removeDefaultCommand();
@@ -226,16 +236,16 @@ public class RobotContainer {
     ).toggleOnTrue(
       new ShooterWrapperCommand(
         new ShootForSeconds(
-          shooterSubsystem, 
-          ShooterConstants.TimeToShootSeconds, 
+          shooterSubsystem,
+          ShooterConstants.TimeToShootSeconds,
           ShooterConstants.kShooterRPM,
           ShooterConstants.kMinRPMForIntake
         ),
-        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
+        (boolean interrupted) -> System.out.print("shooter")
       )
     );
 
-    //AMPLIFIER SHOOTER
+    // AMPLIFIER SHOOTER
     new Trigger(
       () -> {
         return manipulatorJoystick.getRawButtonPressed(joystickModeChooser.getSelected().kAmplifierShooterButtonID);
@@ -243,12 +253,12 @@ public class RobotContainer {
     ).toggleOnTrue(
       new ShooterWrapperCommand(
         new ShootForSeconds(
-          shooterSubsystem, 
-          ShooterConstants.TimeToShootSeconds, 
+          shooterSubsystem,
+          ShooterConstants.TimeToShootSeconds,
           ShooterConstants.kShootForAmpRPM,
           ShooterConstants.kMinForAmpRPM
         ),
-        (boolean interrupted) -> ShuffleboardRateLimiter.queueDataForShuffleboard(shooterModeEntry, "None")
+        (boolean interrupted) -> System.out.print("amp")
       )
     );
 
@@ -256,7 +266,7 @@ public class RobotContainer {
     new Trigger(
       () -> manipulatorJoystick.getRawButton(joystickModeChooser.getSelected().kIntakeButtonID)
     ).whileTrue(
-      //Runs these commandws sequentially when holding button
+      //Runs these commands sequentially when holding button
       new SequentialCommandGroup(
         //Wait for shooter to be disabled or for velocity to be beyond a threshold before we use the intake
         new ParallelRaceGroup(
@@ -267,7 +277,7 @@ public class RobotContainer {
         ),
         //Run intake after previous command
         new IntakeCommand(intakeSubsystem, IntakeConstants.kIntakeRPM)
-      ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+        ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
     );
 
     //REVERSE INTAKE
@@ -335,7 +345,7 @@ public class RobotContainer {
     totalCommandSequence.addCommands(
       new SequentialCommandGroup(
         new WindUpShooter(shooterSubsystem),
-        new WaitCommand(2),
+       new WaitCommand(2),
         new ParallelRaceGroup(
           new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
           new WaitCommand(1)
@@ -343,7 +353,10 @@ public class RobotContainer {
         new StopShooter(shooterSubsystem)
       )
     );
-
+      //Runs the command when other vision commands are not being used
+      visionSubsystem.setDefaultCommand(
+        fieldUpdateCmd
+      );
     //Go through all of the note dropdowns in the shuffleboard interface
     for (int i = 0; i < NotePosition.noteSelectionList.size(); i++) {
       //get the note selected for the current ordered position
@@ -366,16 +379,10 @@ public class RobotContainer {
 
       //Get the note deposition location in the corresponding note order selected
       NoteDepositPosition currentDepositPosition = NoteDepositPosition.noteDepositList.get(i).getSelected();
+
       //If a previous note deposit location does not exist yet, we will set it to the closest deposit location to the robot
       if (previousOrderDepositPosition == null) {
-        //If the camera is not looking at an april tag, the robot will guess its starting pose
-        if (!visionSubsystem.lookingAtAprilTag()) {
-          swerveSubsystem.resetOdometry(
-            TrajectoryHelper.toAllianceRelativePosition(
-              emergencyStartingPose.getSelected()
-            )
-          );
-        }
+        
         //Update the previous deposit location variable
         previousOrderDepositPosition = NoteDepositPosition.getClosestDepositLocationFromPoint(
           //Converts the robots current position to a blue alliance relative position
@@ -451,7 +458,7 @@ public class RobotContainer {
             //Runs intake
             new ParallelRaceGroup(
               new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM)
-              //new WaitCommand(2) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
+            //  new WaitCommand(2) //IMPORTANT: ADD THIS TO TEST AUTO WITHOUT NOTES
             ),
             //Drives to note and then drives to deposit location
             new SequentialCommandGroup(
@@ -476,8 +483,8 @@ public class RobotContainer {
               new SequentialCommandGroup(
                 //Intake note into shooter and stop the intake if the note was not detected leaving the intake as a backup measure
                 new ParallelRaceGroup(
-                  new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM),
-                  new WaitCommand(1)
+                  new IntakeCommandAuto(intakeSubsystem, IntakeConstants.kIntakeRPM)
+                  //new WaitCommand(1)
                 ),
                 //Once intake is off, stop shooter
                 new StopShooter(shooterSubsystem),

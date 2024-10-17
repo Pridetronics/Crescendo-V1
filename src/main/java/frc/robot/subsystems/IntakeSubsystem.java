@@ -4,13 +4,12 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -44,15 +43,19 @@ public class IntakeSubsystem extends SubsystemBase {
     intakePIDController.setI(IntakeConstants.kIntakeIValue); //V
     intakePIDController.setD(IntakeConstants.kIntakeDValue); //Calling our intake constants (values we stated as well)
     intakeMotor.setIdleMode(IdleMode.kBrake); //Sets our idle mode on our controller to brake mode
-  }//End of Method
+  }//End of Method 
 
   public void setMotorAtRPM(double targetRPM) {
     intakePIDController.setReference(targetRPM, ControlType.kVelocity); //Setting our motor RPM
     enabledState = true;
   } //End of Method
 
+  //public double getCurrentRPM() {
+  //  return intakeRPMEntry.getDouble(IntakeConstants.kIntakeRPM);
+  //}
+
   public void stopMotorSpeed() {
-    intakeMotor.set(0); //Stopping our motor
+    intakeMotor.set(0); //Stopping our motor  
     enabledState = false;
   } //End of Method
   

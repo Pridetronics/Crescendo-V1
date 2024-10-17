@@ -4,11 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -19,9 +17,9 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.utils.ShuffleboardRateLimiter;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private CANSparkMax shooterMotor = new CANSparkMax(ShooterConstants.kShooterMotorCANID, MotorType.kBrushless); //This is setting our Motor
-  private SparkPIDController shooterPIDController = shooterMotor.getPIDController();
-  private RelativeEncoder encoder = shooterMotor.getEncoder();
+  public final TalonFX Shooter = new TalonFX(ShooterConstants.kShooterMotorCANID); //This is setting our Motor
+  public final VelocityVoltage velocity = new VelocityVoltage(0);
+  public final TalonFXConfiguration configs = new TalonFXConfiguration();
   private boolean isEnabled;
   private int minimumRPM;
 
@@ -32,27 +30,28 @@ public class ShooterSubsystem extends SubsystemBase {
 //End of Class
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    shooterPIDController.setP(ShooterConstants.kShooterPValue);
-    shooterPIDController.setI(ShooterConstants.kShooterIValue);
-    shooterPIDController.setD(ShooterConstants.kShooterDValue);
-    shooterMotor.setInverted(true);
-  } //End of Class
+    configs.Slot0.kP = ShooterConstants.kShooterPValue;
+    configs.Slot0.kI = ShooterConstants.kShooterIValue;
+    configs.Slot0.kD = ShooterConstants.kShooterDValue;
+    Shooter.getConfigurator().apply(configs, 0.050);
+    velocity.Slot = 0;
+    Shooter.setInverted(true);  
+  }//End of Class
 
   public boolean isRPMOverMinimum() {
-    return minimumRPM == 0 || encoder.getVelocity() >= minimumRPM;
+    return minimumRPM == 0 || velocity.Velocity >= minimumRPM;
   }
   
-  //Sets the motor RPM
   public void setMotorAtRPM(int targetRPM, int newMinimumRPM) {
-    shooterPIDController.setReference(targetRPM, ControlType.kVelocity);
-    isEnabled = true;
-    minimumRPM = newMinimumRPM;
-  } //End of Class
-//Stops the shooter
+      isEnabled = true;
+      minimumRPM = newMinimumRPM;
+      Shooter.setControl(velocity.withVelocity(targetRPM));
+  }
+  
   public void stopMotorSpeed() {
-    shooterPIDController.setReference(0, ControlType.kVelocity);
+    Shooter.setControl(velocity.withVelocity(0));
     isEnabled = false;
-  } //End of Class
+  }
 
   public boolean isEnabled() {
     return isEnabled;
@@ -63,8 +62,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getVelocity() {
-    return encoder.getVelocity();
-  }
+    return velocity.Velocity;
+}
 
   @Override
   public void periodic() {
